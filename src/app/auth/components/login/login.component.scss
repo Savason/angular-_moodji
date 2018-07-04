@@ -1,0 +1,50 @@
+.login_form {
+  background: #fff;
+  padding: 20px;
+  fa-icon{
+    font-size: 18px;
+  }
+  .login_btn{
+    color: #fff;
+    background: #aaaaaa;
+    border: 2px solid #aaaaaa;
+    font-size: 14px;
+    &:hover{
+      border: 2px solid #7b7b7b;
+      background: #fff;
+      color: #000;
+    }
+  }
+  label{
+    margin-bottom: 0;
+    cursor: pointer;
+    position: absolute;
+    margin-left: 7.5px;
+  }
+  input{
+    padding-left: 27.5px;
+  }
+  .login_error{
+    color: red;
+    font-weight: 400;
+    font-size: 14px;
+  }
+}
+.logo_img_wrapper {
+  background: #000;
+  padding: 30px 0;
+  .login_title {
+    color: #fff;
+    margin-top: 15px;
+  }
+  img {
+    max-width: 100%;
+    width: 300px;
+  }
+}
+.login_bg{
+  background: rgba(0, 0, 0, 0.4);
+  .authorization_container{
+    height: 100vh;
+  }
+}
