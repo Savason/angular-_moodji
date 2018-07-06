@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {faUser, faUnlockAlt} from '@fortawesome/free-solid-svg-icons';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {AuthService} from "../../../core/services/auth.service";
+import {Router} from '@angular/router';
+import {UserAuthService} from '../../../core/services/user.auth.service';
 
 @Component({
   selector: 'app-login',
@@ -14,28 +15,42 @@ export class LoginComponent implements OnInit {
   faUnlockAlt = faUnlockAlt;
 
   getErrorUserNameMessage() {
-    return this.form.get('userName')['errors']['required'] ? 'This field is required' :
+    return this.form.get('username')['errors']['required'] ? 'This field is required' :
       '';
   }
 
   getErrorPasswordMessage() {
-    return this.form.get('userPassword')['errors']['required'] ? 'This field is required' :
+    return this.form.get('password')['errors']['required'] ? 'This field is required' :
       '';
   }
 
-  constructor(private authService: AuthService) {
+  constructor(private authUserService: UserAuthService,
+              private router: Router) {
   }
 
   ngOnInit() {
     this.form = new FormGroup({
-      'userName': new FormControl('', [Validators.required]),
-      'userPassword': new FormControl('', [Validators.required]),
+      'username': new FormControl('', [Validators.required]),
+      'password': new FormControl('', [Validators.required]),
     });
   }
 
   onSubmit() {
-    // const formData = this.form.value;
-    this.authService.login();
+    const formData = this.form.value;
+    console.log(formData);
+    this.authUserService.login(formData)
+      .subscribe(
+        data => {
+          if (data) {
+            this.router.navigate(['']);
+          } else {
+            this.router.navigate(['login']);
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      );
   }
 
 }

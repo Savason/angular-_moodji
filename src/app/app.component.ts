@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {AuthService} from "./core/services/auth.service";
+import {UserAuthService} from './core/services/user.auth.service';
 
 @Component({
   selector: 'app-root',
@@ -9,15 +9,23 @@ import {AuthService} from "./core/services/auth.service";
 export class AppComponent {
   public isAuthorized = false;
 
-  constructor(private authService: AuthService) {
-    // this.isAuthorized = this.authService.isLoggedIn;
-    this.authService.loginEventEmitter.subscribe((authStatus: boolean) => {
+  constructor(private authUserService: UserAuthService) {
+    this.authUserService.loginEventEmitter.subscribe((authStatus: boolean) => {
       console.log(authStatus);
       this.isAuthorized = authStatus;
     });
+    this.checkEnteredUserExistingLocalStorage();
+  }
+
+  private checkEnteredUserExistingLocalStorage() {
+
+    if (JSON.parse(localStorage.getItem('access_token'))) {
+      this.isAuthorized = true;
+    }
   }
 
   logout() {
-    this.authService.logout();
+    this.authUserService.logout();
+    this.isAuthorized = false;
   }
 }

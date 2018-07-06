@@ -4,16 +4,16 @@ import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {CoreModule} from './core/core.module';
 import {AppRoutingModule} from './app.routing.module';
-import {AuthModule} from './auth/auth.module';
 import {FormsModule} from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   imports: [
     BrowserModule,
     CoreModule,
     AppRoutingModule,
-    // AuthModule,
     FormsModule,
+    HttpClientModule
   ],
   declarations: [
     AppComponent

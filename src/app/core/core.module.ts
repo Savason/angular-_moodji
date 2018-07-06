@@ -2,18 +2,27 @@ import {NgModule, Optional, SkipSelf} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {HomeComponent} from './components/home/home.component';
 import {AuthGuard} from './guards/auth.guard';
-import {AuthService} from './services/auth.service';
+import {UserAuthService} from './services/user.auth.service';
+import {AccountManagementService} from './services/account.management.service';
+import {JwtInterceptor} from './helpers/jwt.interceptor.service';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
 
 @NgModule({
   imports: [
     CommonModule
   ],
   declarations: [
-    HomeComponent
+    HomeComponent,
   ],
   providers: [
     AuthGuard,
-    AuthService
+    UserAuthService,
+    AccountManagementService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptor,
+      multi: true
+    },
   ]
 })
 export class CoreModule {

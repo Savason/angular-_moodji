@@ -12,11 +12,11 @@
               <label for="userName">
                 <fa-icon [icon]="faUser"></fa-icon>
               </label>
-              <input formControlName="userName" type="email" class="form-control" id="userName"
+              <input formControlName="username" type="email" class="form-control" id="userName"
                      aria-describedby="emailHelp"
                      placeholder="User name">
             </div>
-            <div class="login_error" *ngIf="form.get('userName').invalid&&form.get('userName').touched">
+            <div class="login_error" *ngIf="form.get('username').invalid&&form.get('username').touched">
               {{getErrorUserNameMessage()}}
             </div>
           </div>
@@ -25,10 +25,10 @@
               <label for="userPassword">
                 <fa-icon [icon]="faUnlockAlt"></fa-icon>
               </label>
-              <input formControlName="userPassword" type="password" class="form-control" id="userPassword"
+              <input formControlName="password" type="password" class="form-control" id="userPassword"
                      aria-describedby="emailHelp" placeholder="Password">
             </div>
-            <div class="login_error" *ngIf="form.get('userPassword').invalid&&form.get('userPassword').touched">
+            <div class="login_error" *ngIf="form.get('password').invalid&&form.get('password').touched">
               {{getErrorPasswordMessage()}}
             </div>
           </div>
