@@ -1,9 +1,9 @@
-<div *ngIf="isAuthorized">
-  <a [routerLink]="['orders']">orders</a>
-  <a [routerLink]="['returns']">returns</a>
-  <a [routerLink]="['accounts']">accounts</a>
-  <a (click)="logout()">Log out</a>
-</div>
+<header class="main_header" *ngIf="isAuthorized">
+  <a class="app_navigation_link" [routerLink]="['orders']" routerLinkActive="active">orders</a>
+  <a class="app_navigation_link" [routerLink]="['returns']" routerLinkActive="active">returns</a>
+  <a class="app_navigation_link" [routerLink]="['accounts']" routerLinkActive="active">accounts</a>
+  <a class="app_navigation_link" (click)="logout()">Log out</a>
+</header>
 <div>
   <router-outlet></router-outlet>
 </div>

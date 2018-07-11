@@ -1,0 +1,18 @@
+.main_header {
+  display: flex;
+  .app_navigation_link {
+    font-weight: 500;
+    margin: 20px;
+    padding:5px 15px;
+    background: #7b7b7b;
+    color: #fff;
+    transition: .2s ease-in;
+    &:hover{
+      background: #aaaaaa;
+      text-decoration: none;
+    }
+  }
+  .active{
+    background: #aaaaaa;
+  }
+}

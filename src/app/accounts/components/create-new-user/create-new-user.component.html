@@ -1,8 +1,17 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
+<p-growl class="custom_alert_style" [(value)]="msgs"></p-growl>
+<a class="create_circle_btn d-flex justify-content-center align-items-center"  tooltip="Create new user" (click)="openModal(template)">
+  <fa-icon [icon]="addUser"></fa-icon>
+</a>
+<ng-template #template>
+  <div class="modal-header d-flex align-items-center justify-content-center">
+    <h5>Create new user</h5>
+  </div>
+<form class="create_user" [formGroup]="form" (ngSubmit)="onSubmit()">
   <div class="form-group">
     <div class="d-flex align-items-center">
       <label for="name" class="col-md-3">
         Name
+        <span class="required_badge">*</span>
       </label>
       <div class="col-md-9">
         <input formControlName="name" type="text" class="form-control" id="name"
@@ -17,6 +26,7 @@
     <div class="d-flex align-items-center">
       <label for="email" class="col-md-3">
         Email
+        <span class="required_badge">*</span>
       </label>
       <div class="col-md-9">
         <input formControlName="email" type="email" class="form-control" id="email"
@@ -31,14 +41,17 @@
     <div class="d-flex align-items-center">
       <label for="accountType" class="col-md-3">
         Account Type
+        <span class="required_badge">*</span>
       </label>
       <div class="col-md-9">
-        <select class="form-control" id="accountType">
-          <option *ngFor="let userRole of userRoles" [value]="userRole.id">
+        <select placeholder="Role in system" formControlName="role_id" class="form-control role_title" id="accountType">
+          <option [selected]=true [disabled]="true">Select client role</option>
+          <option class="role_title" *ngFor="let userRole of userRoles" [value]="userRole.id">
             {{userRole.role}}
           </option>
         </select>
         <div class="login_error" *ngIf="form.get('role_id').invalid&&form.get('role_id').touched">
+          {{getErrorTypeMessage()}}
         </div>
       </div>
     </div>
@@ -47,6 +60,7 @@
     <div class="d-flex align-items-center">
       <label for="password" class="col-md-3">
         Password
+        <span class="required_badge">*</span>
       </label>
       <div class="col-md-9">
         <input formControlName="password" type="password" class="form-control" id="password"
@@ -61,6 +75,7 @@
     <div class="d-flex align-items-center">
       <label for="confirmPassword" class="col-md-3">
         Confirm Password
+        <span class="required_badge">*</span>
       </label>
       <div class="col-md-9">
         <input formControlName="confirmPassword" type="password" class="form-control" id="confirmPassword"
@@ -71,7 +86,9 @@
       </div>
     </div>
   </div>
-  <div class="col-md-12 d-flex justify-content-end">
+  <div class="col-md-12 d-flex justify-content-between">
+    <button type="button" class="btn" aria-label="Close" (click)="onFormClose()">Cancel</button>
     <button [disabled]="form.invalid" class="btn login_btn">Create</button>
   </div>
 </form>
+</ng-template>

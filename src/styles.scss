@@ -1,4 +1,118 @@
 /* You can add global styles to this file, and also import other style files */
-input,button,select{
-  box-shadow: none!important;
+@import '~@swimlane/ngx-datatable/release/index.css';
+@import '~@swimlane/ngx-datatable/release/themes/material.css';
+@import '~@swimlane/ngx-datatable/release/assets/icons.css';
+
+$successGreen: #34D027;
+$btnGreyColor: #7b7b7b;
+$iconSizeCircle: 20px;
+
+input, button, select {
+  box-shadow: none !important;
 }
+
+label {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+//COMMON GLOBAL CLASSES
+.success_alert {
+  position: fixed !important;
+  z-index: 999;
+  width: 300px !important;
+  left: 50% !important;
+  margin-left: -150px !important;
+  top: 0;
+  color: #fff;
+  background: $successGreen;
+  text-align: center;
+  border-top-left-radius: 0px !important;
+  border-top-right-radius: 0px !important;
+  p {
+    margin: 0;
+  }
+}
+
+.login_error {
+  color: red;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.table_action_btn {
+  font-size: 20px;
+  color: $btnGreyColor;
+  transition: .1s ease-in;
+  &:hover {
+    color: #474747;
+  }
+  fa-icon {
+    color: $btnGreyColor;
+  }
+}
+
+.create_circle_btn {
+  color: $btnGreyColor;
+  font-size: $iconSizeCircle;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+  fa-icon {
+    color: $btnGreyColor;
+  }
+}
+
+ui-switch {
+  display: inline-block;
+  .switch {
+    width: 44px !important;
+    height: 20px !important;
+    small {
+      width: 25px !important;
+      height: 25px !important;
+      top: -3px !important;
+    }
+  }
+}
+
+.required_badge {
+  position: absolute;
+  font-weight: bold;
+  color: red;
+  margin-left: 3px;
+}
+
+.role_title {
+  text-transform: lowercase;
+}
+.custom_alert_style{
+  .ui-growl-image{
+    position: relative;
+    top:0;
+    left: 0;
+  }
+  .ui-growl-item{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .ui-growl-message{
+    margin-left: 10px;
+  }
+}
+
+  //----- END COMMON GLOBAL CLASSES------
+
+  .datatable-header-cell-template-wrap {
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase !important;
+  }
+
+

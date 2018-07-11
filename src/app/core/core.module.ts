@@ -6,6 +6,7 @@ import {UserAuthService} from './services/user.auth.service';
 import {AccountManagementService} from './services/account.management.service';
 import {JwtInterceptor} from './helpers/jwt.interceptor.service';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import {RolesManagementService} from './services/roles.management.service';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import {HTTP_INTERCEPTORS} from '@angular/common/http';
     AuthGuard,
     UserAuthService,
     AccountManagementService,
+    RolesManagementService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,

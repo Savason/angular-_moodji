@@ -1,8 +1,70 @@
-<div class="container">
-  <a [routerLink]="['create']">create</a>
-  <router-outlet></router-outlet>
-  <p>
-    accounts works!
-  </p>
+<div class="container accounts_wrapper">
+  <a [routerLink]="['role_table']">RMS</a>
+  <p-growl class="custom_alert_style" [(value)]="msgs"></p-growl>
+  <app-create-new-user></app-create-new-user>
+  <ngx-datatable
+    class="data-table"
+    [rows]="users|async"
+    [headerHeight]="50"
+    [rowHeight]="50"
+    [columnMode]="'force'"
+    class="material"
+  >
+    <ngx-datatable-column name="Name">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <a routerLink="edit/{{row.id}}">
+          {{row.name}}
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Email">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <a routerLink="edit/{{row.id}}">
+          {{row.email}}
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Client Role">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <span class="role_title">
+          {{row.role_title}}
+        </span>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Status" [sortable]="false">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <ui-switch tooltip="client status" [ngModel]="row.enabled"
+                   (change)="onChangeStatus(row.enabled,row.id)"></ui-switch>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Actions" [sortable]="false">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <a class="table_action_btn" routerLink="{{row.id}}"
+           tooltip="Details"
+        >
+          <fa-icon [icon]="faInfo"></fa-icon>
+        </a>
+        <a class="table_action_btn" routerLink="edit/{{row.id}}"
+           tooltip="Edit {{row.name}}"
+        >
+          <fa-icon [icon]="faEdit"></fa-icon>
+        </a>
+        <a class="table_action_btn" (click)="openModal(template,row.id)"
+           tooltip="Delete {{row.name}}"
+        >
+          <fa-icon [icon]="faDelete"></fa-icon>
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+  <ng-template #template>
+    <div class="modal-header">
+      <h5 class="modal-title pull-left"> Are you sure you want to delete this user?</h5>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn" (click)="onDeleteUser()">Yes</button>
+      <button type="button" class="btn" aria-label="Close" (click)="modalRef.hide()">Cancel</button>
+    </div>
+  </ng-template>
 </div>
 
