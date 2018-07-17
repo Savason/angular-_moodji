@@ -13,7 +13,10 @@ const httpOptions = {
 @Injectable()
 export class AccountManagementService extends BaseApi {
   public Users = [];
+  public userRoles = [];
+  public totalUserCount = 0;
   public Users$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(this.Users);
+  public userRoles$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(this.userRoles);
   public currentUserIdDelete;
 
   constructor(public http: HttpClient) {
@@ -32,8 +35,8 @@ export class AccountManagementService extends BaseApi {
     return this.get(`api/user/${id}`);
   }
 
-  getAllUsers(): Observable<any> {
-    return this.get('api/user');
+  getAllUsers(searchParams): Observable<any> {
+    return this.get(`api/user?page=${searchParams}`);
   }
 
   getUserRole(): Observable<any> {
@@ -66,7 +69,23 @@ export class AccountManagementService extends BaseApi {
   }
 
   addToUserList(data) {
-    this.Users$.next(this.Users$.getValue().concat(data));
+    if (this.getUserCount() < 10) {
+      this.Users$.next(this.Users$.getValue().concat(data));
+    } else {
+      return;
+    }
+  }
+
+  getUserCount() {
+    return this.Users$.getValue().length;
+  }
+
+  getUserRoles() {
+    return this.userRoles$;
+  }
+
+  setDataUserRoles(data) {
+    return this.userRoles$.next(data);
   }
 }
 

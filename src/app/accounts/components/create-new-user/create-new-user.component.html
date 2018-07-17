@@ -1,94 +1,117 @@
-<p-growl class="custom_alert_style" [(value)]="msgs"></p-growl>
-<a class="create_circle_btn d-flex justify-content-center align-items-center"  tooltip="Create new user" (click)="openModal(template)">
-  <fa-icon [icon]="addUser"></fa-icon>
-</a>
-<ng-template #template>
-  <div class="modal-header d-flex align-items-center justify-content-center">
-    <h5>Create new user</h5>
-  </div>
-<form class="create_user" [formGroup]="form" (ngSubmit)="onSubmit()">
-  <div class="form-group">
-    <div class="d-flex align-items-center">
-      <label for="name" class="col-md-3">
-        Name
-        <span class="required_badge">*</span>
-      </label>
-      <div class="col-md-9">
-        <input formControlName="name" type="text" class="form-control" id="name"
-               placeholder="Name">
-        <div class="login_error" *ngIf="form.get('name').invalid&&form.get('name').touched">
-          {{getErrorNameMessage()}}
+<div class="modal-header d-flex align-items-center justify-content-center">
+  <h5>Create new user</h5>
+</div>
+<div class="modal-body">
+  <form class="create_user" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <div class="d-flex align-items-center">
+        <label for="name" class="col-md-3">
+          Name
+          <span class="required_badge">*</span>
+        </label>
+        <div class="col-md-9">
+          <input [ngClass]="{
+          'has_danger': form.get('name').invalid && (form.get('name').dirty || form.get('name').touched),
+          'has_success': form.get('name').valid && (form.get('name').dirty || form.get('name').touched)
+          }"
+                 formControlName="name" type="text" class="form-control" id="name"
+                 placeholder="Name">
+          <div class="login_error" *ngIf="form.get('name').invalid&&form.get('name').touched">
+            {{getErrorNameMessage()}}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="form-group">
-    <div class="d-flex align-items-center">
-      <label for="email" class="col-md-3">
-        Email
-        <span class="required_badge">*</span>
-      </label>
-      <div class="col-md-9">
-        <input formControlName="email" type="email" class="form-control" id="email"
-               placeholder="Email">
-        <div class="login_error" *ngIf="form.get('email').invalid&&form.get('email').touched">
-          {{getErrorEmailMessage()}}
+    <div class="form-group">
+      <div class="d-flex align-items-center">
+        <label for="email" class="col-md-3">
+          Email
+          <span class="required_badge">*</span>
+        </label>
+        <div class="col-md-9">
+          <input [ngClass]="{
+          'has_danger': form.get('email').invalid && (form.get('email').dirty || form.get('email').touched),
+          'has_success': form.get('email').valid && (form.get('email').dirty || form.get('email').touched)
+          }"
+                 formControlName="email" type="email" class="form-control" id="email"
+                 placeholder="Email">
+          <div class="login_error" *ngIf="form.get('email').invalid&&form.get('email').touched">
+            {{getErrorEmailMessage()}}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="form-group">
-    <div class="d-flex align-items-center">
-      <label for="accountType" class="col-md-3">
-        Account Type
-        <span class="required_badge">*</span>
-      </label>
-      <div class="col-md-9">
-        <select placeholder="Role in system" formControlName="role_id" class="form-control role_title" id="accountType">
-          <option [selected]=true [disabled]="true">Select client role</option>
-          <option class="role_title" *ngFor="let userRole of userRoles" [value]="userRole.id">
-            {{userRole.role}}
-          </option>
-        </select>
-        <div class="login_error" *ngIf="form.get('role_id').invalid&&form.get('role_id').touched">
-          {{getErrorTypeMessage()}}
+    <div class="form-group">
+      <div class="d-flex align-items-center">
+        <label for="accountType" class="col-md-3">
+          Account Type
+          <span class="required_badge">*</span>
+        </label>
+        <div class="col-md-9">
+          <select [ngClass]="{
+          'has_danger': form.get('role_id').invalid && (form.get('role_id').dirty || form.get('role_id').touched),
+          'has_success': form.get('role_id').valid && (form.get('role_id').dirty || form.get('role_id').touched)
+          }"
+                  formControlName="role_id" class="form-control role_title" id="accountType">
+            <option [ngValue]="null" [disabled]="true">Select client role</option>
+            <option class="role_title" *ngFor="let userRole of userRoles|async" [value]="userRole.id">
+              {{userRole.role}}
+            </option>
+          </select>
+          <div class="login_error" *ngIf="form.get('role_id').invalid&&form.get('role_id').touched">
+            {{getErrorTypeMessage()}}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="form-group">
-    <div class="d-flex align-items-center">
-      <label for="password" class="col-md-3">
-        Password
-        <span class="required_badge">*</span>
-      </label>
-      <div class="col-md-9">
-        <input formControlName="password" type="password" class="form-control" id="password"
-               placeholder="Password">
-        <div class="login_error" *ngIf="form.get('password').invalid&&form.get('password').touched">
-          {{getErrorPasswordMessage()}}
+    <div class="form-group">
+      <div class="d-flex align-items-center">
+        <label for="password" class="col-md-3">
+          Password
+          <span class="required_badge">*</span>
+        </label>
+        <div class="col-md-9">
+          <input [ngClass]="{
+          'has_danger': form.get('password').invalid && (form.get('password').dirty || form.get('password').touched),
+          'has_success': form.get('password').valid && (form.get('password').dirty || form.get('password').touched)
+          }"
+                 [type]="hide ? 'password' : 'text'"
+                 formControlName="password" type="password" class="form-control" id="password"
+                 placeholder="Password">
+          <div class="login_error" *ngIf="form.get('password').invalid&&form.get('password').touched">
+            {{getErrorPasswordMessage()}}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="form-group">
-    <div class="d-flex align-items-center">
-      <label for="confirmPassword" class="col-md-3">
-        Confirm Password
-        <span class="required_badge">*</span>
-      </label>
-      <div class="col-md-9">
-        <input formControlName="confirmPassword" type="password" class="form-control" id="confirmPassword"
-               placeholder="Confirm Password">
-        <div class="login_error" *ngIf="form.get('confirmPassword').invalid&&form.get('confirmPassword').touched">
-          {{getErrorConfirmPasswordMessage()}}
+    <div class="form-group">
+      <div class="d-flex align-items-center">
+        <label for="confirmPassword" class="col-md-3">
+          Confirm Password
+          <span class="required_badge">*</span>
+        </label>
+        <div class="col-md-9">
+          <fa-icon class="toggle_password" [icon]="hide ? faeye : faeyeslash" (click)="hide = !hide"
+                   [tooltip]="hide ? 'Show passwords': 'Hide passwords'"
+                   container="body"
+                   placement="right"></fa-icon>
+          <input [ngClass]="{
+          'has_danger': form.get('confirmPassword').invalid && (form.get('confirmPassword').dirty || form.get('confirmPassword').touched),
+          'has_success': form.get('confirmPassword').valid && (form.get('confirmPassword').dirty || form.get('confirmPassword').touched)
+          }"
+                 formControlName="confirmPassword"
+                 [type]="hide ? 'password' : 'text'" class="form-control"
+                 id="confirmPassword"
+                 placeholder="Confirm Password">
+          <div class="login_error" *ngIf="form.get('confirmPassword').invalid&&form.get('confirmPassword').touched">
+            {{getErrorConfirmPasswordMessage()}}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-md-12 d-flex justify-content-between">
-    <button type="button" class="btn" aria-label="Close" (click)="onFormClose()">Cancel</button>
-    <button [disabled]="form.invalid" class="btn login_btn">Create</button>
-  </div>
-</form>
-</ng-template>
+    <div class="col-md-12 d-flex justify-content-between">
+      <button type="button" class="btn" (click)="onFormClose()">Cancel</button>
+      <button [disabled]="form.invalid" class="btn login_btn">Create</button>
+    </div>
+  </form>
+</div>

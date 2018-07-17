@@ -1,0 +1,13 @@
+.custom_pagination_wrapper{
+  display: flex;
+  justify-content: space-between;
+  .total_records_wrapper{
+    display: flex;
+  }
+  .pagination_btn_wrapper{
+    display: flex;
+  }
+  .qwe{
+    display: none!important;
+  }
+}

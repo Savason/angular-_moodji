@@ -6,10 +6,14 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import {UiSwitchModule} from 'ngx-ui-switch';
 import {GrowlModule} from 'primeng/growl';
+import { NotificationComponent } from './components/notification/notification.component';
 
 @NgModule({
   imports: [
     CommonModule,
+    FontAwesomeModule,
+    NgxDatatableModule,
+    GrowlModule,
   ],
   exports: [
     FontAwesomeModule,
@@ -17,9 +21,13 @@ import {GrowlModule} from 'primeng/growl';
     FormsModule,
     NgxDatatableModule,
     UiSwitchModule,
-    GrowlModule
+    GrowlModule,
+    NotificationComponent
   ],
-  declarations: [PagenotfoundComponent]
+  declarations: [
+    PagenotfoundComponent,
+    NotificationComponent,
+  ]
 })
 export class SharedModule {
 }

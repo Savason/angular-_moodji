@@ -5,7 +5,7 @@ import {AuthGuard} from './core/guards/auth.guard';
 
 const routes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
-  {path: 'orders', loadChildren: '../app/orders/orders.module#OrdersModule', canActivate: [AuthGuard]},
+  {path: 'items', loadChildren: '../app/items/items.module#ItemsModule', canActivate: [AuthGuard]},
   {path: 'returns', loadChildren: '../app/returns/returns.module#ReturnsModule', canActivate: [AuthGuard]},
   {path: 'accounts', loadChildren: '../app/accounts/accounts.module#AccountsModule', canActivate: [AuthGuard]},
   {path: 'login', loadChildren: '../app/auth/auth.module#AuthModule'}

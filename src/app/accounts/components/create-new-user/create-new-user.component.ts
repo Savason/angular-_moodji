@@ -1,11 +1,14 @@
-import {Component, OnInit, TemplateRef} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {User} from '../../../shared/models/user.model';
-import {AccountManagementService} from '../../../core/services/account.management.service';
+import {AccountManagementService} from '../../services/account.management.service';
 import {matchOtherValidator} from '../../../shared/validators/confirm-password';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
-import {faUserPlus} from '@fortawesome/free-solid-svg-icons/faUserPlus';
-import {Message} from 'primeng/components/common/api';
+import {BehaviorSubject, Subscription} from 'rxjs';
+import {NotificationsService} from '../../../shared/services/notifications.service';
+import {regExps} from '../../../shared/variables/variables';
+import {faEye} from '@fortawesome/free-solid-svg-icons/faEye';
+import {faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -13,13 +16,23 @@ import {Message} from 'primeng/components/common/api';
   templateUrl: './create-new-user.component.html',
   styleUrls: ['./create-new-user.component.scss']
 })
-export class CreateNewUserComponent implements OnInit {
+export class CreateNewUserComponent implements OnInit, OnDestroy {
+  public faeye = faEye;
+  public faeyeslash = faEyeSlash;
+  public hide = true;
+  content = 'Vivamus sagittis lacus vel augue laoreet rutrum faucibus.';
   public form: FormGroup;
-  public modalRef: BsModalRef;
-  public addUser = faUserPlus;
-  public userRoles;
-  public msgs: Message[] = [];
+  public userRoles: BehaviorSubject<any>;
+  public totalUserCount: number;
+  sub1 = new Subscription();
+  sub2 = new Subscription();
+  sub3 = new Subscription();
 
+  constructor(public accountService: AccountManagementService,
+              private modalService: BsModalService,
+              private modalRef: BsModalRef,
+              private notificationsService: NotificationsService) {
+  }
 
   getErrorNameMessage() {
     return this.form.get('name')['errors']['required'] ? 'This field is required' : '';
@@ -47,34 +60,55 @@ export class CreateNewUserComponent implements OnInit {
         this.form.get('confirmPassword')['errors']['matchOther'] ? 'Passwords do not match' : '';
   }
 
-  constructor(public accountService: AccountManagementService,
-              private modalService: BsModalService) {
-  }
 
   ngOnInit() {
     this.form = new FormGroup({
       'name': new FormControl('', [Validators.required]),
-      'email': new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)], this.forbiddenEmails.bind(this)),
-      'role_id': new FormControl('', [Validators.required]),
+      'email': new FormControl('', [Validators.required, Validators.pattern(regExps.emailPattern)], this.forbiddenEmails.bind(this)),
+      'role_id': new FormControl(null, [Validators.required]),
       'password': new FormControl('', [Validators.required, Validators.minLength(6)]),
       'confirmPassword': new FormControl('', [Validators.required, Validators.minLength(6), matchOtherValidator('password')]),
     });
-    this.accountService.getUserRole()
+    this.sub1 = this.accountService.getUserRole()
       .subscribe((data) => {
-        this.userRoles = data;
+        console.log(data);
+        this.accountService.setDataUserRoles(data);
+        this.userRoles = this.accountService.getUserRoles();
+        console.log(this.userRoles);
       });
   }
 
+  ngOnDestroy() {
+    if (this.sub1) {
+      this.sub1.unsubscribe();
+    }
+    if (this.sub2) {
+      this.sub2.unsubscribe();
+    }
+    if (this.sub3) {
+      this.sub3.unsubscribe();
+    }
+  }
+
   onSubmit() {
+    console.log(this.accountService.totalUserCount);
     const {email, role_id, password, name} = this.form.value;
     const user = new User(email, role_id, password, name);
-    this.accountService.createNewUser(user)
+    this.sub2 = this.accountService.createNewUser(user)
       .subscribe((data) => {
-        this.accountService.addToUserList(data.value);
-        this.msgs = [];
-        this.msgs.push({severity: 'success', summary: '', detail: `User ${email} has been created successfully!`});
-        this.form.reset();
-      });
+          console.log(data);
+          if (data.success) {
+            this.accountService.addToUserList(data.value);
+            this.accountService.totalUserCount++;
+            this.notificationsService.notify('success', '', `User ${email} has been created successfully!`);
+            this.form.reset();
+          } else if (data.error) {
+            this.notificationsService.notify('warn', '', `${data.error}`);
+          }
+        },
+        error2 => {
+          this.notificationsService.notify('error', '', `Something went wrong please try repeat letter!`);
+        });
     this.modalRef.hide();
   }
 
@@ -85,7 +119,7 @@ export class CreateNewUserComponent implements OnInit {
 
   forbiddenEmails(control: FormControl): Promise<any> {
     return new Promise((resolve) => {
-      this.accountService.getUserByEmail(control.value)
+      this.sub3 = this.accountService.getUserByEmail(control.value)
         .subscribe((data) => {
           if (data !== null) {
             resolve({forbiddenEmail: true});
@@ -94,10 +128,6 @@ export class CreateNewUserComponent implements OnInit {
           }
         });
     });
-  }
-
-  openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template);
   }
 }
 

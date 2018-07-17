@@ -16,6 +16,7 @@
     background: #aaaaaa;
   }
   ngx-datatable{
+    margin-bottom: 30px;
     a{
       text-decoration: none;
     }
@@ -23,4 +24,7 @@
   .table_action_btn {
     margin: 0 5px;
   }
+}
+.create_circle_btn {
+  margin: 20px 0;
 }

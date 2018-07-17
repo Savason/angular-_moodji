@@ -1,5 +1,8 @@
-<div class="container">
-  <form *ngIf="user as user" [formGroup]="form" (ngSubmit)="onSubmit()">
+<div class="modal-header justify-content-center">
+  <h4 class="modal-title">Edit user</h4>
+</div>
+<div class="modal-body">
+  <form *ngIf="currentEditUser as user" [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="form-group">
       <div class="d-flex align-items-center">
         <label for="name" class="col-md-3">
@@ -7,7 +10,11 @@
           <span class="required_badge">*</span>
         </label>
         <div class="col-md-9">
-          <input formControlName="name" type="text" class="form-control" id="name"
+          <input [ngClass]="{
+          'has_danger': form.get('name').invalid && (form.get('name').dirty || form.get('name').touched),
+          'has_success': form.get('name').valid && (form.get('name').dirty || form.get('name').touched)
+          }"
+            formControlName="name" type="text" class="form-control" id="name"
                  placeholder="Name">
           <div class="login_error" *ngIf="form.get('name').invalid">
             {{getErrorNameMessage()}}
@@ -22,7 +29,11 @@
           <span class="required_badge">*</span>
         </label>
         <div class="col-md-9">
-          <input formControlName="email" type="email" class="form-control" id="email"
+          <input  [ngClass]="{
+          'has_danger': form.get('email').invalid && (form.get('email').dirty || form.get('email').touched),
+          'has_success': form.get('email').valid && (form.get('email').dirty || form.get('email').touched)
+          }"
+            formControlName="email" type="email" class="form-control" id="email"
                  placeholder="Email">
           <div class="login_error" *ngIf="form.get('email').invalid">
             {{getErrorEmailMessage()}}
@@ -37,7 +48,11 @@
           <span class="required_badge">*</span>
         </label>
         <div class="col-md-9">
-          <select class="form-control role_title" id="accountType">
+          <select [ngClass]="{
+          'has_danger': form.get('role_id').invalid && (form.get('role_id').dirty || form.get('role_id').touched),
+          'has_success': form.get('role_id').valid && (form.get('role_id').dirty || form.get('role_id').touched)
+          }"
+            formControlName="role_id" class="form-control role_title" id="accountType">
             <option class="role_title" *ngFor="let userRole of userRoles" [value]="userRole.id">
               {{userRole.role}}
             </option>
@@ -45,8 +60,8 @@
         </div>
       </div>
     </div>
-    <div class="offset-md-3 col-md-9 d-flex justify-content-between">
-      <button class="btn login_btn" (click)="backToUsers()">Cancel</button>
+    <div class="col-md-12 d-flex justify-content-between">
+      <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Cancel</button>
       <button [disabled]="form.invalid" class="btn login_btn">Save</button>
     </div>
   </form>

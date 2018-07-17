@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
-import {UserAuthService} from './core/services/user.auth.service';
+import {UserAuthService} from './auth/services/user.auth.service';
+import {Message} from 'primeng/api';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +9,7 @@ import {UserAuthService} from './core/services/user.auth.service';
 })
 export class AppComponent {
   public isAuthorized = false;
+  msgs: Message[] = [];
 
   constructor(private authUserService: UserAuthService) {
     this.authUserService.loginEventEmitter.subscribe((authStatus: boolean) => {

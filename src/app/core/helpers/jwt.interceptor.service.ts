@@ -3,7 +3,7 @@ import {
   HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse
 } from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {UserAuthService} from '../services/user.auth.service';
+import {UserAuthService} from '../../auth/services/user.auth.service';
 import {tap} from 'rxjs/operators';
 
 

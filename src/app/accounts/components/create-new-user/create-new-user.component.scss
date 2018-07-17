@@ -1,4 +1,3 @@
-
 .modal-header {
   h5 {
     margin: 0 !important;
@@ -13,8 +12,9 @@ form.create_user {
     text-align: right;
     font-size: 14px
   }
-}
-
-.create_circle_btn {
-  margin: 20px 0;
+  .toggle_password{
+    position: absolute;
+    top: 8px;
+    right: 25px;
+  }
 }

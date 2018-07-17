@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
-import {AccountManagementService} from '../../../core/services/account.management.service';
+import {AccountManagementService} from '../../services/account.management.service';
 import {Observable} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 

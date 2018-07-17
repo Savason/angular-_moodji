@@ -12,9 +12,10 @@
               <label for="userName">
                 <fa-icon [icon]="faUser"></fa-icon>
               </label>
-              <input formControlName="username" type="email" class="form-control" id="userName"
-                     aria-describedby="emailHelp"
-                     placeholder="User name">
+              <input
+                formControlName="username" type="email" class="form-control" id="userName"
+                aria-describedby="emailHelp"
+                placeholder="User name">
             </div>
             <div class="login_error" *ngIf="form.get('username').invalid&&form.get('username').dirty">
               {{getErrorUserNameMessage()}}

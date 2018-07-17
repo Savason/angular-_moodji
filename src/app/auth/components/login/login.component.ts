@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {faUser, faUnlockAlt} from '@fortawesome/free-solid-svg-icons';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {UserAuthService} from '../../../core/services/user.auth.service';
+import {UserAuthService} from '../../services/user.auth.service';
 
 @Component({
   selector: 'app-login',

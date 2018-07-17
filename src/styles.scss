@@ -7,7 +7,7 @@ $successGreen: #34D027;
 $btnGreyColor: #7b7b7b;
 $iconSizeCircle: 20px;
 
-input, button, select {
+input, button, select, textarea {
   box-shadow: none !important;
 }
 
@@ -21,6 +21,12 @@ a {
 }
 
 //COMMON GLOBAL CLASSES
+.has_danger{
+  border: 1px solid red!important;
+}
+.has_success{
+  border: 1px solid $successGreen!important;
+}
 .success_alert {
   position: fixed !important;
   z-index: 999;
@@ -42,6 +48,7 @@ a {
   color: red;
   font-weight: 400;
   font-size: 14px;
+  position: absolute;
 }
 
 .table_action_btn {
@@ -105,6 +112,9 @@ ui-switch {
   .ui-growl-message{
     margin-left: 10px;
   }
+}
+.form-group{
+  margin-bottom: 25px!important;
 }
 
   //----- END COMMON GLOBAL CLASSES------

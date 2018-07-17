@@ -1,0 +1,87 @@
+<div class="custom_pagination_wrapper">
+  <div class="total_records_wrapper">
+    <span>
+      Total:
+    </span>
+    {{_totalRecords}}
+  </div>
+  <div class="pagination_btn_wrapper">
+    <div>
+      <button *ngIf="activePageNumber !== 1" (click)="goToFirstPage()">
+        <fa-icon [icon]="fastepbackward"></fa-icon>
+      </button>
+    </div>
+    <div>
+      <button *ngIf="activePageNumber === 1" disabled>
+        <fa-icon [icon]="fastepbackward"></fa-icon>
+      </button>
+    </div>
+
+    <div>
+      <button *ngIf="activePageNumber - 1 > 0" (click)="goToPreviousTablePage()">
+        <fa-icon [icon]="fachevronleft"></fa-icon>
+      </button>
+    </div>
+    <div>
+      <button disabled *ngIf="activePageNumber - 1 < 1">
+        <fa-icon [icon]="fachevronleft"></fa-icon>
+      </button>
+    </div>
+
+    <div>
+      <button *ngIf='activePageNumber - 2 > 0' (click)="changeTablePage(activePageNumber - 2)">{{activePageNumber - 2}}
+      </button>
+      <button disabled *ngIf='activePageNumber - 2 < 1'>--</button>
+    </div>
+
+    <div>
+      <button *ngIf="activePageNumber - 1 > 0" (click)="changeTablePage(activePageNumber - 1)">{{activePageNumber - 1}}
+      </button>
+      <button disabled *ngIf="activePageNumber - 1 < 1">--</button>
+    </div>
+    <div>
+      <button *ngIf="activePageNumber + 1 > totalPages" (click)="changeTablePage(activePageNumber - 2)">{{activePageNumber - 2}}</button>
+    </div>
+    <div>
+      <button *ngIf="activePageNumber + 2 > totalPages" (click)="changeTablePage(activePageNumber - 1)">{{activePageNumber - 1}}</button>
+    </div>
+    <div>
+      <button disabled (click)="changeTablePage(activePageNumber)" id="active-element">{{activePageNumber}}</button>
+    </div>
+
+    <div>
+      <button *ngIf="activePageNumber + 1 <= totalPages" (click)="changeTablePage(activePageNumber + 1)">
+        {{activePageNumber + 1}}
+      </button>
+    </div>
+
+
+    <div>
+      <button *ngIf="activePageNumber + 2 <= totalPages" (click)="changeTablePage(activePageNumber + 2)">
+        {{activePageNumber + 2}}
+      </button>
+    </div>
+
+    <div>
+      <button *ngIf="activePageNumber + 1 <= totalPages" (click)="goToNextTablePage()">
+        <fa-icon [icon]="fachevronright"></fa-icon>
+      </button>
+    </div>
+    <div>
+      <button disabled *ngIf="activePageNumber + 1 > totalPages">
+        <fa-icon [icon]="fachevronright"></fa-icon>
+      </button>
+    </div>
+    <div>
+      <button *ngIf="activePageNumber !== totalPages" (click)="goToLastPage()">
+        <fa-icon [icon]="fastepforward"></fa-icon>
+      </button>
+    </div>
+    <div>
+      <button disabled *ngIf="activePageNumber === totalPages">
+        <fa-icon [icon]="fastepforward"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+</div>

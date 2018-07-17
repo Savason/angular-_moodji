@@ -1,0 +1,13 @@
+.action_roles_wrapper {
+  display: flex;
+  flex-direction: column-reverse;
+  &:hover .delete_role {
+    display: block;
+  }
+  .delete_role {
+    display: none;
+  }
+  input {
+
+  }
+}

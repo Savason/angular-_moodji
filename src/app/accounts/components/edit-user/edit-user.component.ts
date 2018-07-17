@@ -1,24 +1,29 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {AccountManagementService} from '../../../core/services/account.management.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {BsModalRef, BsModalService} from 'ngx-bootstrap';
+import {Subscription} from 'rxjs';
+import {NotificationsService} from '../../../shared/services/notifications.service';
+import {AccountManagementService} from '../../services/account.management.service';
+import {regExps} from '../../../shared/variables/variables';
 
 @Component({
   selector: 'app-edit-user',
   templateUrl: './edit-user.component.html',
   styleUrls: ['./edit-user.component.scss']
 })
-export class EditUserComponent implements OnInit {
+export class EditUserComponent implements OnInit, OnDestroy {
   public form: FormGroup;
   public userRoles;
-  public user;
-  private id;
-  public currentEmail;
+  public currentEditUser;
+  private userList;
+  sub1 = new Subscription();
+  sub2 = new Subscription();
+  sub3 = new Subscription();
 
-
-  constructor(private router: Router,
-              private route: ActivatedRoute,
-              private accountService: AccountManagementService) {
+  constructor(private accountService: AccountManagementService,
+              public bsModalRef: BsModalRef,
+              private modalService: BsModalService,
+              private notificationService: NotificationsService) {
   }
 
   getErrorNameMessage() {
@@ -32,47 +37,64 @@ export class EditUserComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.currentEditUser);
     this.form = new FormGroup({
       'name': new FormControl('', [Validators.required]),
-      'email': new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)], this.forbiddenEmails.bind(this)),
+      'email': new FormControl('', [Validators.required, Validators.pattern(regExps.emailPattern)], this.forbiddenEmails.bind(this)),
+      'role_id': new FormControl(''),
     });
-    this.id = this.route.snapshot.paramMap.get('id');
-    this.accountService.getUserById(this.id)
-      .subscribe((data) => {
-        if (data) {
-          this.user = data.user;
-          this.currentEmail = this.user.email;
-          this.form.get('name').setValue(this.user.name);
-          this.form.get('email').setValue(this.user.email);
-        }
-      });
-    this.accountService.getUserRole()
+    this.form.get('name').setValue(this.currentEditUser.name);
+    this.form.get('email').setValue(this.currentEditUser.email);
+    this.form.get('role_id').setValue(this.currentEditUser.role_id);
+    this.sub1 = this.accountService.getUserRole()
       .subscribe((data) => {
         this.userRoles = data;
       });
-    console.log(this.form);
+    this.userList = this.accountService.getUsers();
+    console.log(this.userList);
+  }
+
+  ngOnDestroy() {
+    if (this.sub1) {
+      this.sub1.unsubscribe();
+    }
+    if (this.sub2) {
+      this.sub2.unsubscribe();
+    }
+    if (this.sub3) {
+      this.sub3.unsubscribe();
+    }
   }
 
   onSubmit() {
-    const {name, email} = this.form.value;
+    const {name, email, role_id} = this.form.value;
     const user = {
       name: name,
-      email: email
+      email: email,
+      role_id: role_id
     };
-    this.accountService.changeUser(this.id, user)
+    console.log(user);
+    this.sub2 = this.accountService.changeUser(this.currentEditUser.id, user)
       .subscribe((data) => {
-        this.router.navigateByUrl('accounts');
-      });
+          if (data.success) {
+            this.modalService.setDismissReason('edit_success');
+            this.notificationService.notify('success', '', `User ${data.value.email} has been edited successfully!`);
+          } else if (data.error) {
+            this.notificationService.notify('warn', '', `${data.error}`);
+          }
+        },
+        error2 => {
+          this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
+        });
+    this.bsModalRef.hide();
   }
 
   forbiddenEmails(control: FormControl): Promise<any> {
     return new Promise((resolve) => {
-      this.accountService.getUserByEmail(control.value)
+      this.sub3 = this.accountService.getUserByEmail(control.value)
         .subscribe((data) => {
-          console.log(this.currentEmail);
-          console.log(data);
-          if (data !== null && data.email === this.currentEmail) {
-            // resolve({forbiddenEmail: false});
+          console.log(control.value);
+          if (data !== null && data.email === this.currentEditUser.email) {
             resolve(null);
           } else if (data !== null) {
             resolve({forbiddenEmail: true});
@@ -81,9 +103,5 @@ export class EditUserComponent implements OnInit {
           }
         });
     });
-  }
-
-  backToUsers() {
-    this.router.navigateByUrl('accounts');
   }
 }

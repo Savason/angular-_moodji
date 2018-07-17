@@ -25,5 +25,9 @@ import {RolesTableComponent} from './components/roles-table/roles-table.componen
     EditUserComponent,
     RolesTableComponent,
   ],
+  entryComponents: [
+    EditUserComponent,
+    CreateNewUserComponent
+  ]
 })
 export class AccountsModule { }
