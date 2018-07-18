@@ -9,6 +9,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {SharedModule} from './shared/shared.module';
 import {NotificationComponent} from './shared/components/notification/notification.component';
+import {SystemModule} from './system/system.module';
 
 @NgModule({
   imports: [
@@ -18,10 +19,13 @@ import {NotificationComponent} from './shared/components/notification/notificati
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    SharedModule
+    SharedModule,
+    SystemModule,
   ],
   declarations: [
     AppComponent
+  ],
+  exports: [
   ],
   providers: [],
   bootstrap: [AppComponent]
