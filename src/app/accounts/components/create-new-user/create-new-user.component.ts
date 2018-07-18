@@ -20,7 +20,6 @@ export class CreateNewUserComponent implements OnInit, OnDestroy {
   public faeye = faEye;
   public faeyeslash = faEyeSlash;
   public hide = true;
-  content = 'Vivamus sagittis lacus vel augue laoreet rutrum faucibus.';
   public form: FormGroup;
   public userRoles: BehaviorSubject<any>;
   public totalUserCount: number;

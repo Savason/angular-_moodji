@@ -3,7 +3,7 @@
 @import '~@swimlane/ngx-datatable/release/themes/material.css';
 @import '~@swimlane/ngx-datatable/release/assets/icons.css';
 
-$successGreen: #34D027;
+$successGreen: #36cc27;
 $btnGreyColor: #7b7b7b;
 $iconSizeCircle: 20px;
 
@@ -27,6 +27,9 @@ a {
 .has_success{
   border: 1px solid $successGreen!important;
 }
+.ui-growl-message-success{
+  background: $successGreen!important;
+}
 .success_alert {
   position: fixed !important;
   z-index: 999;
@@ -35,7 +38,7 @@ a {
   margin-left: -150px !important;
   top: 0;
   color: #fff;
-  background: $successGreen;
+  background: $successGreen!important;
   text-align: center;
   border-top-left-radius: 0px !important;
   border-top-right-radius: 0px !important;
@@ -86,6 +89,13 @@ ui-switch {
       top: -3px !important;
     }
   }
+  .switch-medium{
+    background-color: rgba(0,0,0,.38)!important;
+
+  }
+  .switch.checked{
+    background-color: #36cc27 !important;
+  }
 }
 
 .required_badge {
@@ -117,7 +127,10 @@ ui-switch {
   margin-bottom: 25px!important;
 }
 
-  //----- END COMMON GLOBAL CLASSES------
+//----- END COMMON GLOBAL CLASSES------
+ngx-datatable{
+  overflow: inherit!important;
+}
 
   .datatable-header-cell-template-wrap {
     font-weight: bold;

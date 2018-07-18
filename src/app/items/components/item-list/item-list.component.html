@@ -1,3 +1,76 @@
-<p>
-  item-list works!
-</p>
+<ngx-datatable
+  class="material"
+  [rows]="rows|async"
+  [headerHeight]="50"
+  [footerHeight]="50"
+  [rowHeight]="'auto'"
+  [columnMode]="'force'"
+>
+  <ngx-datatable-column name="EAN">
+    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        <span>
+          {{row.ean}}
+        </span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="SKU">
+    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        <span>
+          {{row.sku}}
+        </span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Name">
+    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        <span>
+          {{row.name}}
+        </span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Price">
+    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        <span>
+          {{row.price}}
+        </span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Category">
+    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        <span>
+          {{row.category}}
+        </span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Image" [sortable]="false">
+    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        <span>
+          {{row.image}}
+        </span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Actions" [sortable]="false">
+    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+      <div class="btn-group dropdown_wrapper" dropdown placement="bottom">
+        <button id="button-basic" dropdownToggle type="button" class="btn"
+                aria-controls="dropdown-basic">
+          <fa-icon [icon]="faellipsish"></fa-icon>
+        </button>
+        <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right"
+            role="menu" aria-labelledby="button-basic">
+          <li role="menuitem"><a [routerLink]="[':id']" class="dropdown-item">Details</a></li>
+          <li role="menuitem"><a [routerLink]="['edit/:id']" class="dropdown-item">Edit</a></li>
+          <li role="menuitem"><a class="dropdown-item" (click)="openModal(template, row.id, row.name)">Delete</a></li>
+        </ul>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
+<ng-template #template>
+  <div class="modal-header">
+    <h5 class="modal-title pull-left">Are you sure you want to delete <strong>{{deletedItem}}</strong> item?</h5>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn" (click)="onDeleteItem()">Yes</button>
+    <button type="button" class="btn" aria-label="Close" (click)="modalRef.hide()">Cancel</button>
+  </div>
+</ng-template>

@@ -8,6 +8,7 @@ import {AccordionModule, ModalModule, TooltipModule} from 'ngx-bootstrap';
 import {UserDateilsComponent} from './components/user-dateils/user-dateils.component';
 import {EditUserComponent} from './components/edit-user/edit-user.component';
 import {RolesTableComponent} from './components/roles-table/roles-table.component';
+import {UserListComponent} from './components/user-list/user-list.component';
 
 @NgModule({
   imports: [
@@ -24,6 +25,7 @@ import {RolesTableComponent} from './components/roles-table/roles-table.componen
     UserDateilsComponent,
     EditUserComponent,
     RolesTableComponent,
+    UserListComponent
   ],
   entryComponents: [
     EditUserComponent,

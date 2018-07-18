@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {Item} from '../../models/item.model';
 import {ItemsService} from '../../services/items.service';
 import {Subscription} from 'rxjs';
+import {NotificationsService} from '../../../shared/services/notifications.service';
 
 @Component({
   selector: 'app-create-new-items',
@@ -17,7 +18,8 @@ export class CreateNewItemsComponent implements OnInit, OnDestroy {
   @ViewChild('fileInput') fileInput;
 
   constructor(private routes: Router,
-              private itemsService: ItemsService) {
+              private itemsService: ItemsService,
+              private notificationService: NotificationsService) {
   }
 
   getErrorEANMessage() {
@@ -101,13 +103,15 @@ export class CreateNewItemsComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
           if (data.success) {
             console.log(data);
-            // this.routes.navigateByUrl('items');
+            this.routes.navigateByUrl('items');
+            this.notificationService.notify('success', '', `Item ${data.value.name} has been created successfully!`);
           } else if (data.error) {
             console.log(data.error_description);
+            this.notificationService.notify('warn', '', `${data.error}`);
           }
         },
         error2 => {
-          console.log('Ошибка сервера');
+          this.notificationService.notify('error', '', `Something went wrong please try repeat letter!`);
         });
   }
 
