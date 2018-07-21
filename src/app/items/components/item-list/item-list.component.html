@@ -1,76 +1,100 @@
-<ngx-datatable
-  class="material"
-  [rows]="rows|async"
-  [headerHeight]="50"
-  [footerHeight]="50"
-  [rowHeight]="'auto'"
-  [columnMode]="'force'"
->
-  <ngx-datatable-column name="EAN">
-    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-        <span>
+<app-system-loader *ngIf="!isLoaded"></app-system-loader>
+<div class="items_list_wrapper" *ngIf="isLoaded">
+  <a tooltip="New item" placement="left" container="body"
+     class="create_circle_btn"
+     [routerLink]="['new_item']">
+    <fa-icon [icon]="faPlus"></fa-icon>
+  </a>
+  <div class="d-flex justify-content-end">
+    <button class="refresh_table_btn" tooltip="Refresh table" placement="left" container="body" (click)="refreshData()">
+      <fa-icon [icon]="faSyncAlt"></fa-icon>
+    </button>
+  </div>
+  <ngx-datatable
+    class="material"
+    [rows]="rows|async"
+    [headerHeight]="50"
+    [footerHeight]="50"
+    [rowHeight]="'auto'"
+    [columnMode]="'force'"
+    [externalPaging]="true"
+    [offset]="page.pageNumber"
+    [limit]="page.size"
+    [count]="page.totalElements"
+    (page)='setPage($event)'
+  >
+    <ngx-datatable-column name="EAN">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        <a routerLink="{{row.ean}}">
           {{row.ean}}
-        </span>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="SKU">
-    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="SKU">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span>
           {{row.sku}}
         </span>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="Name">
-    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Name">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span>
           {{row.name}}
         </span>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="Price">
-    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Price">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span>
           {{row.price}}
         </span>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="Category">
-    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Category">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span>
           {{row.category}}
         </span>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="Image" [sortable]="false">
-    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Image" [sortable]="false">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span>
           {{row.image}}
         </span>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="Actions" [sortable]="false">
-    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-      <div class="btn-group dropdown_wrapper" dropdown placement="bottom">
-        <button id="button-basic" dropdownToggle type="button" class="btn"
-                aria-controls="dropdown-basic">
-          <fa-icon [icon]="faellipsish"></fa-icon>
-        </button>
-        <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right"
-            role="menu" aria-labelledby="button-basic">
-          <li role="menuitem"><a [routerLink]="[':id']" class="dropdown-item">Details</a></li>
-          <li role="menuitem"><a [routerLink]="['edit/:id']" class="dropdown-item">Edit</a></li>
-          <li role="menuitem"><a class="dropdown-item" (click)="openModal(template, row.id, row.name)">Delete</a></li>
-        </ul>
-      </div>
-    </ng-template>
-  </ngx-datatable-column>
-</ngx-datatable>
-<ng-template #template>
-  <div class="modal-header">
-    <h5 class="modal-title pull-left">Are you sure you want to delete <strong>{{deletedItem}}</strong> item?</h5>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn" (click)="onDeleteItem()">Yes</button>
-    <button type="button" class="btn" aria-label="Close" (click)="modalRef.hide()">Cancel</button>
-  </div>
-</ng-template>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Actions" [sortable]="false">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        <a class="table_action_btn" routerLink="{{row.ean}}"
+           tooltip="Details"
+        >
+          <fa-icon [icon]="faInfo"></fa-icon>
+        </a>
+        <a class="table_action_btn" routerLink="edit/{{row.ean}}"
+           tooltip="Edit"
+           container="body"
+        >
+          <fa-icon [icon]="faEdit"></fa-icon>
+        </a>
+        <a class="table_action_btn" (click)="openModal(template, row.id, row.name)"
+           tooltip="Delete"
+           container="body"
+        >
+          <fa-icon [icon]="faDelete"></fa-icon>
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+  <ng-template #template>
+    <div class="modal-header">
+      <h5 class="modal-title pull-left">Are you sure you want to delete <strong>{{deletedItem}}</strong> item?</h5>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="app_btn" (click)="onDeleteItem()">Yes</button>
+      <button type="button" class="app_btn" aria-label="Close" (click)="modalRef.hide()">Cancel</button>
+    </div>
+  </ng-template>
+
+</div>

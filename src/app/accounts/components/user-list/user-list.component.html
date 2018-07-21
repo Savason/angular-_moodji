@@ -1,75 +1,85 @@
-<a class="create_circle_btn d-flex justify-content-center align-items-center"
-   tooltip="Create new user" (click)="createNewUserModal()">
-  <fa-icon [icon]="addUser"></fa-icon>
-</a>
-<ngx-datatable
-  class="material"
-  [rows]="rows|async"
-  [headerHeight]="50"
-  [footerHeight]="50"
-  [rowHeight]="50"
-  [columnMode]="'force'"
-  [externalPaging]="true"
-  [offset]="page.pageNumber"
-  [limit]="page.size"
-  [count]="accountService.totalUserCount"
-  (page)='setPage($event)'
->
-  <ngx-datatable-column name="Name">
-    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+<app-system-loader *ngIf="!isLoaded"></app-system-loader>
+<div class="accounts_wrapper" *ngIf="isLoaded">
+  <a class="create_circle_btn d-flex justify-content-center align-items-center"
+     tooltip="New account" placement="left" container="body" (click)="createNewUserModal()">
+    <fa-icon class="add_icon" [icon]="faPlus"></fa-icon>
+  </a>
+  <div class="d-flex justify-content-end">
+    <button class="refresh_table_btn" tooltip="Refresh table" placement="left" container="body" (click)="refreshData()">
+      <fa-icon [icon]="faSyncAlt"></fa-icon>
+    </button>
+  </div>
+  <ngx-datatable
+    class="material"
+    [rows]="rows|async"
+    [headerHeight]="50"
+    [footerHeight]="50"
+    [rowHeight]="50"
+    [columnMode]="'flex'"
+    [externalPaging]="true"
+    [offset]="page.pageNumber"
+    [limit]="page.size"
+    [count]="accountService.totalUserCount"
+    (page)='setPage($event)'
+  >
+    <ngx-datatable-column name="Name" [flexGrow]="2">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span>
           {{row.name}}
         </span>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="Email">
-    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Email" [flexGrow]="2">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span>
           {{row.email}}
         </span>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="Client Role">
-    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Client role" [flexGrow]="1">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span class="role_title">
           {{row.role_title}}
         </span>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="Status" [sortable]="false">
-    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-      <ui-switch tooltip="client status" [ngModel]="row.enabled"
-                 (change)="onChangeStatus(row.enabled,row.id)"></ui-switch>
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="Actions" [sortable]="false">
-    <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-      <a class="table_action_btn" routerLink="{{row.id}}"
-         tooltip="Details"
-      >
-        <fa-icon [icon]="faInfo"></fa-icon>
-      </a>
-      <a class="table_action_btn" (click)="editCurrentUserModal(row)"
-         tooltip="Edit {{row.name}}"
-         container="body"
-      >
-        <fa-icon [icon]="faEdit"></fa-icon>
-      </a>
-      <a class="table_action_btn" (click)="openModal(template,row.id, row.email)"
-         tooltip="Delete {{row.name}}"
-         container="body"
-      >
-        <fa-icon [icon]="faDelete"></fa-icon>
-      </a>
-    </ng-template>
-  </ngx-datatable-column>
-</ngx-datatable>
-<ng-template #template>
-  <div class="modal-header">
-    <h5 class="modal-title pull-left">Are you sure you want to delete <strong>{{deletedUser}}</strong> user?</h5>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn" (click)="onDeleteUser()">Yes</button>
-    <button type="button" class="btn" aria-label="Close" (click)="modalRef.hide()">Cancel</button>
-  </div>
-</ng-template>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Status" [sortable]="false" [flexGrow]="1">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        <ui-switch tooltip="client status" [ngModel]="row.enabled"
+                   (change)="onChangeStatus(row.enabled,row.id)"></ui-switch>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Actions" [sortable]="false" [flexGrow]="1">
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        <a class="table_action_btn" routerLink="{{row.id}}"
+           tooltip="Details"
+        >
+          <fa-icon [icon]="faInfo"></fa-icon>
+        </a>
+        <a class="table_action_btn" (click)="editCurrentUserModal(row.id)"
+           tooltip="Edit"
+           container="body"
+        >
+          <fa-icon [icon]="faEdit"></fa-icon>
+        </a>
+        <a class="table_action_btn" (click)="openModal(template,row.id, row.email)"
+           tooltip="Delete"
+           container="body"
+        >
+          <fa-icon [icon]="faDelete"></fa-icon>
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+  <ng-template #template>
+    <div class="modal-header">
+      <h5 style="text-align: center" class="modal-title pull-left">Are you sure you want to delete <strong>{{deletedUser}}</strong>?
+      </h5>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="app_btn" (click)="onDeleteUser()">Yes</button>
+      <button type="button" class="app_btn" aria-label="Close" (click)="modalRef.hide()">Cancel</button>
+    </div>
+  </ng-template>
+</div>
+

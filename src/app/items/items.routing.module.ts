@@ -13,10 +13,10 @@ const routes: Routes = [
     path: 'new_item', component: CreateNewItemsComponent
   },
   {
-    path: 'edit/:id', component: ItemEditComponent
+    path: 'edit/:ean', component: ItemEditComponent
   },
   {
-    path: ':id', component: ItemDetailsComponent
+    path: ':ean', component: ItemDetailsComponent
   },
 ]
 

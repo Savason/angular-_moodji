@@ -1,30 +1,40 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {Item} from '../../models/item.model';
 import {ItemsService} from '../../services/items.service';
 import {Subscription} from 'rxjs';
 import {NotificationsService} from '../../../shared/services/notifications.service';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
+import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons/faExclamationTriangle';
 
 @Component({
   selector: 'app-create-new-items',
   templateUrl: './create-new-items.component.html',
-  styleUrls: ['./create-new-items.component.scss']
+  styleUrls: ['./create-new-items.component.scss'],
 })
 export class CreateNewItemsComponent implements OnInit, OnDestroy {
   public form: FormGroup;
+  public url: string;
+  public prewImg = false;
+  public fatimes = faTimes;
+  public faExclamationCircle = faExclamationTriangle;
   fileToUpload: File = null;
   sub1 = new Subscription();
+  sub2 = new Subscription();
+
   @ViewChild('fileInput') fileInput;
 
   constructor(private routes: Router,
               private itemsService: ItemsService,
-              private notificationService: NotificationsService) {
+              private notificationService: NotificationsService,
+              private element: ElementRef) {
   }
 
   getErrorEANMessage() {
     return this.form.get('ean')['errors']['required'] ? 'This field is required' :
-      this.form.get('ean')['errors']['minlength'] ? `Field length must be 13 digits. Now ${this.form.get('ean')['errors']['minlength']['actualLength']}` : '';
+      this.form.get('ean')['errors']['minlength'] ? `Field length must be 13 digits. Now ${this.form.get('ean')['errors']['minlength']['actualLength']}` :
+        this.form.get('ean')['errors']['forbiddenEmail'] ? 'This EAN is already taken' : '';
   }
 
   getErrorSKUMessage() {
@@ -45,7 +55,7 @@ export class CreateNewItemsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.form = new FormGroup({
-      'ean': new FormControl('', [Validators.required, Validators.minLength(13)]),
+      'ean': new FormControl('', [Validators.required, Validators.minLength(13)], this.forbiddenEmails.bind(this)),
       'sku': new FormControl('', [Validators.required]),
       'name': new FormControl('', [Validators.required]),
       'price': new FormControl('', [Validators.required]),
@@ -69,9 +79,29 @@ export class CreateNewItemsComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleFileInput(files: FileList) {
+
+  // handleFileInput(event: any) {
+  //   if (event.target.files && event.target.files[0]) {
+  //     const reader = new FileReader();
+  //
+  //     reader.onload = (event: ProgressEvent) => {
+  //       this.url = (<FileReader>event.target).result;
+  //       this.prewImg = true;
+  //       console.log(this.url);
+  //     };
+  //
+  //     reader.readAsDataURL(event.target.files[0]);
+  //   }
+  // }
+  handleFileInput = (files: FileList): void => {
     this.fileToUpload = files.item(0);
-    console.log(files.item(0));
+  }
+
+
+  backToDefaultImg() {
+    this.prewImg = false;
+    const input = this.element.nativeElement.querySelector('#image');
+    input.value = null;
   }
 
   createItem() {
@@ -113,6 +143,20 @@ export class CreateNewItemsComponent implements OnInit, OnDestroy {
         error2 => {
           this.notificationService.notify('error', '', `Something went wrong please try repeat letter!`);
         });
+  }
+
+  forbiddenEmails(control: FormControl): Promise<any> {
+    return new Promise((resolve) => {
+      console.log(control.value);
+      this.sub2 = this.itemsService.getItemByEan(control.value)
+        .subscribe((data) => {
+          if (data !== null) {
+            resolve({forbiddenEmail: true});
+          } else {
+            resolve(null);
+          }
+        });
+    });
   }
 
   toItemsList() {

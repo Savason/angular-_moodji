@@ -18,6 +18,7 @@ export class AccountManagementService extends BaseApi {
   public Users$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(this.Users);
   public userRoles$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(this.userRoles);
   public currentUserIdDelete;
+  public currentEditedUser;
 
   constructor(public http: HttpClient) {
     super(http);

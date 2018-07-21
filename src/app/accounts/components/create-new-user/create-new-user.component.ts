@@ -9,6 +9,7 @@ import {NotificationsService} from '../../../shared/services/notifications.servi
 import {regExps} from '../../../shared/variables/variables';
 import {faEye} from '@fortawesome/free-solid-svg-icons/faEye';
 import {faEyeSlash} from '@fortawesome/free-solid-svg-icons';
+import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons/faExclamationTriangle';
 
 
 @Component({
@@ -19,6 +20,7 @@ import {faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 export class CreateNewUserComponent implements OnInit, OnDestroy {
   public faeye = faEye;
   public faeyeslash = faEyeSlash;
+  public faExclamationCircle = faExclamationTriangle;
   public hide = true;
   public form: FormGroup;
   public userRoles: BehaviorSubject<any>;

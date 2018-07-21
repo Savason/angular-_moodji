@@ -5,6 +5,7 @@ import {Subscription} from 'rxjs';
 import {NotificationsService} from '../../../shared/services/notifications.service';
 import {AccountManagementService} from '../../services/account.management.service';
 import {regExps} from '../../../shared/variables/variables';
+import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons/faExclamationTriangle';
 
 @Component({
   selector: 'app-edit-user',
@@ -12,13 +13,16 @@ import {regExps} from '../../../shared/variables/variables';
   styleUrls: ['./edit-user.component.scss']
 })
 export class EditUserComponent implements OnInit, OnDestroy {
+  public isLoaded = false;
+  public faExclamationCircle = faExclamationTriangle;
   public form: FormGroup;
   public userRoles;
-  public currentEditUser;
-  private userList;
+  private editUserId;
+  private currentEditUser;
   sub1 = new Subscription();
   sub2 = new Subscription();
   sub3 = new Subscription();
+  sub4 = new Subscription();
 
   constructor(private accountService: AccountManagementService,
               public bsModalRef: BsModalRef,
@@ -37,21 +41,28 @@ export class EditUserComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log(this.currentEditUser);
+    this.sub1 = this.accountService.getUserRole()
+      .subscribe((data) => {
+        this.userRoles = data;
+      });
+    this.sub4 = this.accountService.getUserById(this.editUserId)
+      .subscribe((data) => {
+        setTimeout(() => {
+          this.isLoaded = true;
+        }, 300);
+        this.currentEditUser = data.user;
+        console.log(this.currentEditUser);
+        this.form.patchValue({
+          'name': this.currentEditUser.name,
+          'email': this.currentEditUser.email,
+          'role_id': this.currentEditUser.role_id
+        });
+      });
     this.form = new FormGroup({
       'name': new FormControl('', [Validators.required]),
       'email': new FormControl('', [Validators.required, Validators.pattern(regExps.emailPattern)], this.forbiddenEmails.bind(this)),
       'role_id': new FormControl(''),
     });
-    this.form.get('name').setValue(this.currentEditUser.name);
-    this.form.get('email').setValue(this.currentEditUser.email);
-    this.form.get('role_id').setValue(this.currentEditUser.role_id);
-    this.sub1 = this.accountService.getUserRole()
-      .subscribe((data) => {
-        this.userRoles = data;
-      });
-    this.userList = this.accountService.getUsers();
-    console.log(this.userList);
   }
 
   ngOnDestroy() {
@@ -63,6 +74,9 @@ export class EditUserComponent implements OnInit, OnDestroy {
     }
     if (this.sub3) {
       this.sub3.unsubscribe();
+    }
+    if (this.sub4) {
+      this.sub4.unsubscribe();
     }
   }
 
@@ -77,6 +91,8 @@ export class EditUserComponent implements OnInit, OnDestroy {
     this.sub2 = this.accountService.changeUser(this.currentEditUser.id, user)
       .subscribe((data) => {
           if (data.success) {
+            console.log(data);
+            // this.accountService.currentEditedUser = data.value;
             this.modalService.setDismissReason('edit_success');
             this.notificationService.notify('success', '', `User ${data.value.email} has been edited successfully!`);
           } else if (data.error) {

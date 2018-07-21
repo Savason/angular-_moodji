@@ -4,14 +4,7 @@
   }
 }
 
-form.create_user {
-  padding: 20px;
-
-  label {
-    font-weight: bold;
-    text-align: right;
-    font-size: 14px
-  }
+form {
   .toggle_password{
     position: absolute;
     top: 8px;

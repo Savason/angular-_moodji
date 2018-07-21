@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {Message} from 'primeng/api';
+import {Message} from 'primeng/components/common/api';
 import {NotificationsService} from '../../services/notifications.service';
 
 @Component({
@@ -11,7 +11,6 @@ import {NotificationsService} from '../../services/notifications.service';
 export class NotificationComponent implements OnInit, OnDestroy {
   msgs: Message[] = [];
   subscription: Subscription;
-  dd;
 
   constructor(private notificationsService: NotificationsService) {
   }
@@ -23,13 +22,9 @@ export class NotificationComponent implements OnInit, OnDestroy {
   subscribeToNotifications() {
     this.subscription = this.notificationsService.notificationChange
       .subscribe(notification => {
-        this.msgs.length = 0;
+        this.msgs = [];
         this.msgs.push(notification);
       });
-    //  setInterval(() => {
-    //   console.log('1');
-    //   this.msgs.length = 0;
-    // }, 5000);
   }
 
   ngOnDestroy() {

@@ -1,14 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@swimlane/ngx-datatable/release/index.css';
-@import '~@swimlane/ngx-datatable/release/themes/material.css';
+//@import '~@swimlane/ngx-datatable/release/index.css';
+//@import '~@swimlane/ngx-datatable/release/themes/material.css';
 @import '~@swimlane/ngx-datatable/release/assets/icons.css';
 
 $successGreen: #36cc27;
-$btnGreyColor: #7b7b7b;
+$mainGreyColor: #878787;
+$hasDanger: #d35143;
+$btnBackground: #e1dcd6;
 $iconSizeCircle: 20px;
 
-input, button, select, textarea {
+body {
+  background-color: #fbfafa !important;
+}
+
+input, select, textarea {
   box-shadow: none !important;
+  border-color: #d6d9dc !important;
+}
+button{
+  outline: none !important;
 }
 
 label {
@@ -16,20 +26,203 @@ label {
 }
 
 a {
-  text-decoration: none;
+  text-decoration: none !important;
   cursor: pointer;
 }
 
-//COMMON GLOBAL CLASSES
-.has_danger{
-  border: 1px solid red!important;
+//NGX_DATABASE
+ngx-datatable {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  margin-bottom: 25px;
+  .datatable-body-row{
+    display: initial!important;
+  }
+  .datatable-body {
+    background: #fff;
+  }
+  .datatable-body-cell-label {
+    color: #000;
+  }
+  .datatable-row-group {
+    border-bottom: 1px solid #f7f7f7;
+    &:hover {
+      background-color: #f7f7f7 !important;
+    }
+  }
+  .datatable-body-cell {
+    display: flex !important;
+    align-items: center;
+    padding: 20px;
+  }
+  datatable-header {
+    background-color: #f7f7f7 !important;
+    display: flex !important;
+    align-items: center;
+    .datatable-header-cell-template-wrap {
+      font-weight: bold;
+      font-size: 14px;
+      color: $mainGreyColor;
+      padding: 20px;
+    }
+  }
+  .table_action_btn {
+    font-size: 20px;
+    color: #000 !important;
+    margin: 0 5px;
+  }
+  .datatable-footer {
+    background: #fbfafa;
+    padding: 10px 20px;
+    .datatable-pager {
+      .pager {
+        display: flex !important;
+        justify-content: flex-end;
+        li {
+          margin-left: 10px !important;
+          &:not(.disabled):hover {
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+          }
+          a {
+            width: 30px;
+            height: 30px;
+            display: flex !important;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none !important;
+            color: #000;
+            background-color: #fff;
+            i {
+              display: flex;
+            }
+          }
+        }
+        li.active a {
+          background-color: #000 !important;
+          color: #fff !important;
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        }
+      }
+    }
+    .page-count {
+      font-weight: bold;
+      font-size: 14px;
+      color: #878787;
+    }
+  }
 }
-.has_success{
-  border: 1px solid $successGreen!important;
+.refresh_table_btn{
+  border: none;
+  background: #000;
+  cursor: pointer;
+  height: 30px;
+  width: 60px;
+  margin-bottom: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  transition: .3s linear;
+  fa-icon{
+    color: #fff;
+    }
+  &:hover svg{
+    transition: .3s linear;
+    color: #000;
+    transform: rotate(360deg);
+  }
+  &:hover{
+    background: #fff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+  }
 }
-.ui-growl-message-success{
-  background: $successGreen!important;
+//END DATABASE
+
+//ERROR FORM CLASSES
+.has_danger {
+  border: 1px solid $hasDanger !important;
 }
+
+.login_error {
+  padding: 5px 10px;
+  color: $hasDanger;
+  font-weight: bold;
+  font-size: 13px;
+  position: absolute;
+  background: #f2cac6;
+  border-radius: 5px;
+  fa-icon {
+    font-size: 15px;
+    margin-right: 5px;
+  }
+}
+
+.required_badge {
+  font-weight: bold;
+  color: $hasDanger;
+  margin-left: 3px;
+}
+
+.form-group {
+  margin-bottom: 30px !important;
+}
+
+//END ERROR FORM CLASSES
+
+//MODALS
+.modal_action_footer {
+  padding: 10px 0;
+}
+.modal_form{
+  padding: 0 20px;
+  label{
+    font-weight: bold;
+    font-size: 14px
+  }
+}
+
+//END MODALS
+//FORMS
+.separate_form{
+  background: #fff;
+  padding: 20px 0;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  margin: 25px 0;
+  label{
+    font-weight: bold;
+    font-size: 14px
+  }
+}
+//END FORMS
+//APP BUTTON CLASSES
+.app_btn {
+  background: $btnBackground;
+  border: none;
+  border-radius: 3px;
+  font-weight: bold;
+  padding: 7px 30px;
+  color: $mainGreyColor;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  transition: .1s ease-in;
+  &:hover:not(:disabled){
+    background: black;
+    color: #fff;
+  }
+}
+
+.app_btn:not(:disabled) {
+  cursor: pointer;
+}
+
+.app_btn:disabled {
+  cursor: not-allowed;
+}
+
+//END APP BUTTON CLASSES
+.has_success {
+  border: 1px solid $successGreen !important;
+}
+
+.ui-growl-message-success {
+  background: $successGreen !important;
+}
+
 .success_alert {
   position: fixed !important;
   z-index: 999;
@@ -38,7 +231,7 @@ a {
   margin-left: -150px !important;
   top: 0;
   color: #fff;
-  background: $successGreen!important;
+  background: $successGreen !important;
   text-align: center;
   border-top-left-radius: 0px !important;
   border-top-right-radius: 0px !important;
@@ -47,34 +240,24 @@ a {
   }
 }
 
-.login_error {
-  color: red;
-  font-weight: 400;
-  font-size: 14px;
-  position: absolute;
-}
-
-.table_action_btn {
-  font-size: 20px;
-  color: $btnGreyColor;
-  transition: .1s ease-in;
-  &:hover {
-    color: #474747;
-  }
-  fa-icon {
-    color: $btnGreyColor;
-  }
-}
-
 .create_circle_btn {
-  color: $btnGreyColor;
-  font-size: $iconSizeCircle;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  right: 25px;
+  bottom: 25px;
+  background: black;
+  padding: 25px;
+  z-index: 99;
   width: 40px;
   height: 40px;
   border-radius: 50%;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
-  fa-icon {
-    color: $btnGreyColor;
+  color: #fff!important;
+  .add_icon{
+    color: #fff;
+    font-size: 16px;
   }
 }
 
@@ -89,53 +272,54 @@ ui-switch {
       top: -3px !important;
     }
   }
-  .switch-medium{
-    background-color: rgba(0,0,0,.38)!important;
+  .switch-medium {
+    background-color: rgba(0, 0, 0, .38) !important;
 
   }
-  .switch.checked{
-    background-color: #36cc27 !important;
+  .switch.checked {
+    background-color: $successGreen !important;
   }
-}
-
-.required_badge {
-  position: absolute;
-  font-weight: bold;
-  color: red;
-  margin-left: 3px;
 }
 
 .role_title {
   text-transform: lowercase;
 }
-.custom_alert_style{
-  .ui-growl-image{
+
+.custom_alert_style {
+  .ui-growl-image {
     position: relative;
-    top:0;
+    top: 0;
     left: 0;
   }
-  .ui-growl-item{
+  .ui-growl-item {
     display: flex;
     justify-content: center;
     align-items: center;
   }
-  .ui-growl-message{
+  .ui-growl-message {
     margin-left: 10px;
   }
 }
-.form-group{
-  margin-bottom: 25px!important;
+
+.input_file {
+  display: none !important;
+}
+
+.prew_img_wrapper {
+  position: relative;
+  img.form_prew_img {
+    width: 100%;
+  }
+  .to_default_photo {
+    position: absolute;
+    right: 0;
+  }
 }
 
 //----- END COMMON GLOBAL CLASSES------
-ngx-datatable{
-  overflow: inherit!important;
+ngx-datatable {
+  overflow: inherit !important;
 }
 
-  .datatable-header-cell-template-wrap {
-    font-weight: bold;
-    font-size: 14px;
-    text-transform: uppercase !important;
-  }
 
 

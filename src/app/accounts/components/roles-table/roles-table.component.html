@@ -1,4 +1,5 @@
-<div class="container">
+<app-system-loader *ngIf="!isLoaded"></app-system-loader>
+<div class="container" *ngIf="isLoaded">
   <accordion>
     <accordion-group *ngFor="let per of permissionTable" heading="{{per.name}}">
       <table>

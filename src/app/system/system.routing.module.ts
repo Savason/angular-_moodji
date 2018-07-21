@@ -12,8 +12,7 @@ const routes: Routes = [
       {path: 'items', loadChildren: '../../app/items/items.module#ItemsModule', canActivate: [AuthGuard]},
       {path: 'returns', loadChildren: '../../app/returns/returns.module#ReturnsModule', canActivate: [AuthGuard]},
       {path: 'accounts', loadChildren: '../../app/accounts/accounts.module#AccountsModule', canActivate: [AuthGuard]},
-      {path: '404', component: PagenotfoundComponent},
-      {path: '**', redirectTo: '404'}
+      {path: '**', component: PagenotfoundComponent},
     ]
   }
 ];

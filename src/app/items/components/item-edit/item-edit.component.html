@@ -1,3 +1,187 @@
-<p>
-  item-edit works!
-</p>
+<app-system-loader *ngIf="!isLoaded"></app-system-loader>
+<div class="container d-flex justify-content-center" *ngIf="isLoaded">
+  <form class="col-md-9 separate_form" [formGroup]="form" (ngSubmit)="updateItem()">
+    <div class="form-group col-md-12">
+      <label for="ean" class="d-flex">
+        EAN
+        <span class="required_badge">*</span>
+      </label>
+      <input maxlength="13"
+             appNumberFormat
+             [ngClass]="{
+          'has_danger': form.get('ean').invalid && (form.get('ean').dirty || form.get('ean').touched),
+          'has_success': form.get('ean').valid && (form.get('ean').dirty || form.get('ean').touched)
+          }"
+             formControlName="ean"
+             type="text" class="form-control" id="ean"
+             placeholder="EAN (only 13 digits)">
+      <div class="login_error" *ngIf="form.get('ean').invalid&&form.get('ean').touched">
+        <fa-icon [icon]="faExclamationCircle"></fa-icon>
+        {{getErrorEANMessage()}}
+      </div>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="sku" class="d-flex">
+        SKU
+        <span class="required_badge">*</span>
+      </label>
+      <input [ngClass]="{
+          'has_danger': form.get('sku').invalid && (form.get('sku').dirty || form.get('sku').touched),
+          'has_success': form.get('sku').valid && (form.get('sku').dirty || form.get('sku').touched)
+          }"
+             formControlName="sku" type="text" class="form-control" id="sku"
+             placeholder="SKU">
+      <div class="login_error" *ngIf="form.get('sku').invalid&&form.get('sku').touched">
+        <fa-icon [icon]="faExclamationCircle"></fa-icon>
+        {{getErrorSKUMessage()}}
+      </div>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="name" class="d-flex">
+        Name
+        <span class="required_badge">*</span>
+      </label>
+      <input [ngClass]="{
+          'has_danger': form.get('name').invalid && (form.get('name').dirty || form.get('name').touched),
+          'has_success': form.get('name').valid && (form.get('name').dirty || form.get('name').touched)
+          }"
+             formControlName="name"
+             type="text" class="form-control" id="name"
+             placeholder="Name">
+      <div class="login_error" *ngIf="form.get('name').invalid&&form.get('name').touched">
+        <fa-icon [icon]="faExclamationCircle"></fa-icon>
+        {{getErrorNameMessage()}}
+      </div>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="price" class="d-flex">
+        Price
+        <span class="required_badge">*</span>
+      </label>
+      <input
+        [ngClass]="{
+          'has_danger': form.get('price').invalid && (form.get('price').dirty || form.get('price').touched),
+          'has_success': form.get('price').valid && (form.get('price').dirty || form.get('price').touched)
+          }"
+        formControlName="price" type="text" class="form-control" id="price"
+        placeholder="Price">
+      <div class="login_error" *ngIf="form.get('price').invalid&&form.get('price').touched">
+        <fa-icon [icon]="faExclamationCircle"></fa-icon>
+        {{getErrorPriceMessage()}}
+      </div>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="category" class="d-flex">
+        Category
+        <span class="required_badge">*</span>
+      </label>
+      <input [ngClass]="{
+          'has_danger': form.get('category').invalid && (form.get('category').dirty || form.get('category').touched),
+          'has_success': form.get('category').valid && (form.get('category').dirty || form.get('category').touched)
+          }"
+             formControlName="category" type="text" class="form-control" id="category"
+             placeholder="Category">
+      <div class="login_error" *ngIf="form.get('category').invalid&&form.get('category').touched">
+        <fa-icon [icon]="faExclamationCircle"></fa-icon>
+        {{getErrorCategoryMessage()}}
+      </div>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="image" class="d-flex">
+        Image
+      </label>
+      <label for="image" class="prew_img_wrapper">
+        <input #fileInput type="file" formControlName="image"
+               class="form-control-file input_file" id="image"
+               placeholder="Image">
+      </label>
+      <div class="login_error" *ngIf="">
+      </div>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="size" class="d-flex">
+        Size
+      </label>
+      <input type="text" formControlName="size" class="form-control" id="size"
+             placeholder="Size">
+      <div class="login_error" *ngIf="">
+      </div>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="color" class="d-flex">
+        Color
+      </label>
+      <input type="text" formControlName="color" class="form-control" id="color"
+             placeholder="Color">
+      <div class="login_error" *ngIf="">
+      </div>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="country" class="d-flex">
+        Country
+      </label>
+      <input type="text" formControlName="country" class="form-control" id="country"
+             placeholder="Country">
+      <div class="login_error" *ngIf="">
+      </div>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="package_height" class="d-flex">
+        Package height
+      </label>
+      <input type="text" formControlName="package_height" class="form-control" id="package_height"
+             placeholder="Package height">
+      <div class="login_error" *ngIf="">
+      </div>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="package_length" class="d-flex">
+        Package length
+      </label>
+      <input type="text" formControlName="package_length" class="form-control" id="package_length"
+             placeholder="Package length">
+      <div class="login_error" *ngIf="">
+      </div>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="package_width" class="d-flex">
+        Package width
+      </label>
+      <input type="text" formControlName="package_width" class="form-control" id="package_width"
+             placeholder="Package width">
+      <div class="login_error" *ngIf="">
+      </div>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="cross_weight" class="d-flex">
+        Cross weight
+      </label>
+      <input type="text" formControlName="cross_weight" class="form-control" id="cross_weight"
+             placeholder="Cross weight">
+      <div class="login_error" *ngIf="">
+      </div>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="net_weight" class="d-flex">
+        Net weight
+      </label>
+      <input type="text" formControlName="net_weight" class="form-control" id="net_weight"
+             placeholder="Net weight">
+      <div class="login_error" *ngIf="">
+      </div>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="supplier" class="d-flex">
+        Supplier
+      </label>
+      <textarea class="form-control" formControlName="supplier" placeholder="Supplier" id="supplier"
+                rows="3"></textarea>
+      <div class="login_error" *ngIf="">
+      </div>
+    </div>
+    <div class="col-md-12 d-flex justify-content-between">
+      <button class="app_btn login_btn" (click)="toItemsList()">Cancel</button>
+      <button [disabled]="form.invalid||form.pending" class="app_btn login_btn">Save</button>
+    </div>
+  </form>
+</div>

@@ -13,6 +13,7 @@ export function getAccordionConfig(): AccordionConfig {
   providers: [{provide: AccordionConfig, useFactory: getAccordionConfig}]
 })
 export class RolesTableComponent implements OnInit {
+  public isLoaded = false;
   public permissionTable;
   public userRoles = [];
   public RMS  = [];
@@ -27,6 +28,7 @@ export class RolesTableComponent implements OnInit {
   ngOnInit() {
     this.permissionsService.getPermissionTable()
       .subscribe((data) => {
+        this.isLoaded = true;
         console.log(data);
         this.permissionTable = data.parentPermission;
         this.userRoles = data.roles;

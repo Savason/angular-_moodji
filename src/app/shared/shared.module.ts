@@ -7,6 +7,7 @@ import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import {UiSwitchModule} from 'ngx-ui-switch';
 import {GrowlModule} from 'primeng/growl';
 import { NotificationComponent } from './components/notification/notification.component';
+import {SystemLoaderComponent} from './components/loader/system-loader.component';
 
 @NgModule({
   imports: [
@@ -22,11 +23,13 @@ import { NotificationComponent } from './components/notification/notification.co
     NgxDatatableModule,
     UiSwitchModule,
     GrowlModule,
-    NotificationComponent
+    NotificationComponent,
+    SystemLoaderComponent
   ],
   declarations: [
     PagenotfoundComponent,
     NotificationComponent,
+    SystemLoaderComponent,
   ]
 })
 export class SharedModule {

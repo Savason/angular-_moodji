@@ -4,6 +4,12 @@ import {BehaviorSubject, Subscription} from 'rxjs';
 import {faEllipsisH} from '@fortawesome/free-solid-svg-icons';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {NotificationsService} from '../../../shared/services/notifications.service';
+import {Page} from '../../../shared/models/page';
+import {faPlus} from '@fortawesome/free-solid-svg-icons/faPlus';
+import {faEdit} from '@fortawesome/free-solid-svg-icons/faEdit';
+import {faInfoCircle} from '@fortawesome/free-solid-svg-icons/faInfoCircle';
+import {faTrashAlt} from '@fortawesome/free-solid-svg-icons/faTrashAlt';
+import {faSyncAlt} from '@fortawesome/free-solid-svg-icons/faSyncAlt';
 
 @Component({
   selector: 'app-item-list',
@@ -11,10 +17,16 @@ import {NotificationsService} from '../../../shared/services/notifications.servi
   styleUrls: ['./item-list.component.scss']
 })
 export class ItemListComponent implements OnInit, OnDestroy {
-  public faellipsish = faEllipsisH;
+  public isLoaded = false;
+  public faInfo = faInfoCircle;
+  public faEdit = faEdit;
+  public faDelete = faTrashAlt;
+  public faPlus = faPlus;
+  public faSyncAlt = faSyncAlt;
   public id;
   public deletedItem;
   public rows: BehaviorSubject<any[]>;
+  page = new Page();
   public afterDeletedItems;
   modalRef: BsModalRef;
   sub1 = new Subscription();
@@ -24,15 +36,12 @@ export class ItemListComponent implements OnInit, OnDestroy {
   constructor(private itemsService: ItemsService,
               private modalService: BsModalService,
               private notificationService: NotificationsService) {
+    this.page.pageNumber = 0;
+    this.page.size = 10;
   }
 
   ngOnInit() {
-    this.sub1 = this.itemsService.getItemsList(1)
-      .subscribe((data) => {
-        console.log(data);
-        this.itemsService.setDataItem(data.items);
-        this.rows = this.itemsService.items$;
-      });
+    this.setPage({offset: 0});
   }
 
   ngOnDestroy() {
@@ -42,6 +51,21 @@ export class ItemListComponent implements OnInit, OnDestroy {
     if (this.sub2) {
       this.sub2.unsubscribe();
     }
+  }
+
+  setPage(pageInfo) {
+    this.isLoaded = false;
+    this.page.pageNumber = pageInfo.offset;
+    this.sub1 = this.itemsService.getItemsList(pageInfo.offset)
+      .subscribe(pagedData => {
+        console.log(pagedData);
+        this.isLoaded = true;
+        this.itemsService.setDataItem(pagedData.items);
+        this.rows = this.itemsService.items$;
+        this.page.totalElements = pagedData.count;
+      }, error2 => {
+        this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
+      });
   }
 
   openModal(template: TemplateRef<any>, id: number, name: string) {
@@ -54,15 +78,20 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.id = this.itemsService.currentItemIdDelete;
     this.sub2 = this.itemsService.deleteItem(this.id)
       .subscribe((data) => {
-        console.log(data);
         if (data.success) {
           if (this.itemsService.getItemsCount() > 1) {
             this.afterDeletedItems = this.rows.value.filter(item => item.id !== this.id);
             this.itemsService.setDataItem(this.afterDeletedItems);
+            this.page.totalElements--;
+            this.notificationService.notify('warn', '', `Item ${this.deletedItem} has been deleted successfully!`);
+          } else if (this.itemsService.getItemsCount() === 1 && this.page.pageNumber !== 0) {
+            this.setPage({offset: `${this.page.pageNumber - 1}`});
+            this.notificationService.notify('warn', '', `Item ${this.deletedItem} has been deleted successfully!`);
+          } else if (this.itemsService.getItemsCount() === 1 && this.page.pageNumber === 0) {
+            this.setPage({offset: `${this.page.pageNumber}`});
             this.notificationService.notify('warn', '', `Item ${this.deletedItem} has been deleted successfully!`);
           }
         } else if (data.error) {
-          console.log(data);
           this.notificationService.notify('error', '', `${data.error_description}`);
         }
       }, error1 => {
@@ -70,4 +99,9 @@ export class ItemListComponent implements OnInit, OnDestroy {
       });
     this.modalRef.hide();
   }
+
+  refreshData() {
+    this.setPage({offset: this.page.pageNumber});
+  }
+
 }

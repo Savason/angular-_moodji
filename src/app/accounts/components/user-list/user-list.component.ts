@@ -9,7 +9,8 @@ import {faEdit} from '@fortawesome/free-solid-svg-icons/faEdit';
 import {EditUserComponent} from '../edit-user/edit-user.component';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {faTrashAlt} from '@fortawesome/free-solid-svg-icons/faTrashAlt';
-import {faUserPlus} from '@fortawesome/free-solid-svg-icons/faUserPlus';
+import {faPlus} from '@fortawesome/free-solid-svg-icons/faPlus';
+import {faSyncAlt} from '@fortawesome/free-solid-svg-icons/faSyncAlt';
 
 @Component({
   selector: 'app-user-list',
@@ -17,16 +18,18 @@ import {faUserPlus} from '@fortawesome/free-solid-svg-icons/faUserPlus';
   styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent implements OnInit, OnDestroy {
+  public isLoaded = false;
   public faInfo = faInfoCircle;
   public faEdit = faEdit;
   public faDelete = faTrashAlt;
-  public addUser = faUserPlus;
+  public faPlus = faPlus;
+  public faSyncAlt = faSyncAlt;
   public id: number;
   public deletedUser;
   public statusChangedUser;
   public currentDeletedUser;
   page = new Page();
-  rows: BehaviorSubject<any[]>;
+  rows: BehaviorSubject<any>;
   modalRef: BsModalRef;
   sub1 = new Subscription();
   sub2 = new Subscription();
@@ -60,10 +63,11 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   setPage(pageInfo) {
+    this.isLoaded = false;
     this.page.pageNumber = pageInfo.offset;
     this.sub1 = this.accountService.getAllUsers(pageInfo.offset)
       .subscribe(pagedData => {
-        console.log(pagedData);
+        this.isLoaded = true;
         this.accountService.setDataUser(pagedData.users);
         this.rows = this.accountService.Users$;
         this.accountService.totalUserCount = pagedData.users_count;
@@ -136,14 +140,16 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.modalRef.hide();
   }
 
-  editCurrentUserModal(currentUser) {
+  editCurrentUserModal(id: number) {
     const initialState = {
-      currentEditUser: currentUser,
+      editUserId: id,
     };
     this.modalRef = this.modalService.show(EditUserComponent, Object.assign({initialState}, {class: 'modal-lg'}));
     this.modalService.onHide.subscribe((data) => {
       // console.log(data);
       if (data === 'edit_success') {
+        // const index = this.rows.value.findIndex(user => user.id === this.accountService.currentEditedUser.id);
+        // this.rows.value[index] = this.accountService.currentEditedUser;
         this.setPage({offset: `${this.page.pageNumber}`});
       }
     });
@@ -151,5 +157,9 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   createNewUserModal() {
     this.modalRef = this.modalService.show(CreateNewUserComponent, Object.assign({}, {class: 'modal-lg'}));
+  }
+
+  refreshData() {
+    this.setPage({offset: this.page.pageNumber});
   }
 }

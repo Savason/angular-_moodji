@@ -5,7 +5,7 @@ type Severities = 'success' | 'info' | 'warn' | 'error';
 
 @Injectable()
 export class NotificationsService {
-
+s
   notificationChange: Subject<Object> = new Subject<Object>();
 
   notify(severity: Severities, summary: string, detail: string) {

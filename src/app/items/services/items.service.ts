@@ -21,17 +21,22 @@ export class ItemsService extends BaseApi {
     return this.post(`api/item`, data);
   }
 
-  updateItem(id: number): Observable<any> {
-    return this.put(`api/item/${id}`);
+  updateItem(id: number, data): Observable<any> {
+    return this.put(`api/item/${id}`, data);
   }
 
   deleteItem(id: number): Observable<any> {
     return this.delete(`api/item/${id}`);
   }
 
+  getItemByEan(ean: string): Observable<any> {
+    return this.get(`api/item/${ean}`);
+  }
+
   setDataItem(item) {
     return this.items$.next(item);
   }
+
   getItemsCount() {
     return this.items$.getValue().length;
   }
