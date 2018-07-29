@@ -1,15 +1,15 @@
 export interface IRoleModel {
   name: string;
-  id?: string;
+  role_id?: string;
 }
 
 export class RoleModel implements IRoleModel {
   name: string;
-  id?: string;
+  role_id?: string;
 
 
   constructor(name: string, id?: string) {
     this.name = name;
-    this.id = id;
+    this.role_id = id;
   }
 }

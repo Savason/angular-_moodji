@@ -1,13 +1,55 @@
-.action_roles_wrapper {
-  display: flex;
-  flex-direction: column-reverse;
-  &:hover .delete_role {
-    display: block;
+.container {
+  margin-bottom: 20px;
+ .ui-accordion-content {
+    padding: 0!important;
   }
-  .delete_role {
-    display: none;
-  }
-  input {
-
+  .custom_table_roles {
+    tr {
+      &:hover {
+        background: #f7f7f7;
+      }
+    }
+    width: 100%;
+    overflow-y: scroll;
+    .table_header {
+      background: #f7f7f7;
+    }
+    .permission_name {
+      width: 10%;
+    }
+    .role_name_wrapper {
+      display: flex;
+      align-items: center;
+      position: relative;
+      .role_name_actions {
+        display: none;
+        opacity: 0;
+        color: white;
+        right: 5px;
+        position: absolute;
+      }
+      .role_name {
+        background: black;
+        color: #fff;
+        padding: 5px 50px;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+      }
+      .delete_icon {
+        font-size: 17px;
+      }
+      .edit_icon {
+        font-size: 15px;
+      }
+      &:hover .role_name_actions {
+        display: flex;
+        opacity: 1;
+      }
+    }
+    .permission_td {
+      text-align: center;
+      vertical-align: middle;
+    }
   }
 }

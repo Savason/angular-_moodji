@@ -1,15 +1,10 @@
-import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ItemsService} from '../../services/items.service';
 import {BehaviorSubject, Subscription} from 'rxjs';
-import {faEllipsisH} from '@fortawesome/free-solid-svg-icons';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {NotificationsService} from '../../../shared/services/notifications.service';
 import {Page} from '../../../shared/models/page';
-import {faPlus} from '@fortawesome/free-solid-svg-icons/faPlus';
-import {faEdit} from '@fortawesome/free-solid-svg-icons/faEdit';
-import {faInfoCircle} from '@fortawesome/free-solid-svg-icons/faInfoCircle';
-import {faTrashAlt} from '@fortawesome/free-solid-svg-icons/faTrashAlt';
-import {faSyncAlt} from '@fortawesome/free-solid-svg-icons/faSyncAlt';
+import {systemIcon} from '../../../shared/variables/variables';
 
 @Component({
   selector: 'app-item-list',
@@ -17,12 +12,17 @@ import {faSyncAlt} from '@fortawesome/free-solid-svg-icons/faSyncAlt';
   styleUrls: ['./item-list.component.scss']
 })
 export class ItemListComponent implements OnInit, OnDestroy {
+  @ViewChild('myTable') table: any;
   public isLoaded = false;
-  public faInfo = faInfoCircle;
-  public faEdit = faEdit;
-  public faDelete = faTrashAlt;
-  public faPlus = faPlus;
-  public faSyncAlt = faSyncAlt;
+  public firstLoad = true;
+  public slider = systemIcon.sliders;
+  public hideEye = systemIcon.hideEye;
+  public faInfo = systemIcon.infoIcon;
+  public faEdit = systemIcon.editIcon;
+  public faDelete = systemIcon.deleteIcon;
+  public faPlus = systemIcon.addIcon;
+  public faSyncAlt = systemIcon.refreshIcon;
+  public faEllipsisH = systemIcon.dropdownIcon;
   public id;
   public deletedItem;
   public rows: BehaviorSubject<any[]>;
@@ -55,6 +55,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   setPage(pageInfo) {
     this.isLoaded = false;
+    this.firstLoad = true;
     this.page.pageNumber = pageInfo.offset;
     this.sub1 = this.itemsService.getItemsList(pageInfo.offset)
       .subscribe(pagedData => {
@@ -100,8 +101,21 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.modalRef.hide();
   }
 
+  toggleExpandRow(row) {
+    this.table.rowDetail.toggleExpandRow(row);
+  }
+
   refreshData() {
     this.setPage({offset: this.page.pageNumber});
   }
 
+  showRowDetails() {
+    this.firstLoad = false;
+    this.table.rowDetail.expandAllRows();
+  }
+
+  hideRowDetails() {
+    this.firstLoad = true;
+    this.table.rowDetail.collapseAllRows();
+  }
 }

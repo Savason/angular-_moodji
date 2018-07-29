@@ -16,7 +16,8 @@
                formControlName="name" type="text" class="form-control" id="name"
                placeholder="Name">
         <div class="login_error" *ngIf="form.get('name').invalid&&form.get('name').touched">
-          <fa-icon [icon]="faExclamationCircle"></fa-icon> {{getErrorNameMessage()}}
+          <fa-icon [icon]="faExclamationCircle"></fa-icon>
+          {{getErrorNameMessage()}}
         </div>
       </div>
     </div>
@@ -33,7 +34,8 @@
                formControlName="email" type="email" class="form-control" id="email"
                placeholder="Email">
         <div class="login_error" *ngIf="form.get('email').invalid&&form.get('email').touched">
-          <fa-icon [icon]="faExclamationCircle"></fa-icon> {{getErrorEmailMessage()}}
+          <fa-icon [icon]="faExclamationCircle"></fa-icon>
+          {{getErrorEmailMessage()}}
         </div>
       </div>
     </div>
@@ -54,7 +56,8 @@
           </option>
         </select>
         <div class="login_error" *ngIf="form.get('role_id').invalid&&form.get('role_id').touched">
-          <fa-icon [icon]="faExclamationCircle"></fa-icon> {{getErrorTypeMessage()}}
+          <fa-icon [icon]="faExclamationCircle"></fa-icon>
+          {{getErrorTypeMessage()}}
         </div>
       </div>
     </div>
@@ -72,32 +75,36 @@
                formControlName="password" type="password" class="form-control" id="password"
                placeholder="Password">
         <div class="login_error" *ngIf="form.get('password').invalid&&form.get('password').touched">
-          <fa-icon [icon]="faExclamationCircle"></fa-icon> {{getErrorPasswordMessage()}}
+          <fa-icon [icon]="faExclamationCircle"></fa-icon>
+          {{getErrorPasswordMessage()}}
         </div>
       </div>
     </div>
     <div class="form-group">
-        <label for="confirmPassword" class="d-flex col-md-12">
-          Confirm Password
-          <span class="required_badge">*</span>
-        </label>
-        <div class="col-md-12">
-          <fa-icon class="toggle_password" [icon]="hide ? faeye : faeyeslash" (click)="hide = !hide"
-                   [tooltip]="hide ? 'Show passwords': 'Hide passwords'"
-                   container="body"
-                   placement="right"></fa-icon>
-          <input [ngClass]="{
+      <label for="confirmPassword" class="d-flex col-md-12">
+        Confirm Password
+        <span class="required_badge">*</span>
+      </label>
+      <div class="col-md-12">
+        <div #container class="toggle_password">
+          <fa-icon [icon]="hide ? faeye : faeyeslash" (click)="hide = !hide"
+                   tooltipPosition="left" [pTooltip]="hide ? 'Show passwords': 'Hide passwords'"
+                   showDelay="200" hideDelay="200" [appendTo]="container">
+          </fa-icon>
+        </div>
+        <input [ngClass]="{
           'has_danger': form.get('confirmPassword').invalid && (form.get('confirmPassword').dirty || form.get('confirmPassword').touched),
           'has_success': form.get('confirmPassword').valid && (form.get('confirmPassword').dirty || form.get('confirmPassword').touched)
           }"
-                 formControlName="confirmPassword"
-                 [type]="hide ? 'password' : 'text'" class="form-control"
-                 id="confirmPassword"
-                 placeholder="Confirm Password">
-          <div class="login_error" *ngIf="form.get('confirmPassword').invalid&&form.get('confirmPassword').touched">
-            <fa-icon [icon]="faExclamationCircle"></fa-icon> {{getErrorConfirmPasswordMessage()}}
-          </div>
+               formControlName="confirmPassword"
+               [type]="hide ? 'password' : 'text'" class="form-control"
+               id="confirmPassword"
+               placeholder="Confirm Password">
+        <div class="login_error" *ngIf="form.get('confirmPassword').invalid&&form.get('confirmPassword').touched">
+          <fa-icon [icon]="faExclamationCircle"></fa-icon>
+          {{getErrorConfirmPasswordMessage()}}
         </div>
+      </div>
     </div>
     <div class="col-md-12 d-flex justify-content-between modal_action_footer">
       <button type="button" class="app_btn" (click)="onFormClose()">Cancel</button>

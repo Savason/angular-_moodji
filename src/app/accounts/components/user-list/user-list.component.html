@@ -1,11 +1,16 @@
 <app-system-loader *ngIf="!isLoaded"></app-system-loader>
 <div class="accounts_wrapper" *ngIf="isLoaded">
   <a class="create_circle_btn d-flex justify-content-center align-items-center"
-     tooltip="New account" placement="left" container="body" (click)="createNewUserModal()">
+     tooltipPosition="left" pTooltip="New account"
+     showDelay="200" hideDelay="200"
+     (click)="createNewUserModal()">
     <fa-icon class="add_icon" [icon]="faPlus"></fa-icon>
   </a>
   <div class="d-flex justify-content-end">
-    <button class="refresh_table_btn" tooltip="Refresh table" placement="left" container="body" (click)="refreshData()">
+    <button class="refresh_table_btn"
+            tooltipPosition="top" pTooltip="Refresh table"
+            showDelay="200" hideDelay="200"
+            (click)="refreshData()">
       <fa-icon [icon]="faSyncAlt"></fa-icon>
     </button>
   </div>
@@ -29,14 +34,14 @@
         </span>
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column name="Email" [flexGrow]="2">
+    <ngx-datatable-column name="Email" [flexGrow]="3">
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span>
           {{row.email}}
         </span>
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column name="Client role" [flexGrow]="1">
+    <ngx-datatable-column name="Client role" [flexGrow]="2">
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span class="role_title">
           {{row.role_title}}
@@ -45,29 +50,46 @@
     </ngx-datatable-column>
     <ngx-datatable-column name="Status" [sortable]="false" [flexGrow]="1">
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-        <ui-switch tooltip="client status" [ngModel]="row.enabled"
+        <ui-switch [ngModel]="row.enabled"
                    (change)="onChangeStatus(row.enabled,row.id)"></ui-switch>
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column name="Actions" [sortable]="false" [flexGrow]="1">
+    <ngx-datatable-column name="Actions" headerClass="action_data_table"
+                          [cellClass]="'action_data_table'" [sortable]="false" [flexGrow]="1">
       <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-        <a class="table_action_btn" routerLink="{{row.id}}"
-           tooltip="Details"
-        >
-          <fa-icon [icon]="faInfo"></fa-icon>
-        </a>
-        <a class="table_action_btn" (click)="editCurrentUserModal(row.id)"
-           tooltip="Edit"
-           container="body"
-        >
-          <fa-icon [icon]="faEdit"></fa-icon>
-        </a>
-        <a class="table_action_btn" (click)="openModal(template,row.id, row.email)"
-           tooltip="Delete"
-           container="body"
-        >
-          <fa-icon [icon]="faDelete"></fa-icon>
-        </a>
+        <div class="btn-group" dropdown placement="bottom right">
+          <button id="button-basic" dropdownToggle type="button" class="btn table_action_btn"
+                  aria-controls="dropdown-basic">
+            <fa-icon [icon]="faEllipsisH"></fa-icon>
+          </button>
+          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right table_dropdown"
+              role="menu" aria-labelledby="button-basic">
+            <li role="menuitem">
+              <a class="dropdown-item"
+                 routerLink="{{row.id}}"
+              >
+                <fa-icon [icon]="faInfo"></fa-icon>
+                <span>Details</span>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a class="dropdown-item"
+                 (click)="editCurrentUserModal(row.id)"
+              >
+                <fa-icon [icon]="faEdit"></fa-icon>
+                <span>Edit</span>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a class="dropdown-item"
+                 (click)="openModal(template,row.id, row.email)"
+              >
+                <fa-icon [icon]="faDelete"></fa-icon>
+                <span>Delete</span>
+              </a>
+            </li>
+          </ul>
+        </div>
       </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>

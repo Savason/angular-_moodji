@@ -1,9 +1,38 @@
-<header class="main_header" *ngIf="isAuthorized">
-  <a class="app_navigation_link" [routerLink]="['/items']" routerLinkActive="active">Items</a>
-  <a class="app_navigation_link" [routerLink]="['/accounts/role_table']" routerLinkActive="active">RMS</a>
-  <a class="app_navigation_link" [routerLink]="['/accounts']" routerLinkActive="active">accounts</a>
-  <a class="app_navigation_link" (click)="logout()">Log out</a>
+<header *ngIf="isAuthorized">
+  <div class="container main_header">
+    <a [routerLink]="['']" class="logo_link">
+      <img src="/assets/images/login_logo.png" alt="logo">
+    </a>
+    <ul>
+      <li>
+        <a class="app_navigation_link" [routerLink]="['/items']" routerLinkActive="active">
+          <fa-icon [icon]="itemIcon"></fa-icon>
+          <span>Items</span>
+        </a>
+      </li>
+      <li>
+        <a class="app_navigation_link" [routerLink]="['/accounts']" routerLinkActive="active">
+        <span>
+        <fa-icon [icon]="userIcon"></fa-icon>
+       Accounts
+        </span>
+        </a>
+        <div class="sub_menu">
+          <a class="app_navigation_link" [routerLink]="['/accounts/role_table']" routerLinkActive="active">
+            <fa-icon [icon]="rmsIcon"></fa-icon>
+            <span>RMS</span>
+          </a>
+        </div>
+      </li>
+      <li>
+        <a class="app_navigation_link" (click)="logout()">
+          <fa-icon [icon]="lofOutIcon"></fa-icon>
+          <span>Log out</span>
+        </a>
+      </li>
+    </ul>
+  </div>
 </header>
-<div>
+<div class="container">
   <router-outlet></router-outlet>
 </div>

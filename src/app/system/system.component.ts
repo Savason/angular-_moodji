@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {Message} from 'primeng/api';
 import {UserAuthService} from '../auth/services/user.auth.service';
+import {systemIcon} from '../shared/variables/variables';
 
 @Component({
   selector: 'app-system',
@@ -9,7 +9,10 @@ import {UserAuthService} from '../auth/services/user.auth.service';
 })
 export class SystemComponent {
   public isAuthorized = false;
-  msgs: Message[] = [];
+  public itemIcon = systemIcon.itemIcon;
+  public lofOutIcon = systemIcon.logOutIcon;
+  public userIcon = systemIcon.userIcon;
+  public rmsIcon = systemIcon.rmsIcon;
 
   constructor(private authUserService: UserAuthService) {
     this.authUserService.loginEventEmitter.subscribe((authStatus: boolean) => {

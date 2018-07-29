@@ -1,12 +1,10 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {Item} from '../../models/item.model';
 import {ItemsService} from '../../services/items.service';
 import {Subscription} from 'rxjs';
 import {NotificationsService} from '../../../shared/services/notifications.service';
-import {faTimes} from '@fortawesome/free-solid-svg-icons';
-import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons/faExclamationTriangle';
+import {systemIcon} from '../../../shared/variables/variables';
 
 @Component({
   selector: 'app-create-new-items',
@@ -17,8 +15,8 @@ export class CreateNewItemsComponent implements OnInit, OnDestroy {
   public form: FormGroup;
   public url: string;
   public prewImg = false;
-  public fatimes = faTimes;
-  public faExclamationCircle = faExclamationTriangle;
+  public cancelIcon = systemIcon.cancelIcon;
+  public formErrorIcon = systemIcon.errorForm;
   fileToUpload: File = null;
   sub1 = new Subscription();
   sub2 = new Subscription();
@@ -79,23 +77,20 @@ export class CreateNewItemsComponent implements OnInit, OnDestroy {
     }
   }
 
+  handleFileInput = (event: any): void => {
+    this.fileToUpload = event.target.files.item(0);
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
 
-  // handleFileInput(event: any) {
-  //   if (event.target.files && event.target.files[0]) {
-  //     const reader = new FileReader();
-  //
-  //     reader.onload = (event: ProgressEvent) => {
-  //       this.url = (<FileReader>event.target).result;
-  //       this.prewImg = true;
-  //       console.log(this.url);
-  //     };
-  //
-  //     reader.readAsDataURL(event.target.files[0]);
-  //   }
-  // }
-  handleFileInput = (files: FileList): void => {
-    this.fileToUpload = files.item(0);
-  }
+      reader.onload = (event: ProgressEvent) => {
+        this.url = (<FileReader>event.target).result;
+        this.prewImg = true;
+        console.log(this.url);
+      };
+
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  };
 
 
   backToDefaultImg() {
@@ -121,14 +116,8 @@ export class CreateNewItemsComponent implements OnInit, OnDestroy {
     formData.append('net_weight', this.form.value.net_weight);
     formData.append('supplier', this.form.value.supplier);
     if (this.fileToUpload) {
-      console.log(this.fileToUpload);
-      console.log(this.fileToUpload.name);
       formData.append('image', this.fileToUpload, this.fileToUpload.name);
     }
-    console.log(this.form);
-    // const {ean, sku, name, price, category, image, size, color, country, package_height, package_length, package_width, cross_weight, net_weight, supplier} = this.form.value;
-    // const item = new Item(ean, sku, name, price, category, image, size, color, country, package_height, package_length, package_width, cross_weight, net_weight, supplier);
-    // console.log(item);
     this.sub1 = this.itemsService.createNewItem(formData)
       .subscribe((data) => {
           if (data.success) {
@@ -147,7 +136,6 @@ export class CreateNewItemsComponent implements OnInit, OnDestroy {
 
   forbiddenEmails(control: FormControl): Promise<any> {
     return new Promise((resolve) => {
-      console.log(control.value);
       this.sub2 = this.itemsService.getItemByEan(control.value)
         .subscribe((data) => {
           if (data !== null) {

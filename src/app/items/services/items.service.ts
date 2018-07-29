@@ -22,7 +22,7 @@ export class ItemsService extends BaseApi {
   }
 
   updateItem(id: number, data): Observable<any> {
-    return this.put(`api/item/${id}`, data);
+    return this.post(`api/item/${id}`, data);
   }
 
   deleteItem(id: number): Observable<any> {

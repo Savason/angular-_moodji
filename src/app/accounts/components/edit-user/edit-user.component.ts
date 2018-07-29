@@ -49,7 +49,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         setTimeout(() => {
           this.isLoaded = true;
-        }, 300);
+        }, 200);
         this.currentEditUser = data.user;
         console.log(this.currentEditUser);
         this.form.patchValue({

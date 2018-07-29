@@ -15,7 +15,7 @@
              type="text" class="form-control" id="ean"
              placeholder="EAN (only 13 digits)">
       <div class="login_error" *ngIf="form.get('ean').invalid&&form.get('ean').touched">
-        <fa-icon [icon]="faExclamationCircle"></fa-icon>
+        <fa-icon [icon]="formErrorIcon"></fa-icon>
         {{getErrorEANMessage()}}
       </div>
     </div>
@@ -31,7 +31,7 @@
              formControlName="sku" type="text" class="form-control" id="sku"
              placeholder="SKU">
       <div class="login_error" *ngIf="form.get('sku').invalid&&form.get('sku').touched">
-        <fa-icon [icon]="faExclamationCircle"></fa-icon>
+        <fa-icon [icon]="formErrorIcon"></fa-icon>
         {{getErrorSKUMessage()}}
       </div>
     </div>
@@ -48,7 +48,7 @@
              type="text" class="form-control" id="name"
              placeholder="Name">
       <div class="login_error" *ngIf="form.get('name').invalid&&form.get('name').touched">
-        <fa-icon [icon]="faExclamationCircle"></fa-icon>
+        <fa-icon [icon]="formErrorIcon"></fa-icon>
         {{getErrorNameMessage()}}
       </div>
     </div>
@@ -65,7 +65,7 @@
         formControlName="price" type="text" class="form-control" id="price"
         placeholder="Price">
       <div class="login_error" *ngIf="form.get('price').invalid&&form.get('price').touched">
-        <fa-icon [icon]="faExclamationCircle"></fa-icon>
+        <fa-icon [icon]="formErrorIcon"></fa-icon>
         {{getErrorPriceMessage()}}
       </div>
     </div>
@@ -81,7 +81,7 @@
              formControlName="category" type="text" class="form-control" id="category"
              placeholder="Category">
       <div class="login_error" *ngIf="form.get('category').invalid&&form.get('category').touched">
-        <fa-icon [icon]="faExclamationCircle"></fa-icon>
+        <fa-icon [icon]="formErrorIcon"></fa-icon>
         {{getErrorCategoryMessage()}}
       </div>
     </div>
@@ -89,16 +89,20 @@
       <label for="image" class="d-flex">
         Image
       </label>
-      <label for="image" class="prew_img_wrapper">
-        <button *ngIf="prewImg" (click)="backToDefaultImg()" class="to_default_photo">
-          <fa-icon [icon]="fatimes"></fa-icon>
-        </button>
-        <input #fileInput type="file" formControlName="image" (change)="handleFileInput($event.target.files)"
-               class="form-control-file input_file" id="image"
-               placeholder="Image">
-        <img class="form_prew_img" [src]='prewImg ? url : "/assets/images/no_photo.png"' alt="Default photo">
-      </label>
-      <div class="login_error" *ngIf="">
+      <div class="image_change_wrapper">
+        <span *ngIf="prewImg" (click)="backToDefaultImg()"
+              tooltipPosition="top" pTooltip="Back to default"
+              showDelay="100" hideDelay="100"
+              class="to_default_photo">
+          <fa-icon [icon]="cancelIcon"></fa-icon>
+        </span>
+        <label for="image" class="prew_img_wrapper">
+          <input #fileInput type="file" formControlName="image" (change)="handleFileInput($event)"
+                 class="form-control-file input_file" id="image"
+                 placeholder="Image">
+          <img [ngClass]='prewImg ? "form_prew_img":"default_img"'
+               [src]='prewImg ? url : "/assets/images/item-no-photo.png"' alt="Default photo">
+        </label>
       </div>
     </div>
     <div class="form-group col-md-12">

@@ -1,0 +1,29 @@
+<div class="modal-header d-flex align-items-center justify-content-center">
+  <h5>Edit user role</h5>
+</div>
+<div class="modal-body">
+  <form [formGroup]="editRoleForm" (ngSubmit)="editCurrentRole()">
+    <div class="form-group">
+      <label for="editName" class="d-flex col-md-12">
+        Role name
+        <span class="required_badge">*</span>
+      </label>
+      <div class="col-md-12">
+        <input [ngClass]="{
+          'has_danger': editRoleForm.get('name').invalid && (editRoleForm.get('name').dirty || editRoleForm.get('name').touched),
+          'has_success': editRoleForm.get('name').valid && (editRoleForm.get('name').dirty || editRoleForm.get('name').touched)
+          }"
+               formControlName="name" type="text" class="form-control" id="editName"
+               placeholder="Role name">
+        <div class="login_error" *ngIf="editRoleForm.get('name').invalid&&editRoleForm.get('name').touched">
+          <fa-icon [icon]="errorForm"></fa-icon>
+          {{getErrorNameMessage()}}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 d-flex justify-content-between modal_action_footer">
+      <button type="button" class="app_btn" (click)="onFormClose()">Cancel</button>
+      <button [disabled]="editRoleForm.invalid||editRoleForm.pending" class="app_btn login_btn">Save</button>
+    </div>
+  </form>
+</div>

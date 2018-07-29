@@ -9,16 +9,15 @@ import {NumberFormatDirective} from './directives/number-formar.directive';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import {ItemDetailsComponent} from './components/item-details/item-details.component';
 import {ItemEditComponent} from './components/item-edit/item-edit.component';
-import {ModalModule, TooltipModule} from 'ngx-bootstrap';
+import {ModalModule} from 'ngx-bootstrap';
 
 @NgModule({
   imports: [
     CommonModule,
     ItemsRoutingModule,
     SharedModule,
-    // BsDropdownModule.forRoot(),
+    BsDropdownModule.forRoot(),
     ModalModule.forRoot(),
-    TooltipModule.forRoot(),
   ],
   declarations: [
     ItemsComponent,

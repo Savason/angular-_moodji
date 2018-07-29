@@ -1,18 +1,63 @@
+header{
+  background: black;
+  margin-bottom: 40px;
+}
 .main_header {
   display: flex;
-  .app_navigation_link {
-    font-weight: 500;
-    margin: 20px;
-    padding:5px 15px;
-    background: #7b7b7b;
-    color: #fff;
-    transition: .2s ease-in;
-    &:hover{
-      background: #aaaaaa;
-      text-decoration: none;
+  justify-content: space-between;
+  height: 70px;
+  .logo_link{
+    display: flex;
+    align-items: center;
+    img{
+      width: 150px;
+      max-width: 100%;
     }
   }
-  .active{
-    background: #aaaaaa;
+  ul{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    li{
+      display: inline-block;
+      position: relative;
+      &:hover .sub_menu{
+        display: block;
+        position: absolute;
+        z-index: 99;
+        width: 100%;
+      }
+      .sub_menu{
+        display: none;
+        background: black;
+        a{
+          height: 70px;
+        }
+      }
+    }
+    .app_navigation_link {
+      display: flex;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      color: #fff;
+      padding: 0 25px;
+      transition: .2s linear;
+      &:hover{
+        background: #4d4d4d;
+        text-decoration: none;
+      }
+      fa-icon{
+        margin-right: 10px;
+        font-size: 20px;
+      }
+    }
+    .active{
+      background: #4d4d4d;
+    }
   }
+
 }

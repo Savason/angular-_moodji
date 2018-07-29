@@ -1,14 +1,13 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {BaseApi} from '../../shared/base-api/base-api.service';
 import {Observable} from 'rxjs';
-import {RoleModel} from '../../shared/models/role.model';
 
 @Injectable()
 export class RolesManagementService extends BaseApi {
-  public permissionTable;
-  public permision = [];
-  public roles = [];
+  public newPermissionsList = [];
+  public permissionList;
+  public editedRole = {roleId: '', name: ''};
 
   constructor(public http: HttpClient) {
     super(http);
@@ -18,27 +17,27 @@ export class RolesManagementService extends BaseApi {
     return this.get(`api/permission`);
   }
 
-  getUsersRoles(): Observable<any> {
-    return this.get(`api/role`);
+  getRoleByName(name: string): Observable<any> {
+    return this.get(`api/role/${name}`);
   }
 
-  createUserRole(role: RoleModel): Observable<any> {
+  createUserRole(role): Observable<any> {
     return this.post(`api/role`, role);
   }
 
-  changeUserRole(id: string | number, data): Observable<any> {
-    return this.put(`api/role/${id}`, data);
+  changeUserRole(data): Observable<any> {
+    return this.put(`api/role`, data);
   }
 
   deleteUserRole(id: string | number): Observable<any> {
     return this.delete(`api/role/${id}`);
   }
 
-  addPermissionToRole(id: string | number, data): Observable<any> {
-    return this.put(`api/role/${id}/permission`, data);
+  addPermissionToRole(data): Observable<any> {
+    return this.post(`api/role/permissions/manage`, data);
   }
 
-  deletePermissionToRole(id: string | number, data): Observable<any> {
-    return this.delete(`api/role/${id}/permission`, data);
+  deletePermissionToRole(data): Observable<any> {
+    return this.delete(`api/role/permissions/manage?permission_id=${data.permission_id}&role_id=${data.role_id}`);
   }
 }

@@ -1,9 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {ItemsService} from '../../services/items.service';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs';
-import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons/faExclamationTriangle';
+import {systemIcon} from '../../../shared/variables/variables';
 
 @Component({
   selector: 'app-item-edit',
@@ -12,9 +12,13 @@ import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons/faExclama
 })
 export class ItemEditComponent implements OnInit, OnDestroy {
   public isLoaded = false;
-  public faExclamationCircle = faExclamationTriangle;
-  private editItem;
+  public faTimes = systemIcon.cancelIcon;
+  public formErrorIcon = systemIcon.errorForm;
+  public editItem;
+  public prewImg = true;
+  public url: string;
   public form: FormGroup;
+  fileToUpload: File = null;
   sub1 = new Subscription();
   sub2 = new Subscription();
   sub3 = new Subscription();
@@ -23,7 +27,8 @@ export class ItemEditComponent implements OnInit, OnDestroy {
 
   constructor(private itemsService: ItemsService,
               private route: ActivatedRoute,
-              private routes: Router) {
+              private routes: Router,
+              private element: ElementRef) {
   }
 
   getErrorEANMessage() {
@@ -70,16 +75,17 @@ export class ItemEditComponent implements OnInit, OnDestroy {
       .subscribe((params: Params) => {
         this.sub2 = this.itemsService.getItemByEan(params['ean'])
           .subscribe((data) => {
+            console.log(data);
             if (data) {
               this.isLoaded = true;
               this.editItem = data;
+              console.log(this.url = data.image);
               this.form.patchValue({
                 'ean': this.editItem.ean,
                 'sku': this.editItem.sku,
                 'name': this.editItem.name,
                 'price': this.editItem.price,
                 'category': this.editItem.category,
-                // 'image': this.editItem.image,
                 'size': this.editItem.size,
                 'color': this.editItem.color,
                 'country': this.editItem.country,
@@ -110,7 +116,31 @@ export class ItemEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  handleFileInput = (event: any): void => {
+    this.fileToUpload = event.target.files.item(0);
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+
+      reader.onload = (event: ProgressEvent) => {
+        this.url = (<FileReader>event.target).result;
+        this.prewImg = true;
+        console.log(this.url);
+      };
+
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  };
+
+  backToDefaultImg() {
+    this.prewImg = true;
+    this.url = '/assets/images/item-no-photo.png';
+    const input = this.element.nativeElement.querySelector('#image');
+    input.value = null;
+  }
+
+
   updateItem() {
+    console.log(this.form);
     const formData: FormData = new FormData();
     formData.append('ean', this.form.value.ean);
     formData.append('sku', this.form.value.sku);
@@ -126,9 +156,14 @@ export class ItemEditComponent implements OnInit, OnDestroy {
     formData.append('cross_weight', this.form.value.cross_weight);
     formData.append('net_weight', this.form.value.net_weight);
     formData.append('supplier', this.form.value.supplier);
-    console.log(formData);
+    if (this.fileToUpload) {
+      formData.append('image', this.fileToUpload, this.fileToUpload.name);
+    }
     this.sub3 = this.itemsService.updateItem(this.editItem.id, formData)
       .subscribe((data) => {
+        if (data.success) {
+          this.routes.navigateByUrl('items');
+        }
         console.log(data);
       });
   }
@@ -137,7 +172,6 @@ export class ItemEditComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       this.sub4 = this.itemsService.getItemByEan(control.value)
         .subscribe((data) => {
-          console.log(control.value);
           if (data !== null && data.ean === this.editItem.ean) {
             resolve(null);
           } else if (data !== null) {

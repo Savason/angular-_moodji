@@ -8,6 +8,8 @@ import {UiSwitchModule} from 'ngx-ui-switch';
 import {GrowlModule} from 'primeng/growl';
 import { NotificationComponent } from './components/notification/notification.component';
 import {SystemLoaderComponent} from './components/loader/system-loader.component';
+import {AccordionModule, TooltipModule} from 'primeng/primeng';
+import {ModalSmLoaderComponent} from './components/loader/modal-sm-loader.component';
 
 @NgModule({
   imports: [
@@ -15,6 +17,8 @@ import {SystemLoaderComponent} from './components/loader/system-loader.component
     FontAwesomeModule,
     NgxDatatableModule,
     GrowlModule,
+    AccordionModule,
+    TooltipModule,
   ],
   exports: [
     FontAwesomeModule,
@@ -24,12 +28,16 @@ import {SystemLoaderComponent} from './components/loader/system-loader.component
     UiSwitchModule,
     GrowlModule,
     NotificationComponent,
-    SystemLoaderComponent
+    SystemLoaderComponent,
+    ModalSmLoaderComponent,
+    AccordionModule,
+    TooltipModule,
   ],
   declarations: [
     PagenotfoundComponent,
     NotificationComponent,
     SystemLoaderComponent,
+    ModalSmLoaderComponent
   ]
 })
 export class SharedModule {

@@ -11,6 +11,7 @@ import {BehaviorSubject, Subscription} from 'rxjs';
 import {faTrashAlt} from '@fortawesome/free-solid-svg-icons/faTrashAlt';
 import {faPlus} from '@fortawesome/free-solid-svg-icons/faPlus';
 import {faSyncAlt} from '@fortawesome/free-solid-svg-icons/faSyncAlt';
+import {faEllipsisH} from '@fortawesome/free-solid-svg-icons/faEllipsisH';
 
 @Component({
   selector: 'app-user-list',
@@ -24,6 +25,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   public faDelete = faTrashAlt;
   public faPlus = faPlus;
   public faSyncAlt = faSyncAlt;
+  public faEllipsisH = faEllipsisH;
   public id: number;
   public deletedUser;
   public statusChangedUser;
@@ -83,6 +85,7 @@ export class UserListComponent implements OnInit, OnDestroy {
       this.sub2 = this.accountService.deactivateUser(id)
         .subscribe((data) => {
           if (data.success) {
+            console.log(data);
             this.statusChangedUser = this.rows.value.find(user => user.id === id);
             this.statusChangedUser.enabled = data.value.enabled;
             this.notificationService.notify('warn', '', `User ${data.value.email} has been disabled successfully!`);
@@ -146,10 +149,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     };
     this.modalRef = this.modalService.show(EditUserComponent, Object.assign({initialState}, {class: 'modal-lg'}));
     this.modalService.onHide.subscribe((data) => {
-      // console.log(data);
       if (data === 'edit_success') {
-        // const index = this.rows.value.findIndex(user => user.id === this.accountService.currentEditedUser.id);
-        // this.rows.value[index] = this.accountService.currentEditedUser;
         this.setPage({offset: `${this.page.pageNumber}`});
       }
     });
