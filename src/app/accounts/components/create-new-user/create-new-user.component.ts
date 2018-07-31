@@ -122,6 +122,7 @@ export class CreateNewUserComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => {
       this.sub3 = this.accountService.getUserByEmail(control.value)
         .subscribe((data) => {
+          console.log(data);
           if (data !== null) {
             resolve({forbiddenEmail: true});
           } else {

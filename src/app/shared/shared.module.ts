@@ -10,6 +10,7 @@ import { NotificationComponent } from './components/notification/notification.co
 import {SystemLoaderComponent} from './components/loader/system-loader.component';
 import {AccordionModule, TooltipModule} from 'primeng/primeng';
 import {ModalSmLoaderComponent} from './components/loader/modal-sm-loader.component';
+import {ToastModule} from 'primeng/toast';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import {ModalSmLoaderComponent} from './components/loader/modal-sm-loader.compon
     FontAwesomeModule,
     NgxDatatableModule,
     GrowlModule,
+    ToastModule,
     AccordionModule,
     TooltipModule,
   ],
@@ -27,6 +29,7 @@ import {ModalSmLoaderComponent} from './components/loader/modal-sm-loader.compon
     NgxDatatableModule,
     UiSwitchModule,
     GrowlModule,
+    ToastModule,
     NotificationComponent,
     SystemLoaderComponent,
     ModalSmLoaderComponent,

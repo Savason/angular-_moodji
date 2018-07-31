@@ -4,7 +4,12 @@
     padding: 0!important;
   }
   .custom_table_roles {
+    margin-bottom: 0;
     tr {
+      border-top: 1px solid #dee2e6;
+      td{
+        border: none;
+      }
       &:hover {
         background: #f7f7f7;
       }

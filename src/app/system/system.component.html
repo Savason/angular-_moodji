@@ -17,7 +17,7 @@
        Accounts
         </span>
         </a>
-        <div class="sub_menu">
+        <div class="sub_menu" [ngClass]="setVisibility?'hide_menu_item':''" (click)="onSetVisibility()">
           <a class="app_navigation_link" [routerLink]="['/accounts/role_table']" routerLinkActive="active">
             <fa-icon [icon]="rmsIcon"></fa-icon>
             <span>RMS</span>

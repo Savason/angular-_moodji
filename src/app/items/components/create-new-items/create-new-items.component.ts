@@ -17,6 +17,7 @@ export class CreateNewItemsComponent implements OnInit, OnDestroy {
   public prewImg = false;
   public cancelIcon = systemIcon.cancelIcon;
   public formErrorIcon = systemIcon.errorForm;
+  public uploadIcon = systemIcon.uploadIcon;
   fileToUpload: File = null;
   sub1 = new Subscription();
   sub2 = new Subscription();
@@ -129,7 +130,7 @@ export class CreateNewItemsComponent implements OnInit, OnDestroy {
             this.notificationService.notify('warn', '', `${data.error}`);
           }
         },
-        error2 => {
+        error1 => {
           this.notificationService.notify('error', '', `Something went wrong please try repeat letter!`);
         });
   }

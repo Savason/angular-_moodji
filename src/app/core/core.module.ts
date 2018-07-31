@@ -9,6 +9,7 @@ import {AccountManagementService} from '../accounts/services/account.management.
 import {RolesManagementService} from '../accounts/services/roles.management.service';
 import {ItemsService} from '../items/services/items.service';
 import {NotificationsService} from '../shared/services/notifications.service';
+import {PermissionsService} from './services/permissions.service';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import {NotificationsService} from '../shared/services/notifications.service';
   ],
   providers: [
     AuthGuard,
+    PermissionsService,
     UserAuthService,
     AccountManagementService,
     RolesManagementService,

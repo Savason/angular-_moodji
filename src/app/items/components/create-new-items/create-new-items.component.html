@@ -97,6 +97,10 @@
           <fa-icon [icon]="cancelIcon"></fa-icon>
         </span>
         <label for="image" class="prew_img_wrapper">
+          <div class="img_upload_hover">
+            <div class="upload_title">Click to upload new image</div>
+            <fa-icon [icon]="uploadIcon"></fa-icon>
+          </div>
           <input #fileInput type="file" formControlName="image" (change)="handleFileInput($event)"
                  class="form-control-file input_file" id="image"
                  placeholder="Image">

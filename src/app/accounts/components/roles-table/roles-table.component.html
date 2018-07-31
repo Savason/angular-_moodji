@@ -6,17 +6,17 @@
   <fa-icon [icon]="addIcon"></fa-icon>
 </a>
 <div class="container" *ngIf="isLoaded">
-  <p-accordion>
-    <p-accordionTab *ngFor="let per of permissionTable.parents" [selected]="true" header="{{per.name}}">
+  <p-accordion (onOpen)="onTabOpen($event)" [activeIndex]="idx">
+    <p-accordionTab *ngFor="let per of permissionTable.parents;let i = index" header="{{per.name}}" [selected]="i === idx">
       <div style="overflow-y: auto">
         <table class="custom_table_roles table">
-          <tr class="table_header">
-            <td>
+          <tr class="table_header" style="display: flex">
+            <td style="width: 200px;display: inline-block">
               <span style="font-weight: bold;font-size: 14px;color: #878787;">
                 Permissions
               </span>
             </td>
-            <td style="width: 10%" *ngFor="let role of permissionTable.roles">
+            <td style="width: 200px;display: inline-block" *ngFor="let role of permissionTable.roles">
               <div class="role_name_wrapper">
                 <div class="role_name">{{role.name}}</div>
                 <div *ngIf="role.name!=='ADMIN'" class="role_name_actions">
@@ -35,13 +35,18 @@
             </td>
           </tr>
           <tr *ngFor="let perm of per.permissions">
-            <td class="permission_name">
+            <td style="width: 200px;display: inline-block" class="permission_name">
               <span>{{perm.name}}</span>
             </td>
-            <td *ngFor="let option of perm.options" class="{{option.roleId}} permission_td">
-              <input [disabled]="option.roleId===admin.roleId" [checked]="option.hasAccess" [ngModel]="option.hasAccess"
-                     (change)="onPermissionChange(perm, option)" type="checkbox"
-                     attr.data-permissions="{{perm.id}}">
+            <td style="width: 200px;display: inline-block" *ngFor="let option of perm.options"
+                class="{{option.roleId}} permission_td">
+              <label class="custom_checkbox">
+                <input [disabled]="option.roleId===admin.roleId" [checked]="option.hasAccess"
+                       [ngModel]="option.hasAccess"
+                       (change)="onPermissionChange(perm, option)" type="checkbox"
+                       attr.data-permissions="{{perm.id}}">
+                <span></span>
+              </label>
             </td>
           </tr>
         </table>
@@ -56,8 +61,46 @@
       </h5>
     </div>
     <div class="modal-footer">
-      <button type="button" class="app_btn" (click)="deleteRole(deletedRole.roleId)">Yes</button>
+      <button type="button" class="app_btn" (click)="deleteRole(deletedRole.roleId, RedefineUsersTemplate)">Yes</button>
       <button type="button" class="app_btn" aria-label="Close" (click)="modalRef.hide()">Cancel</button>
+    </div>
+  </ng-template>
+  <!-- Redefine Users Before Role Delete -->
+  <ng-template #RedefineUsersTemplate>
+    <div class="modal-header">
+      <h5 style="text-align: center" class="modal-title pull-left">
+        There are users with role you are trying to delete. Please select new role for such users.
+      </h5>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="form" (ngSubmit)="onRedefinedRoles()">
+        <div class="form-group">
+          <label for="accountType" class="d-flex col-md-12">
+            Account Type
+            <span class="required_badge">*</span>
+          </label>
+          <div class="col-md-12">
+            <select [ngClass]="{
+          'has_danger': form.get('role_id').invalid && (form.get('role_id').dirty || form.get('role_id').touched),
+          'has_success': form.get('role_id').valid && (form.get('role_id').dirty || form.get('role_id').touched)
+          }"
+                    formControlName="role_id" class="form-control role_title" id="accountType">
+              <option [ngValue]="null" [disabled]="true">Select client role</option>
+              <option class="role_title" *ngFor="let role of redefinedRoles" [value]="role.id">
+                {{role.role}}
+              </option>
+            </select>
+            <div class="login_error" *ngIf="form.get('role_id').invalid&&form.get('role_id').touched">
+              <fa-icon [icon]="errorForm"></fa-icon>
+              {{getErrorTypeMessage()}}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 d-flex justify-content-between modal_action_footer">
+          <button type="button" class="app_btn" (click)="onFormClose()">Cancel</button>
+          <button [disabled]="form.invalid||form.pending" class="app_btn login_btn">Delete</button>
+        </div>
+      </form>
     </div>
   </ng-template>
 </div>

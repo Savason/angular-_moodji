@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewEncapsulation} from '@angular/core';
 import {RolesManagementService} from '../../services/roles.management.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {systemIcon} from '../../../shared/variables/variables';
@@ -6,6 +6,7 @@ import {NotificationsService} from '../../../shared/services/notifications.servi
 import {Subscription} from 'rxjs';
 import {CreateNewRoleComponent} from './create-new-role/create-new-role.component';
 import {EditRoleComponent} from './edit-role/edit-role.component';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 
 @Component({
@@ -14,14 +15,19 @@ import {EditRoleComponent} from './edit-role/edit-role.component';
   styleUrls: ['./roles-table.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class RolesTableComponent implements OnInit, OnDestroy {
+export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
   public isLoaded = false;
+  public form: FormGroup;
   public addIcon = systemIcon.addIcon;
   public deleteIcon = systemIcon.cancelIcon;
   public editIcon = systemIcon.editIcon;
+  public errorForm = systemIcon.errorForm;
   public permissionTable;
   public deletedRole;
   public admin;
+  private hasUsers;
+  public redefinedRoles;
+  public usersRolesForDelete;
   modalRef: BsModalRef;
   sub1 = new Subscription();
   sub2 = new Subscription();
@@ -29,6 +35,9 @@ export class RolesTableComponent implements OnInit, OnDestroy {
   sub4 = new Subscription();
   sub5 = new Subscription();
   sub6 = new Subscription();
+  sub7 = new Subscription();
+  sub8 = new Subscription();
+  idx: number;
 
   constructor(private permissionsService: RolesManagementService,
               private modalService: BsModalService,
@@ -36,7 +45,11 @@ export class RolesTableComponent implements OnInit, OnDestroy {
               private element: ElementRef) {
   }
 
-  ngOnInit() {
+  getErrorTypeMessage() {
+    return this.form.get('role_id')['errors']['required'] ? 'This field is required' : '';
+  }
+
+  ngAfterViewInit() {
     this.sub1 = this.permissionsService.getPermissionTable()
       .subscribe((data) => {
         this.isLoaded = true;
@@ -44,7 +57,14 @@ export class RolesTableComponent implements OnInit, OnDestroy {
         this.permissionsService.permissionList = data.rms;
         this.permissionTable = this.permissionsService.permissionList;
         this.admin = this.permissionTable.roles.find(role => role.name === 'ADMIN');
+        this.idx = 0;
       });
+  }
+
+  ngOnInit() {
+    this.form = new FormGroup({
+      'role_id': new FormControl(null, [Validators.required]),
+    });
   }
 
   ngOnDestroy() {
@@ -66,12 +86,19 @@ export class RolesTableComponent implements OnInit, OnDestroy {
     if (this.sub6) {
       this.sub6.unsubscribe();
     }
+    if (this.sub7) {
+      this.sub7.unsubscribe();
+    }
+    if (this.sub8) {
+      this.sub8.unsubscribe();
+    }
   }
 
   createRoleModal() {
-    this.modalRef = this.modalService.show(CreateNewRoleComponent, Object.assign({}, {class: 'modal-lg'}));
+    this.modalRef = this.modalService.show(CreateNewRoleComponent, Object.assign({}, {class: 'modal-md'}));
     this.sub2 = this.modalService.onHide.subscribe((data) => {
-      // console.log(data);
+      console.log(data);
+      this.sub2.unsubscribe();
       if (data === 'create_success') {
         this.permissionTable = this.permissionsService.newPermissionsList;
       }
@@ -84,15 +111,14 @@ export class RolesTableComponent implements OnInit, OnDestroy {
       editUserName: role.name,
     };
     console.log(initialState);
-    this.modalRef = this.modalService.show(EditRoleComponent, Object.assign({initialState}, {class: 'modal-lg'}));
+    this.modalRef = this.modalService.show(EditRoleComponent, Object.assign({initialState}, {class: 'modal-md'}));
     this.sub3 = this.modalService.onHide.subscribe((data) => {
+      this.sub3.unsubscribe();
       console.log(data);
       if (data === 'edit_success') {
-        console.log(this.permissionsService.editedRole);
+        // console.log(this.permissionsService.editedRole);
         const idx = this.permissionTable.roles.findIndex(r => r.roleId === this.permissionsService.editedRole.roleId);
-        console.log(idx);
         this.permissionTable.roles[idx] = this.permissionsService.editedRole;
-        console.log(this.permissionTable.roles);
       }
     });
   }
@@ -109,7 +135,7 @@ export class RolesTableComponent implements OnInit, OnDestroy {
           if (data.success) {
             console.log(data);
             option.hasAccess = false;
-            this.notificationService.notify('success', '', `Permissions ${perm.name} has been removed successfully!`);
+            this.notificationService.notify('warn', '', `Permissions ${perm.name} has been removed successfully!`);
           } else if (data.error) {
             this.notificationService.notify('error', '', `${data.error}`);
           }
@@ -135,19 +161,60 @@ export class RolesTableComponent implements OnInit, OnDestroy {
   confirmDeleteRole(template: TemplateRef<any>, role) {
     this.modalRef = this.modalService.show(template);
     this.deletedRole = role;
-    console.log(role);
+    // console.log(role.roleId);
+    this.sub8 = this.permissionsService.getUsersByRoleId(role.roleId)
+      .subscribe((data) => {
+        this.hasUsers = data;
+      });
   }
 
-  deleteRole(id) {
-    console.log(id);
-    this.sub6 = this.permissionsService.deleteUserRole(id)
+  deleteRole(id, template: TemplateRef<any>) {
+    this.modalRef.hide();
+    if (this.hasUsers === true) {
+      console.log(true);
+      console.log(this.deletedRole.roleId);
+      this.sub7 = this.permissionsService.getUsersRoles()
+        .subscribe((data) => {
+          console.log(data);
+          this.usersRolesForDelete = data;
+          this.redefinedRoles = this.usersRolesForDelete.filter(r => r.id !== this.deletedRole.roleId);
+          console.log(this.redefinedRoles);
+          this.modalRef = this.modalService.show(template);
+        });
+    } else {
+      console.log(id);
+      this.sub6 = this.permissionsService.deleteUserRole(id)
+        .subscribe((data) => {
+          this.modalRef.hide();
+          if (data.success) {
+            console.log(data);
+            const afterRoleDeleted = this.permissionTable.roles.filter(role => role.roleId !== this.deletedRole.roleId);
+            this.permissionTable.roles = afterRoleDeleted;
+            const deletedPermission = this.element.nativeElement.getElementsByClassName(this.deletedRole.roleId);
+            for (let i = deletedPermission.length - 1; i >= 0; --i) {
+              deletedPermission[i].remove();
+            }
+            this.notificationService.notify('warn', '', `Role ${this.deletedRole.name} has been deleted successfully!`);
+          } else if (data.error) {
+            this.notificationService.notify('error', '', `${data.error}`);
+          }
+        }, error1 => {
+          this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
+        });
+    }
+  }
+
+  onRedefinedRoles() {
+    const {role_id} = this.form.value;
+    console.log(role_id);
+    this.permissionsService.deleteUserRole(this.deletedRole.roleId, role_id)
       .subscribe((data) => {
-        this.modalRef.hide();
         if (data.success) {
           console.log(data);
-          const afterRoleDeleted = this.permissionTable.roles.filter(role => role.roleId !== id);
+          this.onFormClose();
+          const afterRoleDeleted = this.permissionTable.roles.filter(role => role.roleId !== this.deletedRole.roleId);
           this.permissionTable.roles = afterRoleDeleted;
-          const deletedPermission = this.element.nativeElement.getElementsByClassName(id);
+          const deletedPermission = this.element.nativeElement.getElementsByClassName(this.deletedRole.roleId);
           for (let i = deletedPermission.length - 1; i >= 0; --i) {
             deletedPermission[i].remove();
           }
@@ -158,5 +225,14 @@ export class RolesTableComponent implements OnInit, OnDestroy {
       }, error1 => {
         this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
       });
+  }
+
+  onFormClose() {
+    this.modalRef.hide();
+    this.form.reset();
+  }
+
+  onTabOpen(event) {
+    this.idx = event.index;
   }
 }

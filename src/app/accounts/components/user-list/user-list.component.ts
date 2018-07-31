@@ -37,6 +37,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   sub2 = new Subscription();
   sub3 = new Subscription();
   sub4 = new Subscription();
+  sub5 = new Subscription();
 
   constructor(public accountService: AccountManagementService,
               private modalService: BsModalService,
@@ -62,6 +63,9 @@ export class UserListComponent implements OnInit, OnDestroy {
     if (this.sub4) {
       this.sub4.unsubscribe();
     }
+    if (this.sub5) {
+      this.sub5.unsubscribe();
+    }
   }
 
   setPage(pageInfo) {
@@ -75,6 +79,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.accountService.totalUserCount = pagedData.users_count;
         this.page.totalPages = this.accountService.totalUserCount;
         this.page.pageNumber = pagedData.page;
+        console.log(this.rows.value);
       }, error2 => {
         this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
       });
@@ -148,7 +153,8 @@ export class UserListComponent implements OnInit, OnDestroy {
       editUserId: id,
     };
     this.modalRef = this.modalService.show(EditUserComponent, Object.assign({initialState}, {class: 'modal-lg'}));
-    this.modalService.onHide.subscribe((data) => {
+    this.sub5 = this.modalService.onHide.subscribe((data) => {
+      this.sub5.unsubscribe();
       if (data === 'edit_success') {
         this.setPage({offset: `${this.page.pageNumber}`});
       }

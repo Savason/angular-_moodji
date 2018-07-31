@@ -84,7 +84,7 @@ export class CreateNewRoleComponent implements OnInit, OnDestroy {
     clearTimeout(this.debounceTime);
     return new Promise((resolve) => {
       this.debounceTime = setTimeout(() => {
-        this.sub3 = this.permissionsService.getRoleByName(control.value)
+        this.sub3 = this.permissionsService.getRoleByKey(control.value)
           .subscribe((data) => {
             console.log(data);
             if (data !== null) {

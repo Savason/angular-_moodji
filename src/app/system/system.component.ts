@@ -9,6 +9,7 @@ import {systemIcon} from '../shared/variables/variables';
 })
 export class SystemComponent {
   public isAuthorized = false;
+  public setVisibility = false;
   public itemIcon = systemIcon.itemIcon;
   public lofOutIcon = systemIcon.logOutIcon;
   public userIcon = systemIcon.userIcon;
@@ -20,6 +21,10 @@ export class SystemComponent {
       this.isAuthorized = authStatus;
     });
     this.checkEnteredUserExistingLocalStorage();
+  }
+
+  onSetVisibility() {
+    this.setVisibility = true;
   }
 
   private checkEnteredUserExistingLocalStorage() {

@@ -16,7 +16,7 @@ export class EditRoleComponent implements OnInit, OnDestroy {
   public editRoleForm: FormGroup;
   private debounceTime: any;
   public errorForm = systemIcon.errorForm;
-  private editUserName;
+  private editUserId;
   private currentUser;
   sub1 = new Subscription();
   sub2 = new Subscription();
@@ -35,14 +35,14 @@ export class EditRoleComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log(this.editUserName);
-    this.sub1 = this.permissionsService.getRoleByName(this.editUserName)
+    console.log(this.editUserId);
+    this.sub1 = this.permissionsService.getRoleByKey(this.editUserId)
       .subscribe((data) => {
         if (data !== null) {
           console.log(data);
           this.currentUser = data;
           this.editRoleForm.patchValue({
-            'name': this.currentUser.roleName
+            'name': this.currentUser.name
           });
         }
       });
@@ -67,18 +67,20 @@ export class EditRoleComponent implements OnInit, OnDestroy {
   editCurrentRole() {
     const {name} = this.editRoleForm.value;
     const editRole = new RoleModel(name, this.currentUser.roleId);
-    // this.permissionsService.editedRole.roleId = editRole.role_id;
-    // this.permissionsService.editedRole.name = editRole.name;
     console.log(editRole);
     this.sub2 = this.permissionsService.changeUserRole(editRole)
       .subscribe((data) => {
         this.onFormClose();
         if (data.success) {
-          this.permissionsService.editedRole.name = editRole.name;
-          this.permissionsService.editedRole.roleId = this.currentUser.roleId;
           this.modalService.setDismissReason('edit_success');
-          console.log(data);
+          console.log(data.success);
+          this.permissionsService.editedRole = data.success.value;
+          this.notificationService.notify('success', '', `Role ${data.success.value.name} has been updated successfully!`);
+        } else if (data.error) {
+          this.notificationService.notify('error', '', `${data.error}`);
         }
+      }, error1 => {
+        this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
       });
   }
 
@@ -91,7 +93,7 @@ export class EditRoleComponent implements OnInit, OnDestroy {
     clearTimeout(this.debounceTime);
     return new Promise((resolve) => {
       this.debounceTime = setTimeout(() => {
-        this.sub3 = this.permissionsService.getRoleByName(control.value)
+        this.sub3 = this.permissionsService.getRoleByKey(control.value)
           .subscribe((data) => {
             console.log(data);
             if (data !== null && data.roleName === this.currentUser.roleName) {

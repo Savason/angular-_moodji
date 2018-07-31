@@ -7,18 +7,26 @@ import {Observable} from 'rxjs';
 export class RolesManagementService extends BaseApi {
   public newPermissionsList = [];
   public permissionList;
-  public editedRole = {roleId: '', name: ''};
+  public editedRole;
 
   constructor(public http: HttpClient) {
     super(http);
+  }
+
+  getUsersRoles(): Observable<any> {
+    return this.get(`api/role`);
   }
 
   getPermissionTable(): Observable<any> {
     return this.get(`api/permission`);
   }
 
-  getRoleByName(name: string): Observable<any> {
-    return this.get(`api/role/${name}`);
+  getRoleByKey(key: string | number): Observable<any> {
+    return this.get(`api/role/${key}`);
+  }
+
+  getUsersByRoleId(id: number): Observable<any> {
+    return this.get(`api/users/role/${id}`);
   }
 
   createUserRole(role): Observable<any> {
@@ -29,8 +37,8 @@ export class RolesManagementService extends BaseApi {
     return this.put(`api/role`, data);
   }
 
-  deleteUserRole(id: string | number): Observable<any> {
-    return this.delete(`api/role/${id}`);
+  deleteUserRole(id: string | number, redefineId?: string | number): Observable<any> {
+    return this.delete(`api/role/${id}?role_id=${redefineId}`);
   }
 
   addPermissionToRole(data): Observable<any> {

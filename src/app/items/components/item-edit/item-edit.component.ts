@@ -14,11 +14,13 @@ export class ItemEditComponent implements OnInit, OnDestroy {
   public isLoaded = false;
   public faTimes = systemIcon.cancelIcon;
   public formErrorIcon = systemIcon.errorForm;
+  public uploadIcon = systemIcon.uploadIcon;
   public editItem;
   public prewImg = true;
   public url: string;
   public form: FormGroup;
   fileToUpload: File = null;
+  private changeUploadImg = false;
   sub1 = new Subscription();
   sub2 = new Subscription();
   sub3 = new Subscription();
@@ -136,6 +138,8 @@ export class ItemEditComponent implements OnInit, OnDestroy {
     this.url = '/assets/images/item-no-photo.png';
     const input = this.element.nativeElement.querySelector('#image');
     input.value = null;
+    this.fileToUpload = null;
+    console.log(this.fileToUpload);
   }
 
 
@@ -156,8 +160,9 @@ export class ItemEditComponent implements OnInit, OnDestroy {
     formData.append('cross_weight', this.form.value.cross_weight);
     formData.append('net_weight', this.form.value.net_weight);
     formData.append('supplier', this.form.value.supplier);
-    if (this.fileToUpload) {
-      formData.append('image', this.fileToUpload, this.fileToUpload.name);
+    if (this.changeUploadImg === true) {
+      console.log('true');
+    formData.append('image', this.fileToUpload);
     }
     this.sub3 = this.itemsService.updateItem(this.editItem.id, formData)
       .subscribe((data) => {

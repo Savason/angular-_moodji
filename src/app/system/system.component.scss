@@ -23,6 +23,8 @@ header{
     li{
       display: inline-block;
       position: relative;
+      .hide_menu_item{
+      }
       &:hover .sub_menu{
         display: block;
         position: absolute;
