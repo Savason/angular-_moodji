@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {SearchParams} from '../../models/search.pagination.model';
 import {faChevronLeft, faChevronRight, faStepBackward, faStepForward} from '@fortawesome/free-solid-svg-icons';
 
