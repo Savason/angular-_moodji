@@ -11,6 +11,7 @@ import {SystemLoaderComponent} from './components/loader/system-loader.component
 import {AccordionModule, TooltipModule} from 'primeng/primeng';
 import {ModalSmLoaderComponent} from './components/loader/modal-sm-loader.component';
 import {ToastModule} from 'primeng/toast';
+import {PaginationComponent} from './components/pagination/pagination.component';
 
 @NgModule({
   imports: [
@@ -40,7 +41,8 @@ import {ToastModule} from 'primeng/toast';
     PagenotfoundComponent,
     NotificationComponent,
     SystemLoaderComponent,
-    ModalSmLoaderComponent
+    ModalSmLoaderComponent,
+    PaginationComponent
   ]
 })
 export class SharedModule {
