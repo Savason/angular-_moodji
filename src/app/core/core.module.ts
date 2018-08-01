@@ -1,5 +1,6 @@
 import {NgModule, Optional, SkipSelf} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {LocationStrategy, HashLocationStrategy} from '@angular/common';
 import {HomeComponent} from './components/home/home.component';
 import {AuthGuard} from './guards/auth.guard';
 import {JwtInterceptor} from './helpers/jwt.interceptor.service';
@@ -20,8 +21,8 @@ import {PermissionsService} from './services/permissions.service';
   ],
   providers: [
     AuthGuard,
-    PermissionsService,
     UserAuthService,
+    PermissionsService,
     AccountManagementService,
     RolesManagementService,
     ItemsService,
@@ -31,6 +32,9 @@ import {PermissionsService} from './services/permissions.service';
       useClass: JwtInterceptor,
       multi: true
     },
+    {
+      provide: LocationStrategy, useClass: HashLocationStrategy
+    }
   ]
 })
 export class CoreModule {

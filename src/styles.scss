@@ -42,6 +42,9 @@ fa-icon {
 label.custom_checkbox > input[type='checkbox'] {
   height: 0;
   width: 0;
+  position: absolute;
+  z-index:-100;
+  left: 10000px;
 }
 
 label.custom_checkbox {

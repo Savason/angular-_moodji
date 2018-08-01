@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {faInfoCircle} from '@fortawesome/free-solid-svg-icons/faInfoCircle';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {AccountManagementService} from '../../services/account.management.service';
@@ -12,6 +12,8 @@ import {faTrashAlt} from '@fortawesome/free-solid-svg-icons/faTrashAlt';
 import {faPlus} from '@fortawesome/free-solid-svg-icons/faPlus';
 import {faSyncAlt} from '@fortawesome/free-solid-svg-icons/faSyncAlt';
 import {faEllipsisH} from '@fortawesome/free-solid-svg-icons/faEllipsisH';
+import {PermissionsService} from '../../../core/services/permissions.service';
+import {DatatableComponent} from '@swimlane/ngx-datatable';
 
 @Component({
   selector: 'app-user-list',
@@ -33,21 +35,32 @@ export class UserListComponent implements OnInit, OnDestroy {
   page = new Page();
   rows: BehaviorSubject<any>;
   modalRef: BsModalRef;
+  perm;
   sub1 = new Subscription();
   sub2 = new Subscription();
   sub3 = new Subscription();
   sub4 = new Subscription();
   sub5 = new Subscription();
+  @ViewChild(DatatableComponent) table: DatatableComponent;
 
   constructor(public accountService: AccountManagementService,
               private modalService: BsModalService,
-              private notificationService: NotificationsService) {
+              private notificationService: NotificationsService,
+              private permService: PermissionsService) {
     this.page.pageNumber = 0;
     this.page.size = 10;
   }
 
   ngOnInit() {
     this.setPage({offset: 0});
+    this.permService.getUserPermissions().subscribe((data) => {
+      this.perm = data;
+      console.log(this.perm);
+    });
+  }
+
+  checkPermission(perm) {
+    return this.perm.find(p => p === perm);
   }
 
   ngOnDestroy() {
@@ -78,10 +91,24 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.rows = this.accountService.Users$;
         this.accountService.totalUserCount = pagedData.users_count;
         this.page.totalPages = this.accountService.totalUserCount;
-        this.page.pageNumber = pagedData.page;
+        // this.page.pageNumber = pagedData.page;
         console.log(this.rows.value);
       }, error2 => {
         this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
+      });
+  }
+
+  updateDataTable(event) {
+    const val = event.target.value;
+    console.log(val);
+    this.accountService.getAllUsers('', val)
+      .subscribe((data) => {
+        console.log(data);
+        this.accountService.setDataUser(data.users);
+        this.rows = this.accountService.Users$;
+        this.accountService.totalUserCount = data.users_count;
+        this.page.totalPages = this.accountService.totalUserCount;
+        this.table.offset = 0;
       });
   }
 

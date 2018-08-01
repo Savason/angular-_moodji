@@ -1,176 +1,181 @@
 <app-system-loader *ngIf="!isLoaded"></app-system-loader>
 <div class="items_list_wrapper" *ngIf="isLoaded">
-  <a tooltipPosition="left" pTooltip="New item"
-     showDelay="200" hideDelay="200"
-     class="create_circle_btn"
-     [routerLink]="['new_item']">
-    <fa-icon [icon]="faPlus"></fa-icon>
-  </a>
-  <div class="d-flex justify-content-end">
-    <div class="btn-group" dropdown placement="bottom right">
-      <button id="button-basic-top" dropdownToggle
-              tooltipPosition="top" pTooltip="Table actions"
-              showDelay="200" hideDelay="200"
-              type="button" class="table_items_action"
-              aria-controls="dropdown-basic">
-        <fa-icon [icon]="slider"></fa-icon>
-      </button>
-      <ul id="dropdown-basic-top" *dropdownMenu class="dropdown-menu dropdown-menu-right table_dropdown"
-          role="menu" aria-labelledby="button-basic">
-        <li role="menuitem" (click)="showRowDetails()">
-          <a class="dropdown-item">
-            <fa-icon [icon]="faInfo"></fa-icon>
-            <span>Show items details</span>
-          </a>
-        </li>
-        <li role="menuitem" (click)="hideRowDetails()">
-          <a class="dropdown-item">
-            <fa-icon [icon]="hideEye"></fa-icon>
-            <span>Hide items details</span>
-          </a>
-        </li>
-        <li role="menuitem" (click)="refreshData()">
-          <a class="dropdown-item">
-            <fa-icon [icon]="faSyncAlt"></fa-icon>
-            <span>Refresh table</span>
-          </a>
-        </li>
-      </ul>
+  <div *ngIf="checkPermission('ITEM_LIST')">
+    <a *ngIf="checkPermission('ITEM_ADD')" tooltipPosition="left" pTooltip="New item"
+       showDelay="200" hideDelay="200"
+       class="create_circle_btn"
+       [routerLink]="['new_item']">
+      <fa-icon [icon]="faPlus"></fa-icon>
+    </a>
+    <div class="d-flex justify-content-between">
+      <div class="col-md-6" style="padding: 0">
+        <input (keyup)="updateDataTable($event)" class="form-control" type="text" placeholder="Search">
+      </div>
+      <div class="btn-group" dropdown placement="bottom right">
+        <button id="button-basic-top" dropdownToggle
+                tooltipPosition="top" pTooltip="Table actions"
+                showDelay="200" hideDelay="200"
+                type="button" class="table_items_action"
+                aria-controls="dropdown-basic">
+          <fa-icon [icon]="slider"></fa-icon>
+        </button>
+        <ul id="dropdown-basic-top" *dropdownMenu class="dropdown-menu dropdown-menu-right table_dropdown"
+            role="menu" aria-labelledby="button-basic">
+          <li role="menuitem" (click)="showRowDetails()">
+            <a class="dropdown-item">
+              <fa-icon [icon]="faInfo"></fa-icon>
+              <span>Show items details</span>
+            </a>
+          </li>
+          <li role="menuitem" (click)="hideRowDetails()">
+            <a class="dropdown-item">
+              <fa-icon [icon]="hideEye"></fa-icon>
+              <span>Hide items details</span>
+            </a>
+          </li>
+          <li role="menuitem" (click)="refreshData()">
+            <a class="dropdown-item">
+              <fa-icon [icon]="faSyncAlt"></fa-icon>
+              <span>Refresh table</span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
-  <ngx-datatable
-    class="material"
-    #myTable
-    [rows]="rows|async"
-    [headerHeight]="50"
-    [footerHeight]="50"
-    [rowHeight]="'auto'"
-    [columnMode]="'force'"
-    [externalPaging]="true"
-    [offset]="page.pageNumber"
-    [limit]="page.size"
-    [count]="page.totalElements"
-    (page)='setPage($event)'
-  >
-    <!-- Row Detail Template -->
-    <ngx-datatable-row-detail [rowHeight]="'auto'" #myDetailRow>
-      <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
-        <div>
-          <div><span class="details_subTitle">Size:</span> {{row.size}}</div>
-          <div><span class="details_subTitle">Color:</span> {{row.color}}</div>
-          <div><span class="details_subTitle">Country:</span> {{row.country}}</div>
-          <div><span class="details_subTitle">Package height:</span> {{row.package_height}}</div>
-          <div><span class="details_subTitle">Package length:</span> {{row.package_length}}</div>
-          <div><span class="details_subTitle">Package width:</span> {{row.package_width}}</div>
-          <div><span class="details_subTitle">Net weight:</span> {{row.net_weight}}</div>
-          <div><span class="details_subTitle">Supplier:</span> {{row.supplier}}</div>
-        </div>
-      </ng-template>
-    </ngx-datatable-row-detail>
-    <!-- End Row Detail Template -->
+    <ngx-datatable
+      class="material"
+      #myTable
+      [rows]="rows"
+      [headerHeight]="50"
+      [footerHeight]="50"
+      [rowHeight]="'auto'"
+      [columnMode]="'force'"
+      [externalPaging]="true"
+      [offset]="page.pageNumber"
+      [limit]="page.size"
+      [count]="page.totalElements"
+      (page)='setPage($event)'
+    >
+      <!-- Row Detail Template -->
+      <ngx-datatable-row-detail [rowHeight]="'auto'" #myDetailRow>
+        <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+          <div>
+            <div><span class="details_subTitle">Size:</span> {{row.size}}</div>
+            <div><span class="details_subTitle">Color:</span> {{row.color}}</div>
+            <div><span class="details_subTitle">Country:</span> {{row.country}}</div>
+            <div><span class="details_subTitle">Package height:</span> {{row.package_height}}</div>
+            <div><span class="details_subTitle">Package length:</span> {{row.package_length}}</div>
+            <div><span class="details_subTitle">Package width:</span> {{row.package_width}}</div>
+            <div><span class="details_subTitle">Net weight:</span> {{row.net_weight}}</div>
+            <div><span class="details_subTitle">Supplier:</span> {{row.supplier}}</div>
+          </div>
+        </ng-template>
+      </ngx-datatable-row-detail>
+      <!-- End Row Detail Template -->
 
-    <!-- Column Templates -->
-    <ngx-datatable-column
-      [width]="30"
-      [resizeable]="false"
-      [sortable]="false"
-      [draggable]="false"
-      [canAutoResize]="false">
-      <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
-        <a style="color: #7b7b7b"
-           href="javascript:void(0)"
-           [class.datatable-icon-right]="!expanded"
-           [class.datatable-icon-down]="expanded"
-           title="Expand/Collapse Row"
-           (click)="toggleExpandRow(row)">
-        </a>
-      </ng-template>
-    </ngx-datatable-column>
-    <!--End Colunm Remplates-->
-    <ngx-datatable-column name="EAN">
-      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-        <a class="ean_details" (click)="toggleExpandRow(row)">
-          {{row.ean}}
-        </a>
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="SKU">
-      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+      <!-- Column Templates -->
+      <ngx-datatable-column
+        [width]="30"
+        [resizeable]="false"
+        [sortable]="false"
+        [draggable]="false"
+        [canAutoResize]="false">
+        <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+          <a style="color: #7b7b7b"
+             href="javascript:void(0)"
+             [class.datatable-icon-right]="!expanded"
+             [class.datatable-icon-down]="expanded"
+             title="Expand/Collapse Row"
+             (click)="toggleExpandRow(row)">
+          </a>
+        </ng-template>
+      </ngx-datatable-column>
+      <!--End Colunm Remplates-->
+      <ngx-datatable-column name="EAN">
+        <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+          <a class="ean_details" (click)="toggleExpandRow(row)">
+            {{row.ean}}
+          </a>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="SKU">
+        <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span>
           {{row.sku}}
         </span>
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Name">
-      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Name">
+        <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span>
           {{row.name}}
         </span>
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Price">
-      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Price">
+        <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span>
           {{row.price}}
         </span>
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Category">
-      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Category">
+        <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span>
           {{row.category}}
         </span>
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Image" [sortable]="false">
-      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-        <img class="item_img" src="{{row.image}}" alt="item image">
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column headerClass="action_data_table" [cellClass]="'action_data_table'" name="Actions"
-                          [sortable]="false">
-      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-        <div class="btn-group" dropdown placement="bottom right">
-          <button id="button-basic" dropdownToggle type="button" class="btn table_action_btn"
-                  aria-controls="dropdown-basic">
-            <fa-icon [icon]="faEllipsisH"></fa-icon>
-          </button>
-          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right table_dropdown"
-              role="menu" aria-labelledby="button-basic">
-            <li role="menuitem">
-              <a class="dropdown-item" routerLink="{{row.ean}}"
-              >
-                <fa-icon [icon]="faInfo"></fa-icon>
-                <span>Details</span>
-              </a>
-            </li>
-            <li role="menuitem">
-              <a class="dropdown-item" routerLink="edit/{{row.ean}}"
-              >
-                <fa-icon [icon]="faEdit"></fa-icon>
-                <span>Edit</span>
-              </a>
-            </li>
-            <li role="menuitem">
-              <a class="dropdown-item" (click)="openModal(template, row.id, row.name)"
-              >
-                <fa-icon [icon]="faDelete"></fa-icon>
-                <span>Delete</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </ng-template>
-    </ngx-datatable-column>
-  </ngx-datatable>
-  <ng-template #template>
-    <div class="modal-header">
-      <h5 class="modal-title pull-left">Are you sure you want to delete <strong>{{deletedItem}}</strong> item?</h5>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="app_btn" (click)="onDeleteItem()">Yes</button>
-      <button type="button" class="app_btn" aria-label="Close" (click)="modalRef.hide()">Cancel</button>
-    </div>
-  </ng-template>
-
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Image" [sortable]="false">
+        <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+          <img class="item_img" src="{{row.image}}" alt="item image">
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column headerClass="action_data_table" [cellClass]="'action_data_table'" name="Actions"
+                            [sortable]="false">
+        <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+          <div class="btn-group" dropdown placement="bottom right">
+            <button id="button-basic" dropdownToggle type="button" class="btn table_action_btn"
+                    aria-controls="dropdown-basic">
+              <fa-icon [icon]="faEllipsisH"></fa-icon>
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right table_dropdown"
+                role="menu" aria-labelledby="button-basic">
+              <li role="menuitem">
+                <a class="dropdown-item" routerLink="{{row.ean}}"
+                >
+                  <fa-icon [icon]="faInfo"></fa-icon>
+                  <span>Details</span>
+                </a>
+              </li>
+              <li role="menuitem">
+                <a *ngIf="checkPermission('ITEM_UPDATE')" class="dropdown-item" routerLink="edit/{{row.ean}}"
+                >
+                  <fa-icon [icon]="faEdit"></fa-icon>
+                  <span>Edit</span>
+                </a>
+              </li>
+              <li role="menuitem">
+                <a *ngIf="checkPermission('ITEM_REMOVE')" class="dropdown-item"
+                   (click)="openModal(template, row.id, row.name)"
+                >
+                  <fa-icon [icon]="faDelete"></fa-icon>
+                  <span>Delete</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+    <ng-template #template>
+      <div class="modal-header">
+        <h5 class="modal-title pull-left">Are you sure you want to delete <strong>{{deletedItem}}</strong> item?</h5>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="app_btn" (click)="onDeleteItem()">Yes</button>
+        <button type="button" class="app_btn" aria-label="Close" (click)="modalRef.hide()">Cancel</button>
+      </div>
+    </ng-template>
+  </div>
 </div>
