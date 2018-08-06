@@ -22,40 +22,22 @@
       </div>
     </div>
     <div class="form-group">
-      <label for="email" class="d-flex col-md-12">
-        Email
-        <span class="required_badge">*</span>
-      </label>
-      <div class="col-md-12">
-        <input [ngClass]="{
-          'has_danger': form.get('email').invalid && (form.get('email').dirty || form.get('email').touched),
-          'has_success': form.get('email').valid && (form.get('email').dirty || form.get('email').touched)
-          }"
-               formControlName="email" type="email" class="form-control" id="email"
-               placeholder="Email">
-        <div class="login_error" *ngIf="form.get('email').invalid&&form.get('email').touched">
-          <fa-icon [icon]="faExclamationCircle"></fa-icon>
-          {{getErrorEmailMessage()}}
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
       <label for="accountType" class="d-flex col-md-12">
         Account Type
         <span class="required_badge">*</span>
       </label>
       <div class="col-md-12">
         <select [ngClass]="{
-          'has_danger': form.get('role_id').invalid && (form.get('role_id').dirty || form.get('role_id').touched),
-          'has_success': form.get('role_id').valid && (form.get('role_id').dirty || form.get('role_id').touched)
+          'has_danger': form.get('roleId').invalid && (form.get('roleId').dirty || form.get('roleId').touched),
+          'has_success': form.get('roleId').valid && (form.get('roleId').dirty || form.get('roleId').touched)
           }"
-                formControlName="role_id" class="form-control role_title" id="accountType">
+                formControlName="roleId" class="form-control role_title" id="accountType">
           <option [ngValue]="null" [disabled]="true">Select client role</option>
           <option class="role_title" *ngFor="let userRole of userRoles|async" [value]="userRole.id">
             {{userRole.role}}
           </option>
         </select>
-        <div class="login_error" *ngIf="form.get('role_id').invalid&&form.get('role_id').touched">
+        <div class="login_error" *ngIf="form.get('roleId').invalid&&form.get('roleId').touched">
           <fa-icon [icon]="faExclamationCircle"></fa-icon>
           {{getErrorTypeMessage()}}
         </div>

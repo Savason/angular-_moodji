@@ -20,7 +20,7 @@ export class ItemEditComponent implements OnInit, OnDestroy {
   public url: string;
   public form: FormGroup;
   fileToUpload: File = null;
-  private changeUploadImg = '1';
+  private changeUploadImg = '0';
   sub1 = new Subscription();
   sub2 = new Subscription();
   sub3 = new Subscription();
@@ -139,7 +139,7 @@ export class ItemEditComponent implements OnInit, OnDestroy {
     this.url = '/assets/images/item-no-photo.png';
     const input = this.element.nativeElement.querySelector('#image');
     input.value = null;
-    this.changeUploadImg = '0';
+    this.changeUploadImg = '1';
   }
 
 

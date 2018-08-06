@@ -13,6 +13,7 @@ import {faTrashAlt} from '@fortawesome/free-solid-svg-icons/faTrashAlt';
 import {faEllipsisH} from '@fortawesome/free-solid-svg-icons/faEllipsisH';
 import {faSyncAlt} from '@fortawesome/free-solid-svg-icons/faSyncAlt';
 import {faCloudUploadAlt} from '@fortawesome/free-solid-svg-icons/faCloudUploadAlt';
+import {faEye} from '@fortawesome/free-solid-svg-icons/faEye';
 
 export const regExps = {
   emailPattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -24,7 +25,6 @@ export const systemIcon = {
   userIcon: faUser,
   rmsIcon: faUnlockAlt,
   sliders: faSlidersH,
-  hideEye: faEyeSlash,
   errorForm: faExclamationTriangle,
   addIcon: faPlus,
   cancelIcon: faTimes,
@@ -33,6 +33,8 @@ export const systemIcon = {
   infoIcon: faInfoCircle,
   dropdownIcon: faEllipsisH,
   refreshIcon: faSyncAlt,
-  uploadIcon: faCloudUploadAlt
+  uploadIcon: faCloudUploadAlt,
+  showIcon: faEye,
+  hideIcon: faEyeSlash
 };
 

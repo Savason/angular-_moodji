@@ -128,7 +128,6 @@ export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
       this.sub3.unsubscribe();
       console.log(data);
       if (data === 'edit_success') {
-        // console.log(this.permissionsService.editedRole);
         const idx = this.permissionTable.roles.findIndex(r => r.roleId === this.permissionsService.editedRole.roleId);
         this.permissionTable.roles[idx] = this.permissionsService.editedRole;
       }

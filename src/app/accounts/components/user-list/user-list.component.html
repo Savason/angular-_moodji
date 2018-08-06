@@ -35,21 +35,14 @@
       <ngx-datatable-column name="Name" [flexGrow]="2">
         <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span>
-          {{row.name}}
-        </span>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column name="Email" [flexGrow]="3">
-        <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
-        <span>
-          {{row.email}}
+          {{row.username}}
         </span>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column name="Client role" [flexGrow]="2">
         <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <span class="role_title">
-          {{row.role_title}}
+          {{row.roleTitle}}
         </span>
         </ng-template>
       </ngx-datatable-column>
@@ -70,14 +63,6 @@
             <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right table_dropdown"
                 role="menu" aria-labelledby="button-basic">
               <li role="menuitem">
-                <a class="dropdown-item"
-                   routerLink="{{row.id}}"
-                >
-                  <fa-icon [icon]="faInfo"></fa-icon>
-                  <span>Details</span>
-                </a>
-              </li>
-              <li role="menuitem">
                 <a *ngIf="checkPermission('USER_UPDATE')" class="dropdown-item"
                    (click)="editCurrentUserModal(row.id)"
                 >
@@ -87,7 +72,7 @@
               </li>
               <li role="menuitem">
                 <a *ngIf="checkPermission('USER_REMOVE')" class="dropdown-item"
-                   (click)="openModal(template,row.id, row.email)"
+                   (click)="openModal(template,row.id, row.username)"
                 >
                   <fa-icon [icon]="faDelete"></fa-icon>
                   <span>Delete</span>

@@ -1,19 +1,14 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {faInfoCircle} from '@fortawesome/free-solid-svg-icons/faInfoCircle';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {AccountManagementService} from '../../services/account.management.service';
 import {CreateNewUserComponent} from '../create-new-user/create-new-user.component';
 import {Page} from '../../../shared/models/page';
 import {NotificationsService} from '../../../shared/services/notifications.service';
-import {faEdit} from '@fortawesome/free-solid-svg-icons/faEdit';
 import {EditUserComponent} from '../edit-user/edit-user.component';
-import {BehaviorSubject, Subscription} from 'rxjs';
-import {faTrashAlt} from '@fortawesome/free-solid-svg-icons/faTrashAlt';
-import {faPlus} from '@fortawesome/free-solid-svg-icons/faPlus';
-import {faSyncAlt} from '@fortawesome/free-solid-svg-icons/faSyncAlt';
-import {faEllipsisH} from '@fortawesome/free-solid-svg-icons/faEllipsisH';
+import {Subscription} from 'rxjs';
 import {PermissionsService} from '../../../core/services/permissions.service';
 import {DatatableComponent} from '@swimlane/ngx-datatable';
+import {systemIcon} from '../../../shared/variables/variables';
 
 @Component({
   selector: 'app-user-list',
@@ -22,18 +17,16 @@ import {DatatableComponent} from '@swimlane/ngx-datatable';
 })
 export class UserListComponent implements OnInit, OnDestroy {
   public isLoaded = false;
-  public faInfo = faInfoCircle;
-  public faEdit = faEdit;
-  public faDelete = faTrashAlt;
-  public faPlus = faPlus;
-  public faSyncAlt = faSyncAlt;
-  public faEllipsisH = faEllipsisH;
+  public rows;
+  public faEdit = systemIcon.editIcon;
+  public faDelete = systemIcon.deleteIcon;
+  public faPlus = systemIcon.addIcon;
+  public faSyncAlt = systemIcon.refreshIcon;
+  public faEllipsisH = systemIcon.dropdownIcon;
   public id: number;
   public deletedUser;
   public statusChangedUser;
-  public currentDeletedUser;
   page = new Page();
-  rows: BehaviorSubject<any>;
   modalRef: BsModalRef;
   perm;
   sub1 = new Subscription();
@@ -42,6 +35,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   sub4 = new Subscription();
   sub5 = new Subscription();
   @ViewChild(DatatableComponent) table: DatatableComponent;
+  ll = false;
 
   constructor(public accountService: AccountManagementService,
               private modalService: BsModalService,
@@ -49,6 +43,10 @@ export class UserListComponent implements OnInit, OnDestroy {
               private permService: PermissionsService) {
     this.page.pageNumber = 0;
     this.page.size = 10;
+  }
+
+  checkPermission(perm) {
+    return this.perm.find(p => p === perm);
   }
 
   ngOnInit() {
@@ -59,9 +57,6 @@ export class UserListComponent implements OnInit, OnDestroy {
     });
   }
 
-  checkPermission(perm) {
-    return this.perm.find(p => p === perm);
-  }
 
   ngOnDestroy() {
     if (this.sub1) {
@@ -92,7 +87,6 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.accountService.totalUserCount = pagedData.users_count;
         this.page.totalPages = this.accountService.totalUserCount;
         // this.page.pageNumber = pagedData.page;
-        console.log(this.rows.value);
       }, error2 => {
         this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
       });
@@ -100,12 +94,10 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   updateDataTable(event) {
     const val = event.target.value;
-    console.log(val);
     this.accountService.getAllUsers('', val)
       .subscribe((data) => {
         console.log(data);
         this.accountService.setDataUser(data.users);
-        this.rows = this.accountService.Users$;
         this.accountService.totalUserCount = data.users_count;
         this.page.totalPages = this.accountService.totalUserCount;
         this.table.offset = 0;
@@ -117,10 +109,9 @@ export class UserListComponent implements OnInit, OnDestroy {
       this.sub2 = this.accountService.deactivateUser(id)
         .subscribe((data) => {
           if (data.success) {
-            console.log(data);
             this.statusChangedUser = this.rows.value.find(user => user.id === id);
             this.statusChangedUser.enabled = data.value.enabled;
-            this.notificationService.notify('warn', '', `User ${data.value.email} has been disabled successfully!`);
+            this.notificationService.notify('warn', '', `User ${data.value.username} has been disabled successfully!`);
           } else if (data.error) {
             this.notificationService.notify('warn', '', `${data.error}`);
           }
@@ -133,7 +124,7 @@ export class UserListComponent implements OnInit, OnDestroy {
           if (data.success) {
             this.statusChangedUser = this.rows.value.find(user => user.id === id);
             this.statusChangedUser.enabled = data.value.enabled;
-            this.notificationService.notify('success', '', `User ${data.value.email} has been activated successfully!`);
+            this.notificationService.notify('success', '', `User ${data.value.username} has been activated successfully!`);
           } else if (data.error) {
             this.notificationService.notify('warn', '', `${data.error}`);
           }
@@ -143,10 +134,10 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 
-  openModal(template: TemplateRef<any>, id: number, email: string) {
+  openModal(template: TemplateRef<any>, id: number, username: string) {
     this.modalRef = this.modalService.show(template);
     this.accountService.currentUserIdDelete = id;
-    this.deletedUser = email;
+    this.deletedUser = username;
   }
 
   onDeleteUser() {
@@ -155,17 +146,14 @@ export class UserListComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         if (data.success) {
           if (this.accountService.getUserCount() > 1) {
-            this.currentDeletedUser = this.rows.value.filter(user => user.id !== this.id);
-            this.accountService.setDataUser(this.currentDeletedUser);
+            const deletedUser = this.accountService.Users$.getValue().filter(user => user.id !== this.id);
+            this.accountService.setDataUser(deletedUser);
             this.accountService.totalUserCount--;
-            console.log(this.page.pageNumber);
-            console.log(this.deletedUser);
-            this.notificationService.notify('warn', '', `User ${this.deletedUser} has been deleted successfully!`);
           } else if (this.accountService.getUserCount() === 1 && this.page.pageNumber !== 0) {
             console.log(this.deletedUser);
             this.setPage({offset: `${this.page.pageNumber - 1}`});
-            this.notificationService.notify('warn', '', `User ${this.deletedUser} has been deleted successfully!`);
           }
+          this.notificationService.notify('warn', '', `User ${this.deletedUser} has been deleted successfully!`);
         } else if (data.error) {
           this.notificationService.notify('warn', '', `${data.error}`);
         }
@@ -183,7 +171,10 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.sub5 = this.modalService.onHide.subscribe((data) => {
       this.sub5.unsubscribe();
       if (data === 'edit_success') {
-        this.setPage({offset: `${this.page.pageNumber}`});
+        const idx = this.rows.value.findIndex(user => user.id === this.accountService.currentEditedUser.id);
+        this.rows.value[idx] = this.accountService.currentEditedUser;
+        this.accountService.setDataUser([...this.rows.value]);
+        this.notificationService.notify('success', '', `User ${this.accountService.currentEditedUser.username} has been edited successfully!`);
       }
     });
   }

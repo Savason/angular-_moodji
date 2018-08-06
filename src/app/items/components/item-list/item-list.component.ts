@@ -18,7 +18,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
   public isLoaded = false;
   public firstLoad = true;
   public slider = systemIcon.sliders;
-  public hideEye = systemIcon.hideEye;
+  // public hideEye = systemIcon.hideEye;
   public faInfo = systemIcon.infoIcon;
   public faEdit = systemIcon.editIcon;
   public faDelete = systemIcon.deleteIcon;

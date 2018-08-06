@@ -4,12 +4,6 @@
       <img src="/assets/images/login_logo.png" alt="logo">
     </a>
     <ul>
-      <li *ngIf="checkPermission('ITEM_LIST')">
-        <a class="app_navigation_link" [routerLink]="['/items']" routerLinkActive="active">
-          <fa-icon [icon]="itemIcon"></fa-icon>
-          <span>Items</span>
-        </a>
-      </li>
       <li *ngIf="checkPermission('USER_GET')">
         <a class="app_navigation_link" [routerLink]="['/accounts']" routerLinkActive="active">
         <span>
@@ -28,6 +22,11 @@
         <a class="app_navigation_link" [routerLink]="['/accounts/role_table']" routerLinkActive="active">
           <fa-icon [icon]="rmsIcon"></fa-icon>
           <span>RMS</span>
+        </a>
+      </li>
+      <li>
+        <a class="app_navigation_link" [routerLink]="['/inbounds']" routerLinkActive="active">
+          <span>Inbounds</span>
         </a>
       </li>
       <li>

@@ -93,7 +93,7 @@ export class CreateNewRoleComponent implements OnInit, OnDestroy {
               resolve(null);
             }
           });
-      }, 300);
+      }, 200);
     });
   };
 }

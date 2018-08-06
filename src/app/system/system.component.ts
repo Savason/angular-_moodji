@@ -23,6 +23,13 @@ export class SystemComponent implements OnInit, OnDestroy {
               private permService: PermissionsService) {
   }
 
+  checkPermission(perm) {
+    if (this.perm.includes(perm)) {
+      return true;
+    }
+    return false;
+  }
+
   ngOnInit() {
     this.authUserService.loginEventEmitter.subscribe((authStatus: boolean) => {
       console.log(authStatus);
@@ -32,7 +39,6 @@ export class SystemComponent implements OnInit, OnDestroy {
     this.sub1 = this.permService.getUserPermissions()
       .subscribe((data) => {
         this.perm = data;
-        // console.log(this.perm);
       });
   }
 
@@ -41,14 +47,6 @@ export class SystemComponent implements OnInit, OnDestroy {
       console.log(1);
       this.sub1.unsubscribe();
     }
-  }
-
-  checkPermission(perm) {
-    // console.log(this.perm);
-    if (this.perm.includes(perm)) {
-      return true;
-    }
-    return false;
   }
 
   onSetVisibility() {

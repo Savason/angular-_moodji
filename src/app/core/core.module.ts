@@ -11,6 +11,7 @@ import {RolesManagementService} from '../accounts/services/roles.management.serv
 import {ItemsService} from '../items/services/items.service';
 import {NotificationsService} from '../shared/services/notifications.service';
 import {PermissionsService} from './services/permissions.service';
+import {InboundsService} from '../system/inbound/services/inbounds.service';
 
 @NgModule({
   imports: [
@@ -27,6 +28,7 @@ import {PermissionsService} from './services/permissions.service';
     RolesManagementService,
     ItemsService,
     NotificationsService,
+    InboundsService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,

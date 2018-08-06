@@ -5,7 +5,6 @@ import {AccountsRoutingModule} from './accounts.routing.module';
 import {CreateNewUserComponent} from './components/create-new-user/create-new-user.component';
 import {SharedModule} from '../shared/shared.module';
 import {AccordionModule, BsDropdownModule, ModalModule} from 'ngx-bootstrap';
-import {UserDateilsComponent} from './components/user-dateils/user-dateils.component';
 import {EditUserComponent} from './components/edit-user/edit-user.component';
 import {RolesTableComponent} from './components/roles-table/roles-table.component';
 import {UserListComponent} from './components/user-list/user-list.component';
@@ -24,7 +23,6 @@ import {EditRoleComponent} from './components/roles-table/edit-role/edit-role.co
   declarations: [
     AccountsComponent,
     CreateNewUserComponent,
-    UserDateilsComponent,
     EditUserComponent,
     RolesTableComponent,
     UserListComponent,
