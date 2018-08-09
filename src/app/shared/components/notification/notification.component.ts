@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {NotificationsService} from '../../services/notifications.service';
 import {MessageService} from 'primeng/api';
@@ -7,7 +7,8 @@ import {MessageService} from 'primeng/api';
   selector: 'app-notification',
   templateUrl: './notification.component.html',
   styleUrls: ['./notification.component.scss'],
-  providers: [MessageService]
+  providers: [MessageService],
+  encapsulation: ViewEncapsulation.None
 })
 export class NotificationComponent implements OnInit, OnDestroy {
   // msgs: Message[] = [];

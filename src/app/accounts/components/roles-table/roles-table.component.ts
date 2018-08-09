@@ -7,6 +7,7 @@ import {Subscription} from 'rxjs';
 import {CreateNewRoleComponent} from './create-new-role/create-new-role.component';
 import {EditRoleComponent} from './edit-role/edit-role.component';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {PermissionsService} from '../../../core/services/permissions.service';
 
 
 @Component({
@@ -38,10 +39,12 @@ export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
   sub7 = new Subscription();
   sub8 = new Subscription();
   idx: number;
+  perm;
 
   constructor(private permissionsService: RolesManagementService,
               private modalService: BsModalService,
               private notificationService: NotificationsService,
+              private permService: PermissionsService,
               private element: ElementRef) {
   }
 
@@ -61,10 +64,19 @@ export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
+
   ngOnInit() {
+    this.permService.getUserPermissions().subscribe((data) => {
+      this.perm = data;
+      console.log(this.perm);
+    });
     this.form = new FormGroup({
       'role_id': new FormControl(null, [Validators.required]),
     });
+  }
+
+  checkPermission(perm) {
+    return this.perm.find(p => p === perm);
   }
 
   ngOnDestroy() {
@@ -116,7 +128,6 @@ export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
       this.sub3.unsubscribe();
       console.log(data);
       if (data === 'edit_success') {
-        // console.log(this.permissionsService.editedRole);
         const idx = this.permissionTable.roles.findIndex(r => r.roleId === this.permissionsService.editedRole.roleId);
         this.permissionTable.roles[idx] = this.permissionsService.editedRole;
       }

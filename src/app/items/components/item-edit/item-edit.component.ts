@@ -20,7 +20,7 @@ export class ItemEditComponent implements OnInit, OnDestroy {
   public url: string;
   public form: FormGroup;
   fileToUpload: File = null;
-  private changeUploadImg = false;
+  private changeUploadImg = '0';
   sub1 = new Subscription();
   sub2 = new Subscription();
   sub3 = new Subscription();
@@ -72,6 +72,7 @@ export class ItemEditComponent implements OnInit, OnDestroy {
       'cross_weight': new FormControl(''),
       'net_weight': new FormControl(''),
       'supplier': new FormControl(''),
+      'reset_image': new FormControl('')
     });
     this.sub1 = this.route.params
       .subscribe((params: Params) => {
@@ -138,8 +139,7 @@ export class ItemEditComponent implements OnInit, OnDestroy {
     this.url = '/assets/images/item-no-photo.png';
     const input = this.element.nativeElement.querySelector('#image');
     input.value = null;
-    this.fileToUpload = null;
-    console.log(this.fileToUpload);
+    this.changeUploadImg = '1';
   }
 
 
@@ -160,9 +160,9 @@ export class ItemEditComponent implements OnInit, OnDestroy {
     formData.append('cross_weight', this.form.value.cross_weight);
     formData.append('net_weight', this.form.value.net_weight);
     formData.append('supplier', this.form.value.supplier);
-    if (this.changeUploadImg === true) {
-      console.log('true');
-    formData.append('image', this.fileToUpload);
+    formData.append('reset_image', this.changeUploadImg);
+    if (this.fileToUpload) {
+    formData.append('image', this.fileToUpload, this.fileToUpload.name);
     }
     this.sub3 = this.itemsService.updateItem(this.editItem.id, formData)
       .subscribe((data) => {

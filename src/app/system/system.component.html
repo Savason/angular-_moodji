@@ -4,25 +4,30 @@
       <img src="/assets/images/login_logo.png" alt="logo">
     </a>
     <ul>
-      <li>
-        <a class="app_navigation_link" [routerLink]="['/items']" routerLinkActive="active">
-          <fa-icon [icon]="itemIcon"></fa-icon>
-          <span>Items</span>
-        </a>
-      </li>
-      <li>
+      <li *ngIf="checkPermission('USER_GET')">
         <a class="app_navigation_link" [routerLink]="['/accounts']" routerLinkActive="active">
         <span>
         <fa-icon [icon]="userIcon"></fa-icon>
        Accounts
         </span>
         </a>
-        <div class="sub_menu" [ngClass]="setVisibility?'hide_menu_item':''" (click)="onSetVisibility()">
+        <div *ngIf="checkPermission('ROLE_GET')" class="sub_menu" [ngClass]="setVisibility?'hide_menu_item':''" (click)="onSetVisibility()">
           <a class="app_navigation_link" [routerLink]="['/accounts/role_table']" routerLinkActive="active">
             <fa-icon [icon]="rmsIcon"></fa-icon>
             <span>RMS</span>
           </a>
         </div>
+      </li>
+      <li *ngIf="checkPermission('ROLE_GET')&&!checkPermission('USER_GET')">
+        <a class="app_navigation_link" [routerLink]="['/accounts/role_table']" routerLinkActive="active">
+          <fa-icon [icon]="rmsIcon"></fa-icon>
+          <span>RMS</span>
+        </a>
+      </li>
+      <li>
+        <a class="app_navigation_link" [routerLink]="['/inbounds']" routerLinkActive="active">
+          <span>Inbounds</span>
+        </a>
       </li>
       <li>
         <a class="app_navigation_link" (click)="logout()">

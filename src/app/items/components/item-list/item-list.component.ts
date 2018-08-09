@@ -5,6 +5,8 @@ import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {NotificationsService} from '../../../shared/services/notifications.service';
 import {Page} from '../../../shared/models/page';
 import {systemIcon} from '../../../shared/variables/variables';
+import {PermissionsService} from '../../../core/services/permissions.service';
+import {UserAuthService} from '../../../auth/services/user.auth.service';
 
 @Component({
   selector: 'app-item-list',
@@ -16,7 +18,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
   public isLoaded = false;
   public firstLoad = true;
   public slider = systemIcon.sliders;
-  public hideEye = systemIcon.hideEye;
+  // public hideEye = systemIcon.hideEye;
   public faInfo = systemIcon.infoIcon;
   public faEdit = systemIcon.editIcon;
   public faDelete = systemIcon.deleteIcon;
@@ -25,23 +27,33 @@ export class ItemListComponent implements OnInit, OnDestroy {
   public faEllipsisH = systemIcon.dropdownIcon;
   public id;
   public deletedItem;
-  public rows: BehaviorSubject<any[]>;
+  public rows;
   page = new Page();
   public afterDeletedItems;
   modalRef: BsModalRef;
   sub1 = new Subscription();
   sub2 = new Subscription();
   sub3 = new Subscription();
+  perm;
 
   constructor(private itemsService: ItemsService,
               private modalService: BsModalService,
-              private notificationService: NotificationsService) {
+              private notificationService: NotificationsService,
+              public permService: PermissionsService) {
     this.page.pageNumber = 0;
     this.page.size = 10;
   }
 
   ngOnInit() {
     this.setPage({offset: 0});
+    this.permService.getUserPermissions().subscribe((data) => {
+      this.perm = data;
+      console.log(this.perm);
+    });
+  }
+
+  checkPermission(perm) {
+    return this.perm.find(p => p === perm);
   }
 
   ngOnDestroy() {
@@ -62,11 +74,23 @@ export class ItemListComponent implements OnInit, OnDestroy {
         console.log(pagedData);
         this.isLoaded = true;
         this.itemsService.setDataItem(pagedData.items);
-        this.rows = this.itemsService.items$;
+        this.rows = pagedData.items;
         this.page.totalElements = pagedData.count;
       }, error2 => {
         this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
       });
+  }
+
+  updateDataTable(event) {
+    const val = event.target.value;
+    console.log(val);
+      this.itemsService.getItemsList('', val)
+        .subscribe((data) => {
+          console.log(data);
+          this.rows = data.items;
+          this.page.totalElements = data.count;
+          this.page.pageNumber = 0;
+        });
   }
 
   openModal(template: TemplateRef<any>, id: number, name: string) {

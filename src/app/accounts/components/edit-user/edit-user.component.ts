@@ -4,8 +4,7 @@ import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {Subscription} from 'rxjs';
 import {NotificationsService} from '../../../shared/services/notifications.service';
 import {AccountManagementService} from '../../services/account.management.service';
-import {regExps} from '../../../shared/variables/variables';
-import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons/faExclamationTriangle';
+import {systemIcon} from '../../../shared/variables/variables';
 
 @Component({
   selector: 'app-edit-user',
@@ -14,8 +13,8 @@ import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons/faExclama
 })
 export class EditUserComponent implements OnInit, OnDestroy {
   public isLoaded = false;
-  public faExclamationCircle = faExclamationTriangle;
   public form: FormGroup;
+  public faExclamationCircle = systemIcon.errorForm;
   public userRoles;
   private editUserId;
   private currentEditUser;
@@ -31,13 +30,8 @@ export class EditUserComponent implements OnInit, OnDestroy {
   }
 
   getErrorNameMessage() {
-    return this.form.get('name')['errors']['required'] ? 'This field is required' : '';
-  }
-
-  getErrorEmailMessage() {
-    return this.form.get('email')['errors']['required'] ? 'This field is required' :
-      this.form.get('email')['errors']['pattern'] ? 'Not a valid email' :
-        this.form.get('email')['errors']['forbiddenEmail'] ? 'This email is already taken' : '';
+    return this.form.get('name')['errors']['required'] ? 'This field is required' :
+      this.form.get('name')['errors']['forbiddenName'] ? 'This username is already taken' : '';
   }
 
   ngOnInit() {
@@ -45,23 +39,20 @@ export class EditUserComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         this.userRoles = data;
       });
-    this.sub4 = this.accountService.getUserById(this.editUserId)
+    this.sub4 = this.accountService.getUserByKey(this.editUserId)
       .subscribe((data) => {
         setTimeout(() => {
           this.isLoaded = true;
         }, 200);
-        this.currentEditUser = data.user;
-        console.log(this.currentEditUser);
+        this.currentEditUser = data;
         this.form.patchValue({
-          'name': this.currentEditUser.name,
-          'email': this.currentEditUser.email,
-          'role_id': this.currentEditUser.role_id
+          'name': this.currentEditUser.username,
+          'roleId': this.currentEditUser.role_id
         });
       });
     this.form = new FormGroup({
-      'name': new FormControl('', [Validators.required]),
-      'email': new FormControl('', [Validators.required, Validators.pattern(regExps.emailPattern)], this.forbiddenEmails.bind(this)),
-      'role_id': new FormControl(''),
+      'name': new FormControl('', [Validators.required], this.forbiddenName.bind(this)),
+      'roleId': new FormControl(''),
     });
   }
 
@@ -81,20 +72,17 @@ export class EditUserComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    const {name, email, role_id} = this.form.value;
+    const {name, roleId} = this.form.value;
     const user = {
       name: name,
-      email: email,
-      role_id: role_id
+      roleId: roleId
     };
     console.log(user);
     this.sub2 = this.accountService.changeUser(this.currentEditUser.id, user)
       .subscribe((data) => {
           if (data.success) {
-            console.log(data);
-            // this.accountService.currentEditedUser = data.value;
             this.modalService.setDismissReason('edit_success');
-            this.notificationService.notify('success', '', `User ${data.value.email} has been edited successfully!`);
+            this.accountService.currentEditedUser = data.value;
           } else if (data.error) {
             this.notificationService.notify('warn', '', `${data.error}`);
           }
@@ -105,15 +93,14 @@ export class EditUserComponent implements OnInit, OnDestroy {
     this.bsModalRef.hide();
   }
 
-  forbiddenEmails(control: FormControl): Promise<any> {
+  forbiddenName(control: FormControl): Promise<any> {
     return new Promise((resolve) => {
-      this.sub3 = this.accountService.getUserByEmail(control.value)
+      this.sub3 = this.accountService.getUserByKey(control.value)
         .subscribe((data) => {
-          console.log(control.value);
-          if (data !== null && data.email === this.currentEditUser.email) {
+          if (data !== null && data.username === this.currentEditUser.username) {
             resolve(null);
           } else if (data !== null) {
-            resolve({forbiddenEmail: true});
+            resolve({forbiddenName: true});
           } else {
             resolve(null);
           }

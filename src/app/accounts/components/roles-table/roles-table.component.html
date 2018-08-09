@@ -1,12 +1,12 @@
 <app-system-loader *ngIf="!isLoaded"></app-system-loader>
-<a class="create_circle_btn d-flex justify-content-center align-items-center"
+<a *ngIf="checkPermission('ROLE_ADD')" class="create_circle_btn d-flex justify-content-center align-items-center"
    tooltipPosition="left" pTooltip="New role"
    showDelay="200" hideDelay="200"
    (click)="createRoleModal()">
   <fa-icon [icon]="addIcon"></fa-icon>
 </a>
 <div class="container" *ngIf="isLoaded">
-  <p-accordion (onOpen)="onTabOpen($event)" [activeIndex]="idx">
+  <p-accordion *ngIf="checkPermission('ROLE_GET')" (onOpen)="onTabOpen($event)" [activeIndex]="idx">
     <p-accordionTab *ngFor="let per of permissionTable.parents;let i = index" header="{{per.name}}" [selected]="i === idx">
       <div style="overflow-y: auto">
         <table class="custom_table_roles table">
@@ -20,12 +20,12 @@
               <div class="role_name_wrapper">
                 <div class="role_name">{{role.name}}</div>
                 <div *ngIf="role.name!=='ADMIN'" class="role_name_actions">
-              <span style="margin-right: 3px" (click)="onEditRole(role)"
+              <span *ngIf="checkPermission('ROLE_UPDATE')" style="margin-right: 3px" (click)="onEditRole(role)"
                     tooltipPosition="top" pTooltip="Edit"
                     showDelay="100" hideDelay="100">
               <fa-icon class="edit_icon" [icon]="editIcon"></fa-icon>
             </span>
-                  <span (click)="confirmDeleteRole(deleteRoleTemplate,role)"
+                  <span *ngIf="checkPermission('ROLE_REMOVE')" (click)="confirmDeleteRole(deleteRoleTemplate,role)"
                         tooltipPosition="top" pTooltip="Delete"
                         showDelay="100" hideDelay="100">
               <fa-icon class="delete_icon" [icon]="deleteIcon"></fa-icon>
@@ -40,7 +40,7 @@
             </td>
             <td style="width: 200px;display: inline-block" *ngFor="let option of perm.options"
                 class="{{option.roleId}} permission_td">
-              <label class="custom_checkbox">
+              <label *ngIf="checkPermission('ROLE_ADD_PERMISSION')&&checkPermission('ROLE_REMOVE_PERMISSION')" class="custom_checkbox">
                 <input [disabled]="option.roleId===admin.roleId" [checked]="option.hasAccess"
                        [ngModel]="option.hasAccess"
                        (change)="onPermissionChange(perm, option)" type="checkbox"

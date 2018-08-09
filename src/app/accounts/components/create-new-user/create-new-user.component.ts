@@ -2,14 +2,11 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {User} from '../../../shared/models/user.model';
 import {AccountManagementService} from '../../services/account.management.service';
-import {matchOtherValidator} from '../../../shared/validators/confirm-password';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {NotificationsService} from '../../../shared/services/notifications.service';
-import {regExps} from '../../../shared/variables/variables';
-import {faEye} from '@fortawesome/free-solid-svg-icons/faEye';
-import {faEyeSlash} from '@fortawesome/free-solid-svg-icons';
-import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons/faExclamationTriangle';
+import {systemIcon} from '../../../shared/variables/variables';
+import {matchOtherValidator} from '../../../shared/validators/confirm-password';
 
 
 @Component({
@@ -18,12 +15,12 @@ import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons/faExclama
   styleUrls: ['./create-new-user.component.scss']
 })
 export class CreateNewUserComponent implements OnInit, OnDestroy {
-  public faeye = faEye;
-  public faeyeslash = faEyeSlash;
-  public faExclamationCircle = faExclamationTriangle;
-  public hide = true;
-  public form: FormGroup;
   public userRoles: BehaviorSubject<any>;
+  public form: FormGroup;
+  public faeye = systemIcon.showIcon;
+  public faeyeslash = systemIcon.hideIcon;
+  public faExclamationCircle = systemIcon.errorForm;
+  public hide = true;
   public totalUserCount: number;
   sub1 = new Subscription();
   sub2 = new Subscription();
@@ -36,13 +33,8 @@ export class CreateNewUserComponent implements OnInit, OnDestroy {
   }
 
   getErrorNameMessage() {
-    return this.form.get('name')['errors']['required'] ? 'This field is required' : '';
-  }
-
-  getErrorEmailMessage() {
-    return this.form.get('email')['errors']['required'] ? 'This field is required' :
-      this.form.get('email')['errors']['pattern'] ? 'Not a valid email' :
-        this.form.get('email')['errors']['forbiddenEmail'] ? 'This email is already taken' : '';
+    return this.form.get('name')['errors']['required'] ? 'This field is required' :
+      this.form.get('name')['errors']['forbiddenName'] ? 'This username is already taken' : '';
   }
 
   getErrorTypeMessage() {
@@ -64,18 +56,15 @@ export class CreateNewUserComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.form = new FormGroup({
-      'name': new FormControl('', [Validators.required]),
-      'email': new FormControl('', [Validators.required, Validators.pattern(regExps.emailPattern)], this.forbiddenEmails.bind(this)),
-      'role_id': new FormControl(null, [Validators.required]),
+      'name': new FormControl('', [Validators.required], this.forbiddenName.bind(this)),
+      'roleId': new FormControl(null, [Validators.required]),
       'password': new FormControl('', [Validators.required, Validators.minLength(6)]),
       'confirmPassword': new FormControl('', [Validators.required, Validators.minLength(6), matchOtherValidator('password')]),
     });
     this.sub1 = this.accountService.getUserRole()
       .subscribe((data) => {
-        console.log(data);
         this.accountService.setDataUserRoles(data);
         this.userRoles = this.accountService.getUserRoles();
-        console.log(this.userRoles);
       });
   }
 
@@ -93,15 +82,15 @@ export class CreateNewUserComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     console.log(this.accountService.totalUserCount);
-    const {email, role_id, password, name} = this.form.value;
-    const user = new User(email, role_id, password, name);
+    const {roleId, password, name} = this.form.value;
+    const user = new User(roleId, password, name);
     this.sub2 = this.accountService.createNewUser(user)
       .subscribe((data) => {
-          console.log(data);
+          this.modalRef.hide();
           if (data.success) {
             this.accountService.addToUserList(data.value);
             this.accountService.totalUserCount++;
-            this.notificationsService.notify('success', '', `User ${email} has been created successfully!`);
+            this.notificationsService.notify('success', '', `User ${name} has been created successfully!`);
             this.form.reset();
           } else if (data.error) {
             this.notificationsService.notify('warn', '', `${data.error}`);
@@ -110,7 +99,6 @@ export class CreateNewUserComponent implements OnInit, OnDestroy {
         error2 => {
           this.notificationsService.notify('error', '', `Something went wrong please try repeat letter!`);
         });
-    this.modalRef.hide();
   }
 
   onFormClose() {
@@ -118,13 +106,12 @@ export class CreateNewUserComponent implements OnInit, OnDestroy {
     this.form.reset();
   }
 
-  forbiddenEmails(control: FormControl): Promise<any> {
+  forbiddenName(control: FormControl): Promise<any> {
     return new Promise((resolve) => {
-      this.sub3 = this.accountService.getUserByEmail(control.value)
+      this.sub3 = this.accountService.getUserByKey(control.value)
         .subscribe((data) => {
-          console.log(data);
           if (data !== null) {
-            resolve({forbiddenEmail: true});
+            resolve({forbiddenName: true});
           } else {
             resolve(null);
           }

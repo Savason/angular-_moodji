@@ -3,6 +3,7 @@ import {faUser, faUnlockAlt} from '@fortawesome/free-solid-svg-icons';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {UserAuthService} from '../../services/user.auth.service';
+import {systemIcon} from '../../../shared/variables/variables';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +14,7 @@ export class LoginComponent implements OnInit {
   public form: FormGroup;
   faUser = faUser;
   faUnlockAlt = faUnlockAlt;
+  formError = systemIcon.errorForm;
 
   getErrorUserNameMessage() {
     return this.form.get('username')['errors']['required'] ? 'This field is required' :

@@ -28,16 +28,16 @@ export class AccountManagementService extends BaseApi {
     return this.post('api/user', user, httpOptions);
   }
 
-  getUserByEmail(email: string): Observable<any> {
-    return this.get(`api/user/email?email=${email}`);
+  getUserByKey(term: string | number): Observable<any> {
+    return this.get(`api/user/${term}`);
   }
 
-  getUserById(id: string | number): Observable<any> {
-    return this.get(`api/user/${id}`);
-  }
-
-  getAllUsers(searchParams): Observable<any> {
-    return this.get(`api/user?page=${searchParams}`);
+  getAllUsers(searchParams, search?: string): Observable<any> {
+    if (search !== undefined) {
+      return this.get(`api/user?search=${search}`);
+    } else {
+      return this.get(`api/user?page=${searchParams}`);
+    }
   }
 
   getUserRole(): Observable<any> {
@@ -50,7 +50,7 @@ export class AccountManagementService extends BaseApi {
 
   changeUser(id: number | string, data): Observable<any> {
     const headers = new HttpHeaders(data);
-    return this.put(`api/user/${id}`, data, headers);
+    return this.post(`api/user/${id}`, data, headers);
   }
 
   activateUser(id: string | number): Observable<any> {
@@ -61,20 +61,12 @@ export class AccountManagementService extends BaseApi {
     return this.post(`api/user/disable/${id}`);
   }
 
-  getUsers() {
-    return this.Users$;
-  }
-
   setDataUser(data) {
     return this.Users$.next(data);
   }
 
   addToUserList(data) {
-    if (this.getUserCount() < 10) {
-      this.Users$.next(this.Users$.getValue().concat(data));
-    } else {
-      return;
-    }
+    this.Users$.next(this.Users$.getValue().concat(data));
   }
 
   getUserCount() {

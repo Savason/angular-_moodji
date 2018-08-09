@@ -13,8 +13,12 @@ export class ItemsService extends BaseApi {
     super(http);
   }
 
-  getItemsList(page): Observable<any> {
-    return this.get(`api/item?page=${page}`);
+  getItemsList(page, search?: string): Observable<any> {
+    if (search !== undefined) {
+      return this.get(`api/item?search=${search}`);
+    } else {
+      return this.get(`api/item?page=${page}`);
+    }
   }
 
   createNewItem(data): Observable<any> {
