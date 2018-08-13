@@ -4,6 +4,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {UserAuthService} from '../../services/user.auth.service';
 import {systemIcon} from '../../../shared/variables/variables';
+import {NotificationsService} from "../../../shared/services/notifications.service";
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,7 @@ export class LoginComponent implements OnInit {
 
   getErrorUserNameMessage() {
     return this.form.get('username')['errors']['required'] ? 'This field is required' :
-      '';
+      this.form.get('username')['errors']['noUser'] ? 'There are no user with this name or password' : '';
   }
 
   getErrorPasswordMessage() {
@@ -27,7 +28,8 @@ export class LoginComponent implements OnInit {
   }
 
   constructor(private authUserService: UserAuthService,
-              private router: Router) {
+              private router: Router,
+              private notificationsService: NotificationsService) {
   }
 
   ngOnInit() {
@@ -49,7 +51,7 @@ export class LoginComponent implements OnInit {
           }
         },
         error => {
-          console.log(error);
+          this.notificationsService.notify('error', '', `${error.error.error_description} or user doesn't exist in system`);
         }
       );
   }
