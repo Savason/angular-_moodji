@@ -41,6 +41,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
       });
     this.sub4 = this.accountService.getUserByKey(this.editUserId)
       .subscribe((data) => {
+        console.log(data);
         setTimeout(() => {
           this.isLoaded = true;
         }, 200);

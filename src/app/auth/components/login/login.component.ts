@@ -38,6 +38,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
+    this.form.controls['username'].markAsTouched();
     const formData = this.form.value;
     this.authUserService.login(formData)
       .subscribe(

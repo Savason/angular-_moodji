@@ -9,7 +9,6 @@ const routes: Routes = [
   {
     path: '', component: SystemComponent, children: [
       {path: '', component: HomeComponent, canActivate: [AuthGuard]},
-      // {path: 'items', loadChildren: '../../app/items/items.module#ItemsModule', canActivate: [AuthGuard]},
       {path: 'accounts', loadChildren: '../../app/accounts/accounts.module#AccountsModule', canActivate: [AuthGuard]},
       {path: 'inbounds', loadChildren: '../../app/system/inbound/inbound.module#InboundModule', canActivate: [AuthGuard]},
       {path: '**', component: PagenotfoundComponent},

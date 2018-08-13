@@ -38,7 +38,7 @@ export class CreateNewUserComponent implements OnInit, OnDestroy {
   }
 
   getErrorTypeMessage() {
-    return this.form.get('role_id')['errors']['required'] ? 'This field is required' : '';
+    return this.form.get('roleId')['errors']['required'] ? 'This field is required' : '';
   }
 
   getErrorPasswordMessage() {

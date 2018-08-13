@@ -6,6 +6,10 @@
     background: #aaaaaa;
     border: 2px solid #aaaaaa;
     font-size: 14px;
+    box-shadow: none!important;
+    &:disabled{
+      cursor: not-allowed;
+    }
     &:hover{
       border: 2px solid #7b7b7b;
       background: #fff;

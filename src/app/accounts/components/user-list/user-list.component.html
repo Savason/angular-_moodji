@@ -9,7 +9,7 @@
     </a>
     <div class="d-flex justify-content-between">
       <div class="col-md-6" style="padding: 0">
-        <input (keyup)="updateDataTable($event)" class="form-control" type="text" placeholder="Search">
+        <input *ngIf="checkPermission('USER_FIND')" (keyup)="updateDataTable($event)" class="form-control" type="text" placeholder="Search">
       </div>
       <button class="refresh_table_btn"
               tooltipPosition="top" pTooltip="Refresh table"
