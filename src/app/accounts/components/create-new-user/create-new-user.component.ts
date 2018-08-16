@@ -7,6 +7,7 @@ import {BehaviorSubject, Subscription} from 'rxjs';
 import {NotificationsService} from '../../../shared/services/notifications.service';
 import {systemIcon} from '../../../shared/variables/variables';
 import {matchOtherValidator} from '../../../shared/validators/confirm-password';
+import {validateAllFields} from '../../../shared/validators/validate-all-fields';
 
 
 @Component({
@@ -61,8 +62,9 @@ export class CreateNewUserComponent implements OnInit, OnDestroy {
       'password': new FormControl('', [Validators.required, Validators.minLength(6)]),
       'confirmPassword': new FormControl('', [Validators.required, Validators.minLength(6), matchOtherValidator('password')]),
     });
-    this.sub1 = this.accountService.getUserRole()
+    this.sub1 = this.accountService.getUserRoleWithoutPerm()
       .subscribe((data) => {
+        console.log(data);
         this.accountService.setDataUserRoles(data);
         this.userRoles = this.accountService.getUserRoles();
       });
@@ -81,24 +83,28 @@ export class CreateNewUserComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    console.log(this.accountService.totalUserCount);
-    const {roleId, password, name} = this.form.value;
-    const user = new User(roleId, password, name);
-    this.sub2 = this.accountService.createNewUser(user)
-      .subscribe((data) => {
-          this.modalRef.hide();
-          if (data.success) {
-            this.accountService.addToUserList(data.value);
-            this.accountService.totalUserCount++;
-            this.notificationsService.notify('success', '', `User ${name} has been created successfully!`);
-            this.form.reset();
-          } else if (data.error) {
-            this.notificationsService.notify('warn', '', `${data.error}`);
-          }
-        },
-        error2 => {
-          this.notificationsService.notify('error', '', `Something went wrong please try repeat letter!`);
-        });
+    if (this.form.invalid) {
+      validateAllFields(this.form);
+    } else if (this.form.valid) {
+      console.log(this.accountService.totalUserCount);
+      const {roleId, password, name} = this.form.value;
+      const user = new User(roleId, password, name);
+      this.sub2 = this.accountService.createNewUser(user)
+        .subscribe((data) => {
+            this.modalRef.hide();
+            if (data.success) {
+              this.accountService.addToUserList(data.value);
+              this.accountService.totalUserCount++;
+              this.notificationsService.notify('success', '', `User ${name} has been created successfully!`);
+              this.form.reset();
+            } else if (data.error) {
+              this.notificationsService.notify('warn', '', `${data.error}`);
+            }
+          },
+          error2 => {
+            this.notificationsService.notify('error', '', `Something went wrong please try repeat letter!`);
+          });
+    }
   }
 
   onFormClose() {

@@ -6,6 +6,7 @@ import {RolesManagementService} from '../../../services/roles.management.service
 import {NotificationsService} from '../../../../shared/services/notifications.service';
 import {RoleModel} from '../../../../shared/models/role.model';
 import {Subscription} from 'rxjs';
+import {validateAllFields} from '../../../../shared/validators/validate-all-fields';
 
 @Component({
   selector: 'app-edit-role',
@@ -65,23 +66,27 @@ export class EditRoleComponent implements OnInit, OnDestroy {
   }
 
   editCurrentRole() {
-    const {name} = this.editRoleForm.value;
-    const editRole = new RoleModel(name, this.currentUser.roleId);
-    console.log(editRole);
-    this.sub2 = this.permissionsService.changeUserRole(editRole)
-      .subscribe((data) => {
-        this.onFormClose();
-        if (data.success) {
-          this.modalService.setDismissReason('edit_success');
-          console.log(data.success);
-          this.permissionsService.editedRole = data.success.value;
-          this.notificationService.notify('success', '', `Role ${data.success.value.name} has been updated successfully!`);
-        } else if (data.error) {
-          this.notificationService.notify('error', '', `${data.error}`);
-        }
-      }, error1 => {
-        this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
-      });
+    if (this.editRoleForm.invalid) {
+      validateAllFields(this.editRoleForm);
+    } else if (this.editRoleForm.valid) {
+      const {name} = this.editRoleForm.value;
+      const editRole = new RoleModel(name, this.currentUser.roleId);
+      console.log(editRole);
+      this.sub2 = this.permissionsService.changeUserRole(editRole)
+        .subscribe((data) => {
+          this.onFormClose();
+          if (data.success) {
+            this.modalService.setDismissReason('edit_success');
+            console.log(data.success);
+            this.permissionsService.editedRole = data.success.value;
+            this.notificationService.notify('success', '', `Role ${data.success.value.name} has been updated successfully!`);
+          } else if (data.error) {
+            this.notificationService.notify('error', '', `${data.error}`);
+          }
+        }, error1 => {
+          this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
+        });
+    }
   }
 
   onFormClose() {

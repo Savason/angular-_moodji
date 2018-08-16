@@ -6,7 +6,7 @@ import {Component} from '@angular/core';
   ' <div class="circle-loader">\n' +
   '  <div class="checkmark draw"></div>\n' +
   '</div>\n' +
-  '<div class="loader_title">Moodja.</div> \n' +
+  '<div class="loader_title">loading...</div> \n' +
   '</div>',
   styleUrls: ['./system-loader.component.scss']
 })

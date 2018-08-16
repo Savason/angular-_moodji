@@ -5,6 +5,7 @@ import {Subscription} from 'rxjs';
 import {NotificationsService} from '../../../shared/services/notifications.service';
 import {AccountManagementService} from '../../services/account.management.service';
 import {systemIcon} from '../../../shared/variables/variables';
+import {validateAllFields} from '../../../shared/validators/validate-all-fields';
 
 @Component({
   selector: 'app-edit-user',
@@ -35,7 +36,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.sub1 = this.accountService.getUserRole()
+    this.sub1 = this.accountService.getUserRoleWithoutPerm()
       .subscribe((data) => {
         this.userRoles = data;
       });
@@ -73,25 +74,29 @@ export class EditUserComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    const {name, roleId} = this.form.value;
-    const user = {
-      name: name,
-      roleId: roleId
-    };
-    console.log(user);
-    this.sub2 = this.accountService.changeUser(this.currentEditUser.id, user)
-      .subscribe((data) => {
-          if (data.success) {
-            this.modalService.setDismissReason('edit_success');
-            this.accountService.currentEditedUser = data.value;
-          } else if (data.error) {
-            this.notificationService.notify('warn', '', `${data.error}`);
-          }
-        },
-        error2 => {
-          this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
-        });
-    this.bsModalRef.hide();
+    if (this.form.invalid) {
+      validateAllFields(this.form);
+    } else if (this.form.valid) {
+      const {name, roleId} = this.form.value;
+      const user = {
+        name: name,
+        roleId: roleId
+      };
+      console.log(user);
+      this.sub2 = this.accountService.changeUser(this.currentEditUser.id, user)
+        .subscribe((data) => {
+            if (data.success) {
+              this.modalService.setDismissReason('edit_success');
+              this.accountService.currentEditedUser = data.value;
+            } else if (data.error) {
+              this.notificationService.notify('warn', '', `${data.error}`);
+            }
+          },
+          error2 => {
+            this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
+          });
+      this.bsModalRef.hide();
+    }
   }
 
   forbiddenName(control: FormControl): Promise<any> {

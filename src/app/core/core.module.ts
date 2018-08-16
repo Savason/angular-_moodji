@@ -12,6 +12,8 @@ import {ItemsService} from '../items/services/items.service';
 import {NotificationsService} from '../shared/services/notifications.service';
 import {PermissionsService} from './services/permissions.service';
 import {InboundsService} from '../system/inbound/services/inbounds.service';
+import {UserFilterService} from '../accounts/services/user.filter.service';
+import {MessageService} from 'primeng/api';
 
 @NgModule({
   imports: [
@@ -25,9 +27,11 @@ import {InboundsService} from '../system/inbound/services/inbounds.service';
     UserAuthService,
     PermissionsService,
     AccountManagementService,
+    UserFilterService,
     RolesManagementService,
     ItemsService,
     NotificationsService,
+    MessageService,
     InboundsService,
     {
       provide: HTTP_INTERCEPTORS,

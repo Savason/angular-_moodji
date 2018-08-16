@@ -40,11 +40,11 @@
             </td>
             <td style="width: 200px;display: inline-block" *ngFor="let option of perm.options"
                 class="{{option.roleId}} permission_td">
-              <label *ngIf="checkPermission('ROLE_ADD_PERMISSION')&&checkPermission('ROLE_REMOVE_PERMISSION')" class="custom_checkbox">
+              <label class="custom_checkbox">
                 <input [disabled]="option.roleId===admin.roleId" [checked]="option.hasAccess"
                        [ngModel]="option.hasAccess"
-                       (change)="onPermissionChange(perm, option)" type="checkbox"
-                       attr.data-permissions="{{perm.id}}">
+                       (change)="onPermissionChange(perm, option, per)" type="checkbox"
+                       attr.data-permissions="{{perm.id}}" attr.data-role="{{option.roleId}}">
                 <span></span>
               </label>
             </td>
@@ -98,7 +98,7 @@
         </div>
         <div class="col-md-12 d-flex justify-content-between modal_action_footer">
           <button type="button" class="app_btn" (click)="onFormClose()">Cancel</button>
-          <button [disabled]="form.invalid||form.pending" class="app_btn login_btn">Delete</button>
+          <button [disabled]="form.pending" class="app_btn login_btn">Delete</button>
         </div>
       </form>
     </div>

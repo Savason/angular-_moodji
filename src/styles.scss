@@ -22,6 +22,7 @@ input, select, textarea {
 
 button {
   outline: none !important;
+  cursor: pointer;
 }
 
 label {
@@ -38,12 +39,56 @@ fa-icon {
 }
 
 //SYSTEM CHECKBOX STYLE
+label.custom_radio {
+  margin-bottom: 0;
+  input[type='radio'] {
+    height: 0;
+    width: 0;
+    position: absolute;
+    z-index: -100;
+    left: 10000px;
+    display: none;
+  }
+  input[type='radio']:checked + span {
+    border: .5em solid #000;
+    animation: shrink-bounce 0ms cubic-bezier(.4, .0, .23, 1);
+  }
+  input[type='radio']:checked + span:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -7px;
+    border-right: 2px solid transparent;
+    border-bottom: 2px solid transparent;
+    transform: rotate(45deg);
+    transform-origin: 0% 100%;
+    animation: checkbox-check 0ms 0ms cubic-bezier(.4, .0, .23, 1) forwards;
+  }
+  span {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    margin-right: 1em;
+    width: 1em;
+    height: 1em;
+    background: transparent;
+    border: 2px solid #9E9E9E;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0ms cubic-bezier(.4, .0, .23, 1);
+  }
+}
+
+//END SYSTEM RADIO BUTTONS
+
+//SYSTEM CHECKBOX STYLE
 
 label.custom_checkbox > input[type='checkbox'] {
   height: 0;
   width: 0;
   position: absolute;
-  z-index:-100;
+  z-index: -100;
   left: 10000px;
   display: none;
 }
@@ -84,6 +129,7 @@ label.custom_checkbox > input[type='checkbox']:checked + span {
   border: .5em solid #000;
   animation: shrink-bounce 0ms cubic-bezier(.4, .0, .23, 1);
 }
+
 label.custom_checkbox > input[type='checkbox']:disabled + span {
   border: .5em solid #7b7b7b;
   cursor: not-allowed;
@@ -136,141 +182,229 @@ label.custom_checkbox > input[type='checkbox']:checked + span:before {
 //END SYSTEM CHECKBOX STYLE
 
 //NGX_DATABASE
-ngx-datatable {
+//ngx-datatable {
+//  box-shadow: $brightBoxShadow;
+//  margin-bottom: 25px;
+//  .datatable-body-row {
+//    display: initial!important;
+//  }
+//  .datatable-body {
+//    background: #fff;
+//    display: initial!important;
+//  }
+//  .datatable-body-cell-label {
+//    color: #000;
+//  }
+//  .datatable-row-group {
+//    border-bottom: 1px solid #f7f7f7;
+//    &:hover {
+//      background-color: #f7f7f7 !important;
+//    }
+//  }
+//  .datatable-body-cell {
+//    display: flex !important;
+//    align-items: center;
+//    padding: 20px;
+//    overflow: inherit !important;
+//  }
+//  datatable-header {
+//    background-color: #f7f7f7 !important;
+//    display: flex !important;
+//    align-items: center;
+//    .datatable-header-cell-template-wrap {
+//      font-weight: bold;
+//      font-size: 14px;
+//      color: $mainGreyColor;
+//      padding: 20px;
+//    }
+//    .action_data_table {
+//      text-align: center;
+//    }
+//  }
+//  .table_action_btn {
+//    background: none;
+//    color: #000;
+//    box-shadow: none !important;
+//  }
+//  .table_dropdown {
+//    min-width: 8rem;
+//    padding: 0;
+//    box-shadow: $brightBoxShadow;
+//    li {
+//      a {
+//        padding: 10px 15px;
+//        &:active {
+//          background: none;
+//          color: #000;
+//        }
+//      }
+//    }
+//    fa-icon {
+//      margin-right: 5px;
+//    }
+//  }
+//  .datatable-footer {
+//    background: #fbfafa;
+//    padding: 10px 20px;
+//    .datatable-pager {
+//      .pager {
+//        display: flex !important;
+//        justify-content: flex-end;
+//        li {
+//          margin-left: 10px !important;
+//          &:not(.disabled):hover {
+//            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+//          }
+//          a {
+//            width: 30px;
+//            height: 30px;
+//            display: flex !important;
+//            justify-content: center;
+//            align-items: center;
+//            text-decoration: none !important;
+//            color: #000;
+//            background-color: #fff;
+//            i {
+//              display: flex;
+//            }
+//          }
+//        }
+//        li.active a {
+//          background-color: #000 !important;
+//          color: #fff !important;
+//          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+//        }
+//      }
+//    }
+//    .page-count {
+//      font-weight: bold;
+//      font-size: 14px;
+//      color: #878787;
+//    }
+//  }
+//  .action_data_table {
+//    justify-content: center;
+//  }
+//  .datatable-row-detail {
+//    background-color: #f7f7f7 !important;
+//    padding: 20px 40px;
+//    .details_subTitle {
+//      font-weight: bold;
+//      font-size: 14px;
+//      color: #878787;
+//    }
+//  }
+//}
+.system_table {
   box-shadow: $brightBoxShadow;
   margin-bottom: 25px;
-  .datatable-body-row {
-    display: initial !important;
-  }
-  .datatable-body {
+  tbody {
     background: #fff;
-  }
-  .datatable-body-cell-label {
-    color: #000;
-  }
-  .datatable-row-group {
-    border-bottom: 1px solid #f7f7f7;
-    &:hover {
-      background-color: #f7f7f7 !important;
+    tr {
+      &:hover {
+        background-color: #f7f7f7 !important;
+      }
     }
   }
-  .datatable-body-cell {
-    display: flex !important;
-    align-items: center;
-    padding: 20px;
-    overflow: inherit !important;
-  }
-  datatable-header {
-    background-color: #f7f7f7 !important;
-    display: flex !important;
-    align-items: center;
-    .datatable-header-cell-template-wrap {
+  thead {
+    background-color: #f7f7f7;
+    td {
       font-weight: bold;
       font-size: 14px;
       color: $mainGreyColor;
       padding: 20px;
     }
-    .action_data_table {
-      text-align: center;
-    }
   }
-  .table_action_btn {
-    background: none;
-    color: #000;
-    box-shadow: none !important;
+  td {
+    vertical-align: middle !important;
+    border-bottom: 1px solid #dee2e6;
+    border-top: none;
   }
-  .table_dropdown {
-    min-width: 8rem;
-    padding: 0;
-    box-shadow: $brightBoxShadow;
-    li {
-      a {
-        padding: 10px 15px;
-        &:active {
-          background: none;
-          color: #000;
-        }
-      }
-    }
-    fa-icon {
-      margin-right: 5px;
-    }
+  .total_count {
+    font-weight: bold;
+    font-size: 14px;
+    color: $mainGreyColor;
   }
-  .datatable-footer {
-    background: #fbfafa;
-    padding: 10px 20px;
-    .datatable-pager {
-      .pager {
-        display: flex !important;
-        justify-content: flex-end;
-        li {
-          margin-left: 10px !important;
-          &:not(.disabled):hover {
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
-          }
-          a {
-            width: 30px;
-            height: 30px;
-            display: flex !important;
-            justify-content: center;
-            align-items: center;
-            text-decoration: none !important;
-            color: #000;
-            background-color: #fff;
-            i {
-              display: flex;
-            }
-          }
-        }
-        li.active a {
-          background-color: #000 !important;
-          color: #fff !important;
-          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
-        }
-      }
-    }
-    .page-count {
-      font-weight: bold;
-      font-size: 14px;
-      color: #878787;
-    }
+}
+
+.filter_list {
+  a{
+    padding: 0!important;
   }
-  .action_data_table {
-    justify-content: center;
+  label.custom_radio, .clear_filter {
+    height: 40px;
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
   }
-  .datatable-row-detail {
-    background-color: #f7f7f7 !important;
-    padding: 20px 40px;
-    .details_subTitle {
-      font-weight: bold;
-      font-size: 14px;
-      color: #878787;
+  .clear_filter{
+    fa-icon{
+      margin-right: 1rem;
     }
   }
 }
 
-.refresh_table_btn {
-  border: none;
-  background: #000;
-  cursor: pointer;
-  height: 30px;
-  width: 60px;
-  margin: 0 0 15px 15px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-  transition: .3s linear;
-  fa-icon {
-    color: #fff;
-  }
-  &:hover svg {
-    transition: .3s linear;
-    color: #000;
-    transform: rotate(360deg);
-  }
-  &:hover {
-    background: #fff;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+.table_action_btn {
+  background: none;
+  color: #000;
+  box-shadow: none !important;
+}
+
+.table_dropdown {
+  min-width: 8rem;
+  padding: 0 !important;
+  box-shadow: $brightBoxShadow;
+  li {
+    a {
+      padding: 0 10px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      &:active {
+        background: none;
+        color: #000;
+      }
+    }
+    fa-icon {
+      margin-right: 1rem;
+    }
   }
 }
+
+.filter_btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  color: $mainGreyColor;
+  font-weight: bold;
+  fa-icon {
+    margin-left: 10px;
+  }
+}
+
+//.refresh_table_btn {
+//  border: none;
+//  background: #000;
+//  cursor: pointer;
+//  height: 30px;
+//  width: 60px;
+//  margin: 0 0 15px 15px;
+//  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+//  transition: .3s linear;
+//  fa-icon {
+//    color: #fff;
+//  }
+//  &:hover svg {
+//    transition: .3s linear;
+//    color: #000;
+//    transform: rotate(360deg);
+//  }
+//  &:hover {
+//    background: #fff;
+//    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+//  }
+//}
 
 //END DATABASE
 
@@ -343,7 +477,7 @@ ngx-datatable {
       transition: 0.1s linear;
     }
   }
-  .img_upload_hover{
+  .img_upload_hover {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -354,15 +488,15 @@ ngx-datatable {
     justify-content: center;
     opacity: 0;
     transition: .2s linear;
-    fa-icon{
+    fa-icon {
       color: #fff;
       font-size: 40px;
     }
-    .upload_title{
+    .upload_title {
       font-size: 20px;
       color: #fff;
     }
-    &:hover{
+    &:hover {
       opacity: 1;
     }
   }
@@ -495,6 +629,7 @@ ui-switch {
 ngx-datatable {
   overflow: inherit !important;
 }
+
 
 
 

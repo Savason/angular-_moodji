@@ -1,3 +1,4 @@
+<p-growl [(value)]="msgs"></p-growl>
 <div class="login_bg">
   <div class="container">
     <div class="row align-items-center justify-content-center authorization_container">
@@ -7,6 +8,14 @@
           <div class="login_title">Please <strong>Login</strong></div>
         </div>
         <form [formGroup]="form" class="login_form" (ngSubmit)="onSubmit()">
+          <div class="user_auth_error" *ngIf="invalidUser">
+            <fa-icon [icon]="formError"></fa-icon>
+            Invalid username or password combination or user doesn't exist in system
+          </div>
+          <div class="user_auth_error" *ngIf="forbiddenUser.access">
+            <fa-icon [icon]="formError"></fa-icon>
+            {{forbiddenUser.text}}
+          </div>
           <div class="form-group" style="margin-bottom: 35px!important;">
             <div class="d-flex align-items-center">
               <label for="userName">
@@ -17,7 +26,7 @@
                 aria-describedby="emailHelp"
                 placeholder="User name">
             </div>
-            <div class="login_error" *ngIf="form.get('username').invalid&&form.get('username').dirty">
+            <div class="login_error" *ngIf="form.get('username').invalid&&form.get('username').touched">
               <fa-icon [icon]="formError"></fa-icon>
               {{getErrorUserNameMessage()}}
             </div>
@@ -30,13 +39,13 @@
               <input formControlName="password" type="password" class="form-control" id="userPassword"
                      aria-describedby="emailHelp" placeholder="Password">
             </div>
-            <div class="login_error" *ngIf="form.get('password').invalid&&form.get('password').dirty">
+            <div class="login_error" *ngIf="form.get('password').invalid&&form.get('password').touched">
               <fa-icon [icon]="formError"></fa-icon>
               {{getErrorPasswordMessage()}}
             </div>
           </div>
           <div class="d-flex justify-content-end">
-            <button [disabled]="form.invalid" class="btn login_btn">Login to Moodja LVS</button>
+            <button class="btn login_btn">Login to Moodja LVS</button>
           </div>
         </form>
       </div>

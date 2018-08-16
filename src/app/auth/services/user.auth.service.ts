@@ -36,6 +36,7 @@ export class UserAuthService extends BaseApi {
         localStorage.clear();
         if (response.access_token) {
           localStorage.setItem('access_token', JSON.stringify(response.access_token));
+          localStorage.setItem('username', JSON.stringify(username));
           this.loginEventEmitter.emit(true);
           this.isLoggedIn = true;
         }

@@ -25,6 +25,20 @@
   input{
     padding-left: 27.5px;
   }
+  .user_auth_error{
+    padding: 5px 10px;
+    color: #D35143;
+    font-weight: bold;
+    font-size: 13px;
+    background: #f2cac6;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    display: table;
+    fa-icon {
+      font-size: 15px;
+      margin-right: 5px;
+    }
+  }
 }
 .logo_img_wrapper {
   background: #000;

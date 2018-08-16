@@ -8,10 +8,11 @@ import {UiSwitchModule} from 'ngx-ui-switch';
 import {GrowlModule} from 'primeng/growl';
 import { NotificationComponent } from './components/notification/notification.component';
 import {SystemLoaderComponent} from './components/loader/system-loader.component';
-import {AccordionModule, TooltipModule} from 'primeng/primeng';
+import {AccordionModule, SplitButtonModule, TooltipModule} from 'primeng/primeng';
 import {ModalSmLoaderComponent} from './components/loader/modal-sm-loader.component';
 import {ToastModule} from 'primeng/toast';
 import {PaginationComponent} from './components/pagination/pagination.component';
+import { MessagesComponent } from './components/messages/messages.component';
 
 @NgModule({
   imports: [
@@ -22,6 +23,7 @@ import {PaginationComponent} from './components/pagination/pagination.component'
     ToastModule,
     AccordionModule,
     TooltipModule,
+    SplitButtonModule
   ],
   exports: [
     FontAwesomeModule,
@@ -32,17 +34,20 @@ import {PaginationComponent} from './components/pagination/pagination.component'
     GrowlModule,
     ToastModule,
     NotificationComponent,
+    MessagesComponent,
     SystemLoaderComponent,
     ModalSmLoaderComponent,
     AccordionModule,
     TooltipModule,
+    SplitButtonModule
   ],
   declarations: [
     PagenotfoundComponent,
     NotificationComponent,
     SystemLoaderComponent,
     ModalSmLoaderComponent,
-    PaginationComponent
+    PaginationComponent,
+    MessagesComponent
   ]
 })
 export class SharedModule {

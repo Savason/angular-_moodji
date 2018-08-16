@@ -23,7 +23,7 @@
     </div>
     <div class="form-group">
       <label for="accountType" class="d-flex col-md-12">
-        Account Type
+        Role
         <span class="required_badge">*</span>
       </label>
       <div class="col-md-12">
@@ -90,7 +90,7 @@
     </div>
     <div class="col-md-12 d-flex justify-content-between modal_action_footer">
       <button type="button" class="app_btn" (click)="onFormClose()">Cancel</button>
-      <button [disabled]="form.invalid||form.pending" class="app_btn login_btn">Save</button>
+      <button [disabled]="form.pending" class="app_btn login_btn">Save</button>
     </div>
   </form>
 </div>

@@ -32,16 +32,15 @@ export class AccountManagementService extends BaseApi {
     return this.get(`api/user/${term}`);
   }
 
-  getAllUsers(searchParams, search?: string): Observable<any> {
-    if (search !== undefined) {
-      return this.get(`api/user?search=${search}`);
-    } else {
-      return this.get(`api/user?page=${searchParams}`);
-    }
+  getAllUsers(searchParams): Observable<any> {
+    return this.get(`api/user?page=${searchParams}`);
   }
 
   getUserRole(): Observable<any> {
     return this.get('api/role');
+  }
+  getUserRoleWithoutPerm(): Observable<any> {
+    return this.get('api/roles');
   }
 
   deleteCurrentUser(id: number): Observable<any> {

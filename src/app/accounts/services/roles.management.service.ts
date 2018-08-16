@@ -42,7 +42,7 @@ export class RolesManagementService extends BaseApi {
   }
 
   addPermissionToRole(data): Observable<any> {
-    return this.post(`api/role/permissions/manage`, data);
+    return this.post(`api/role/permissions/manage?permission_id=${data.permission_id}&role_id=${data.role_id}`);
   }
 
   deletePermissionToRole(data): Observable<any> {

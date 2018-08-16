@@ -6,6 +6,7 @@ import {RolesManagementService} from '../../../services/roles.management.service
 import {NotificationsService} from '../../../../shared/services/notifications.service';
 import {systemIcon} from '../../../../shared/variables/variables';
 import {Subscription} from 'rxjs';
+import {validateAllFields} from '../../../../shared/validators/validate-all-fields';
 
 @Component({
   selector: 'app-create-new-role',
@@ -51,28 +52,32 @@ export class CreateNewRoleComponent implements OnInit, OnDestroy {
   }
 
   createNewRole() {
-    const {name} = this.newRoleForm.value;
-    const role = new RoleModel(name);
-    console.log(role);
-    this.sub1 = this.permissionsService.createUserRole(role)
-      .subscribe((data) => {
-        this.onFormClose();
-        if (data.success) {
-          this.sub2 = this.permissionsService.getPermissionTable()
-            .subscribe((data1) => {
-              console.log(data1);
-              this.permissionsService.newPermissionsList = data1.rms;
-            });
-          const newRole = data.value;
-          console.log(newRole);
-          this.modalService.setDismissReason('create_success');
-          this.notificationService.notify('success', '', `Role ${role.name} has been created successfully!`);
-        } else if (data.error) {
-          this.notificationService.notify('error', '', `${data.error}`);
-        }
-      }, error1 => {
-        this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
-      });
+    if (this.newRoleForm.invalid) {
+      validateAllFields(this.newRoleForm);
+    } else if (this.newRoleForm.valid) {
+      const {name} = this.newRoleForm.value;
+      const role = new RoleModel(name);
+      console.log(role);
+      this.sub1 = this.permissionsService.createUserRole(role)
+        .subscribe((data) => {
+          this.onFormClose();
+          if (data.success) {
+            this.sub2 = this.permissionsService.getPermissionTable()
+              .subscribe((data1) => {
+                console.log(data1);
+                this.permissionsService.newPermissionsList = data1.rms;
+              });
+            const newRole = data.value;
+            console.log(newRole);
+            this.modalService.setDismissReason('create_success');
+            this.notificationService.notify('success', '', `Role ${role.name} has been created successfully!`);
+          } else if (data.error) {
+            this.notificationService.notify('error', '', `${data.error}`);
+          }
+        }, error1 => {
+          this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
+        });
+    }
   }
 
   onFormClose() {

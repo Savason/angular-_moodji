@@ -8,6 +8,8 @@ import {CreateNewRoleComponent} from './create-new-role/create-new-role.componen
 import {EditRoleComponent} from './edit-role/edit-role.component';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {PermissionsService} from '../../../core/services/permissions.service';
+import {validateAllFields} from '../../../shared/validators/validate-all-fields';
+import {forkJoin} from 'rxjs';
 
 
 @Component({
@@ -134,45 +136,102 @@ export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  onPermissionChange(perm, option) {
+  onPermissionChange(perm, option, per) {
+    console.log(per);
+    const parentGroupName = per.name;
+    // console.log(option.roleId);
+    const blockPermissions = [];
+    const isMainPermission = perm.main;
+    console.log(isMainPermission);
+    per.permissions.forEach((element) => {
+      blockPermissions.push({
+        permission_id: element.id,
+        role_id: element.options.find(el => el.roleId === option.roleId).roleId
+      });
+      // console.log(blockPermissions);
+    });
     const permissionData = {
       permission_id: perm.id,
       role_id: option.roleId,
     };
-    console.log(perm);
     if (option.hasAccess === true) {
-      this.sub4 = this.permissionsService.deletePermissionToRole(permissionData)
-        .subscribe((data) => {
-          if (data.success) {
-            console.log(data);
-            option.hasAccess = false;
-            this.notificationService.notify('warn', '', `Permissions ${perm.name} has been removed successfully!`);
-          } else if (data.error) {
-            this.notificationService.notify('error', '', `${data.error}`);
-          }
-        }, error1 => {
-          this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
+      if (isMainPermission === true) {
+        const observableRequest = [];
+        blockPermissions.forEach((element) => {
+          observableRequest.push(this.permissionsService.deletePermissionToRole(element));
         });
+        forkJoin(...observableRequest).subscribe((data) => {
+          const roleTableAfter = this.permissionTable.parents.find(p => p.name === parentGroupName).permissions;
+          roleTableAfter.forEach((element) => {
+            const idx = element.options.findIndex(p => p.roleId === option.roleId);
+            element.options[idx] = {roleId: option.roleId, hasAccess: false};
+          });
+          // console.log(roleTableAfter);
+        });
+      } else if (isMainPermission === false) {
+        this.sub4 = this.permissionsService.deletePermissionToRole(permissionData)
+          .subscribe((data) => {
+            if (data.success) {
+              console.log(data);
+              option.hasAccess = false;
+              this.notificationService.notify('warn', '', `Permissions ${perm.name} has been removed successfully!`);
+            } else if (data.error) {
+              this.notificationService.notify('error', '', `${data.error}`);
+            }
+          }, error1 => {
+            this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
+          });
+      }
     } else {
-      this.sub5 = this.permissionsService.addPermissionToRole(permissionData)
-        .subscribe((data) => {
-          if (data.success) {
-            console.log(data);
-            option.hasAccess = true;
-            this.notificationService.notify('success', '', `Permissions ${perm.name} has been added successfully!`);
-          } else if (data.error) {
-            this.notificationService.notify('error', '', `${data.error}`);
-          }
-        }, error1 => {
-          this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
+      if (isMainPermission === true) {
+        const observableRequest = [];
+        blockPermissions.forEach((element) => {
+          observableRequest.push(this.permissionsService.addPermissionToRole(element));
         });
+        forkJoin(...observableRequest).subscribe((data) => {
+          const roleTableAfter = this.permissionTable.parents.find(p => p.name === parentGroupName).permissions;
+          roleTableAfter.forEach((element) => {
+            const idx = element.options.findIndex(p => p.roleId === option.roleId);
+            element.options[idx] = {roleId: option.roleId, hasAccess: true};
+          });
+          // console.log(roleTableAfter);
+        });
+      } else if (isMainPermission === false) {
+        console.log(parentGroupName);
+        const parentCheck = {
+          permission_id: per.permissions.find(p => p.main === true).id,
+          role_id: per.permissions.find(p => p.main === true).options.find(p => p.roleId === option.roleId).roleId
+        };
+        console.log(parentCheck);
+        // console.log(per.permissions.find(p => p.main === true).options.find(p => p.roleId === option.roleId).roleId);
+        this.sub4 = this.permissionsService.addPermissionToRole(permissionData)
+          .subscribe((data) => {
+            if (data.success) {
+              console.log(data);
+              option.hasAccess = true;
+              this.permissionsService.addPermissionToRole(parentCheck)
+                .subscribe((dataChild) => {
+                  console.log(dataChild);
+                  this.permissionTable.parents
+                    .find(p => p.name === parentGroupName).permissions
+                    .find(p => p.main === true).options
+                    .find(p => p.roleId === option.roleId).hasAccess = true;
+                  // per.permissions.find(p => p.main === true).options.find(p => p.roleId === option.roleId).hasAccess = true;
+                });
+              this.notificationService.notify('success', '', `Permissions ${perm.name} has been added successfully!`);
+            } else if (data.error) {
+              this.notificationService.notify('error', '', `${data.error}`);
+            }
+          }, error1 => {
+            this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
+          });
+      }
     }
   }
 
   confirmDeleteRole(template: TemplateRef<any>, role) {
     this.modalRef = this.modalService.show(template);
     this.deletedRole = role;
-    // console.log(role.roleId);
     this.sub8 = this.permissionsService.getUsersByRoleId(role.roleId)
       .subscribe((data) => {
         this.hasUsers = data;
@@ -216,27 +275,32 @@ export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onRedefinedRoles() {
-    const {role_id} = this.form.value;
-    console.log(role_id);
-    this.permissionsService.deleteUserRole(this.deletedRole.roleId, role_id)
-      .subscribe((data) => {
-        if (data.success) {
-          console.log(data);
-          this.onFormClose();
-          const afterRoleDeleted = this.permissionTable.roles.filter(role => role.roleId !== this.deletedRole.roleId);
-          this.permissionTable.roles = afterRoleDeleted;
-          const deletedPermission = this.element.nativeElement.getElementsByClassName(this.deletedRole.roleId);
-          for (let i = deletedPermission.length - 1; i >= 0; --i) {
-            deletedPermission[i].remove();
+    if (this.form.invalid) {
+      validateAllFields(this.form);
+    } else if (this.form.valid) {
+      const {role_id} = this.form.value;
+      console.log(role_id);
+      this.permissionsService.deleteUserRole(this.deletedRole.roleId, role_id)
+        .subscribe((data) => {
+          if (data.success) {
+            console.log(data);
+            this.onFormClose();
+            const afterRoleDeleted = this.permissionTable.roles.filter(role => role.roleId !== this.deletedRole.roleId);
+            this.permissionTable.roles = afterRoleDeleted;
+            const deletedPermission = this.element.nativeElement.getElementsByClassName(this.deletedRole.roleId);
+            for (let i = deletedPermission.length - 1; i >= 0; --i) {
+              deletedPermission[i].remove();
+            }
+            this.notificationService.notify('warn', '', `Role ${this.deletedRole.name} has been deleted successfully!`);
+          } else if (data.error) {
+            this.notificationService.notify('error', '', `${data.error}`);
           }
-          this.notificationService.notify('warn', '', `Role ${this.deletedRole.name} has been deleted successfully!`);
-        } else if (data.error) {
-          this.notificationService.notify('error', '', `${data.error}`);
-        }
-      }, error1 => {
-        this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
-      });
+        }, error1 => {
+          this.notificationService.notify('error', '', `Something went wrong, please try again letter!`);
+        });
+    }
   }
+
 
   onFormClose() {
     this.modalRef.hide();

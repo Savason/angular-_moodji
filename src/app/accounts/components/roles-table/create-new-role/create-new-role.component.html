@@ -23,7 +23,7 @@
     </div>
     <div class="col-md-12 d-flex justify-content-between modal_action_footer">
       <button type="button" class="app_btn" (click)="onFormClose()">Cancel</button>
-      <button [disabled]="newRoleForm.invalid||newRoleForm.pending" class="app_btn login_btn">Save</button>
+      <button [disabled]="newRoleForm.pending" class="app_btn login_btn">Save</button>
     </div>
   </form>
 </div>

@@ -1,6 +1,6 @@
 // Patterns
 import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons/faExclamationTriangle';
-import {faEyeSlash, faUser} from '@fortawesome/free-solid-svg-icons';
+import {faCaretSquareDown, faEyeSlash, faUser} from '@fortawesome/free-solid-svg-icons';
 import {faSlidersH} from '@fortawesome/free-solid-svg-icons/faSlidersH';
 import {faBoxOpen} from '@fortawesome/free-solid-svg-icons/faBoxOpen';
 import {faSignOutAlt} from '@fortawesome/free-solid-svg-icons/faSignOutAlt';
@@ -14,6 +14,8 @@ import {faEllipsisH} from '@fortawesome/free-solid-svg-icons/faEllipsisH';
 import {faSyncAlt} from '@fortawesome/free-solid-svg-icons/faSyncAlt';
 import {faCloudUploadAlt} from '@fortawesome/free-solid-svg-icons/faCloudUploadAlt';
 import {faEye} from '@fortawesome/free-solid-svg-icons/faEye';
+import {faFilter} from '@fortawesome/free-solid-svg-icons/faFilter';
+import {faEraser} from '@fortawesome/free-solid-svg-icons/faEraser';
 
 export const regExps = {
   emailPattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -35,6 +37,9 @@ export const systemIcon = {
   refreshIcon: faSyncAlt,
   uploadIcon: faCloudUploadAlt,
   showIcon: faEye,
-  hideIcon: faEyeSlash
+  hideIcon: faEyeSlash,
+  filterIcon: faFilter,
+  showMoreIcon: faCaretSquareDown,
+  clearIcon: faEraser
 };
 
