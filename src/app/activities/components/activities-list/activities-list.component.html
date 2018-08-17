@@ -1,0 +1,62 @@
+<app-system-loader *ngIf="!isLoaded"></app-system-loader>
+<div class="accounts_wrapper" *ngIf="isLoaded">
+  <div *ngIf="checkPermission('ACTIVITY_LIST')">
+    <div class="d-flex justify-content-between" style="margin-bottom: 10px">
+      <div class="col-md-6" style="padding: 0">
+        <input [(ngModel)]="filterChipsSearch" (keyup)="contextDataTableSearch($event)"
+               class="form-control" type="text"
+               placeholder="Search">
+      </div>
+    </div>
+    <div class="d-flex">
+      <span *ngIf="filterChipsSearch!==''" class="filter_chips"
+            tooltipPosition="top" [pTooltip]="'remove ' + '' + filterChipsSearch + '' + ' filter'"
+            showDelay="100" hideDelay="100">
+      <span>
+        {{filterChipsSearch}}
+      </span>
+      <span (click)="clearFilter('search')">
+        <fa-icon [icon]="cancelIcon"></fa-icon>
+      </span>
+    </span>
+    </div>
+    <table class="table system_table">
+      <thead>
+      <tr>
+        <td style="width: 40%">Date</td>
+        <td style="width: 30%">User</td>
+        <td style="width: 15%">Action</td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let row of rows|async">
+        <td>
+          {{row.createdAt | date : "dd.MM.yyyy H:m"}}
+        </td>
+        <td>
+          {{row.username}}
+        </td>
+        <td>
+          {{row.text}} {{row.name}}
+        </td>
+      </tr>
+      <tr class="table_footer">
+        <td colspan="2">
+          <div class="total_count">
+            <span>Total: </span>
+            {{activitiesService.totalActivitiesCount}}
+          </div>
+        </td>
+        <td style="text-align: right" colspan="1">
+          <span class="show_more_btn" *ngIf="page.pageNumber+1<showPagination"
+                (click)="updateTablePagination($event)">
+            Show more
+            <fa-icon [icon]="showMoreIcon"></fa-icon>
+          </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+

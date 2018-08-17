@@ -14,6 +14,8 @@ import {PermissionsService} from './services/permissions.service';
 import {InboundsService} from '../system/inbound/services/inbounds.service';
 import {UserFilterService} from '../accounts/services/user.filter.service';
 import {MessageService} from 'primeng/api';
+import {ActivitiesService} from "../activities/services/activities.service";
+import {ActivitiesFilterService} from "../activities/services/activities.filter.service";
 
 @NgModule({
   imports: [
@@ -27,6 +29,8 @@ import {MessageService} from 'primeng/api';
     UserAuthService,
     PermissionsService,
     AccountManagementService,
+    ActivitiesService,
+    ActivitiesFilterService,
     UserFilterService,
     RolesManagementService,
     ItemsService,

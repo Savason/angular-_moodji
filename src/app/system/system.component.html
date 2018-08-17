@@ -29,6 +29,11 @@
           <span>Inbounds</span>
         </a>
       </li>
+      <li *ngIf="checkPermission('ACTIVITY_LIST')">
+        <a class="app_navigation_link" [routerLink]="['/activities']" routerLinkActive="active">
+          <span>Activity</span>
+        </a>
+      </li>
       <li>
         <a class="app_navigation_link" (click)="logout()">
           <fa-icon [icon]="lofOutIcon"></fa-icon>
