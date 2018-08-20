@@ -17,7 +17,7 @@
     <div class="d-flex">
       <span *ngIf="filterChipsSearch!==''" class="filter_chips"
             tooltipPosition="top" [pTooltip]="'remove ' + '' + filterChipsSearch + '' + ' filter'"
-            showDelay="100" hideDelay="100">
+            showDelay="100" hideDelay="100" tooltipStyleClass="tooltip_flex">
       <span>
         {{filterChipsSearch}}
       </span>
@@ -27,7 +27,7 @@
     </span>
       <span *ngIf="filterChipsRole!==''" class="filter_chips"
             tooltipPosition="top" [pTooltip]="'remove ' + '' + filterChipsRole + '' + ' filter'"
-            showDelay="100" hideDelay="100">
+            showDelay="100" hideDelay="100" tooltipStyleClass="tooltip_flex">
       <span>
         {{filterChipsRole|lowercase}}
       </span>
@@ -37,7 +37,7 @@
     </span>
       <span *ngIf="filterChipsStatus!==''" class="filter_chips"
             tooltipPosition="top" [pTooltip]="'remove ' + '' + filterChipsStatus + '' + ' filter'"
-            showDelay="100" hideDelay="100">
+            showDelay="100" hideDelay="100" tooltipStyleClass="tooltip_flex">
       <span>
         {{filterChipsStatus}}
       </span>
@@ -46,147 +46,149 @@
       </span>
     </span>
     </div>
-    <table class="table system_table">
-      <thead>
-      <tr>
-        <td style="width: 40%">Name</td>
-        <td style="width: 30%">
-          <div class="btn-group" dropdown>
-            <button id="button-basic1" dropdownToggle type="button" class="filter_btn"
-                    aria-controls="dropdown-basic">
-              <span>Role</span>
-              <fa-icon [ngClass]="isRoleFiltered?'isFiltered':''" [icon]="filterIcon"
-                       tooltipPosition="top" pTooltip="Filter"
-                       showDelay="100" hideDelay="100"></fa-icon>
-            </button>
-            <ul id="dropdown-basic1" *dropdownMenu class="dropdown-menu table_dropdown filter_list"
-                role="menu" aria-labelledby="button-basic">
-              <li role="menuitem" (click)="clearFilter('role')">
-                <a class="dropdown-item">
-                  <div class="clear_filter">
-                    <fa-icon [icon]="clearIcon"></fa-icon>
-                    Clear filter
-                  </div>
-                </a>
-              </li>
-              <li role="menuitem" *ngFor="let role of usersRoles">
-                <a class="dropdown-item">
-                  <label class="custom_radio">
-                    <input class="role_filter" [(ngModel)]="filterRoleVal" [value]="role.role" type="radio" name="role"
-                           (click)="filterByKey('role',role.role)">
-                    <span></span>
-                    {{role.role|lowercase}}
-                  </label>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </td>
-        <td style="width: 15%">
-          <div class="btn-group" dropdown>
-            <button id="button-basic2" dropdownToggle type="button" class="filter_btn"
-                    aria-controls="dropdown-basic">
-              <span>Status</span>
-              <fa-icon [ngClass]="isStatusFiltered?'isFiltered':''" [icon]="filterIcon"
-                       tooltipPosition="top" pTooltip="Filter"
-                       showDelay="100" hideDelay="100"></fa-icon>
-            </button>
-            <ul id="dropdown-basic2" *dropdownMenu class="dropdown-menu table_dropdown filter_list"
-                role="menu" aria-labelledby="button-basic">
-              <li role="menuitem" (click)="clearFilter('status')">
-                <a class="dropdown-item">
-                  <div class="clear_filter">
-                    <fa-icon [icon]="clearIcon"></fa-icon>
-                    Clear filter
-                  </div>
-                </a>
-              </li>
-              <li role="menuitem">
-                <a class="dropdown-item">
-                  <label class="custom_radio">
-                    <input type="radio" name="status" [(ngModel)]="filterStatusVal" [value]="1"
-                           (click)="filterByKey('status','1', 'activated')">
-                    <span></span>
-                    activated
-                  </label>
-                </a>
-              </li>
-              <li role="menuitem">
-                <a class="dropdown-item">
-                  <label class="custom_radio">
-                    <input type="radio" name="status" [(ngModel)]="filterStatusVal" [value]="0"
-                           (click)="filterByKey('status', '0','disabled')">
-                    <span></span>
-                    disabled
-                  </label>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </td>
-        <td style="width: 15%">Action</td>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let row of rows|async">
-        <td>
-          {{row.username}}
-        </td>
-        <td>
+    <div class="system_table_wrapper">
+      <table class="table system_table">
+        <thead>
+        <tr>
+          <td style="width: 40%">Name</td>
+          <td style="width: 30%">
+            <div class="btn-group" dropdown>
+              <button id="button-basic1" dropdownToggle type="button" class="filter_btn"
+                      aria-controls="dropdown-basic">
+                <span>Role</span>
+                <fa-icon [ngClass]="isRoleFiltered?'isFiltered':''" [icon]="filterIcon"
+                         tooltipPosition="top" pTooltip="Filter"
+                         showDelay="100" hideDelay="100"></fa-icon>
+              </button>
+              <ul id="dropdown-basic1" *dropdownMenu class="dropdown-menu table_dropdown filter_list"
+                  role="menu" aria-labelledby="button-basic">
+                <li role="menuitem" (click)="clearFilter('role')">
+                  <a class="dropdown-item">
+                    <div class="clear_filter">
+                      <fa-icon [icon]="clearIcon"></fa-icon>
+                      Clear filter
+                    </div>
+                  </a>
+                </li>
+                <li role="menuitem" *ngFor="let role of usersRoles">
+                  <a class="dropdown-item">
+                    <label class="custom_radio">
+                      <input class="role_filter" [(ngModel)]="filterRoleVal" [value]="role.role" type="radio"
+                             name="role"
+                             (click)="filterByKey('role',role.role)">
+                      <span></span>
+                      {{role.role|lowercase}}
+                    </label>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </td>
+          <td style="width: 15%" *ngIf="checkPermission('USER_ACTIVATE')">
+            <div class="btn-group" dropdown>
+              <button id="button-basic2" dropdownToggle type="button" class="filter_btn"
+                      aria-controls="dropdown-basic">
+                <span>Status</span>
+                <fa-icon [ngClass]="isStatusFiltered?'isFiltered':''" [icon]="filterIcon"
+                         tooltipPosition="top" pTooltip="Filter"
+                         showDelay="100" hideDelay="100"></fa-icon>
+              </button>
+              <ul id="dropdown-basic2" *dropdownMenu class="dropdown-menu table_dropdown filter_list"
+                  role="menu" aria-labelledby="button-basic">
+                <li role="menuitem" (click)="clearFilter('status')">
+                  <a class="dropdown-item">
+                    <div class="clear_filter">
+                      <fa-icon [icon]="clearIcon"></fa-icon>
+                      Clear filter
+                    </div>
+                  </a>
+                </li>
+                <li role="menuitem">
+                  <a class="dropdown-item">
+                    <label class="custom_radio">
+                      <input type="radio" name="status" [(ngModel)]="filterStatusVal" [value]="1"
+                             (click)="filterByKey('status','1', 'activated')">
+                      <span></span>
+                      activated
+                    </label>
+                  </a>
+                </li>
+                <li role="menuitem">
+                  <a class="dropdown-item">
+                    <label class="custom_radio">
+                      <input type="radio" name="status" [(ngModel)]="filterStatusVal" [value]="0"
+                             (click)="filterByKey('status', '0','disabled')">
+                      <span></span>
+                      disabled
+                    </label>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </td>
+          <td style="width: 15%" *ngIf="checkPermission('USER_UPDATE')||checkPermission('USER_REMOVE')">Action</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let row of rows|async">
+          <td>
+            {{row.username}}
+          </td>
+          <td>
           <span>
             {{row.roleTitle|lowercase}}
           </span>
-        </td>
-        <td>
-          <ui-switch [ngModel]="row.enabled"
-                     (change)="onChangeStatus(row.enabled,row.id)">
-          </ui-switch>
-        </td>
-        <td>
-          <div class="btn-group" dropdown placement="bottom right">
-            <button id="button-basic" dropdownToggle type="button" class="btn table_action_btn"
-                    aria-controls="dropdown-basic">
-              <fa-icon [icon]="faEllipsisH"></fa-icon>
-            </button>
-            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right table_dropdown"
-                role="menu" aria-labelledby="button-basic">
-              <li role="menuitem">
-                <a *ngIf="checkPermission('USER_UPDATE')" class="dropdown-item"
-                   (click)="editCurrentUserModal(row.id)"
-                >
-                  <fa-icon [icon]="faEdit"></fa-icon>
-                  <span>Edit</span>
-                </a>
-              </li>
-              <li role="menuitem">
-                <a *ngIf="checkPermission('USER_REMOVE')" class="dropdown-item"
-                   (click)="openModal(template,row.id, row.username)"
-                >
-                  <fa-icon [icon]="faDelete"></fa-icon>
-                  <span>Delete</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </td>
-      </tr>
-      <tr class="table_footer">
-        <td colspan="3">
-          <div class="total_count">
-            <span>Total: </span>
-            {{accountService.totalUserCount}}
-          </div>
-        </td>
-        <td style="text-align: right" colspan="1">
-          <span class="show_more_btn" *ngIf="page.pageNumber+1<showPagination"
-                (click)="updateTablePagination($event)">
-            Show more
-            <fa-icon [icon]="showMoreIcon"></fa-icon>
-          </span>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+          </td>
+          <td *ngIf="checkPermission('USER_ACTIVATE')">
+            <ui-switch [ngModel]="row.enabled"
+                       (change)="onChangeStatus(row.enabled,row.id)">
+            </ui-switch>
+          </td>
+          <td *ngIf="checkPermission('USER_UPDATE')||checkPermission('USER_REMOVE')">
+            <div class="btn-group" dropdown placement="bottom right">
+              <button id="button-basic" dropdownToggle type="button" class="btn table_action_btn"
+                      aria-controls="dropdown-basic">
+                <fa-icon [icon]="faEllipsisH"></fa-icon>
+              </button>
+              <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right table_dropdown"
+                  role="menu" aria-labelledby="button-basic">
+                <li role="menuitem">
+                  <a *ngIf="checkPermission('USER_UPDATE')" class="dropdown-item"
+                     (click)="editCurrentUserModal(row.id)"
+                  >
+                    <fa-icon [icon]="faEdit"></fa-icon>
+                    <span>Edit</span>
+                  </a>
+                </li>
+                <li role="menuitem">
+                  <a *ngIf="checkPermission('USER_REMOVE')" class="dropdown-item"
+                     (click)="openModal(template,row.id, row.username)"
+                  >
+                    <fa-icon [icon]="faDelete"></fa-icon>
+                    <span>Delete</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <div *ngIf="!isProcessing" class="table_footer">
+        <div class="total_count">
+        <span>Total: </span>
+        {{accountService.totalUserCount}}
+        </div>
+        <span class="show_more_btn" *ngIf="page.pageNumber+1<showPagination"
+        (click)="updateTablePagination($event)">
+        Show more
+        <fa-icon [icon]="showMoreIcon"></fa-icon>
+        </span>
+      </div>
+      <div *ngIf="isProcessing" class="table_processing_loader">
+        <app-opacity-loader></app-opacity-loader>
+      </div>
+    </div>
     <ng-template #template>
       <div class="modal-header">
         <h5 style="text-align: center" class="modal-title pull-left">Are you sure you want to delete <strong>{{deletedUser}}</strong>?

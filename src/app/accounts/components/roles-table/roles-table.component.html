@@ -1,4 +1,5 @@
 <app-system-loader *ngIf="!isLoaded"></app-system-loader>
+<app-opacity-loader *ngIf="isProcessing"></app-opacity-loader>
 <a *ngIf="checkPermission('ROLE_ADD')" class="create_circle_btn d-flex justify-content-center align-items-center"
    tooltipPosition="left" pTooltip="New role"
    showDelay="200" hideDelay="200"
@@ -6,53 +7,59 @@
   <fa-icon [icon]="addIcon"></fa-icon>
 </a>
 <div class="container" *ngIf="isLoaded">
-  <p-accordion *ngIf="checkPermission('ROLE_GET')" (onOpen)="onTabOpen($event)" [activeIndex]="idx">
-    <p-accordionTab *ngFor="let per of permissionTable.parents;let i = index" header="{{per.name}}" [selected]="i === idx">
-      <div style="overflow-y: auto">
-        <table class="custom_table_roles table">
-          <tr class="table_header" style="display: flex">
-            <td style="width: 200px;display: inline-block">
+  <div class="system_table_wrapper">
+    <p-accordion *ngIf="checkPermission('ROLE_GET')" (onOpen)="onTabOpen($event)" [activeIndex]="idx">
+      <p-accordionTab *ngFor="let per of permissionTable.parents;let i = index" header="{{per.name}}"
+                      [selected]="i === idx">
+        <div style="overflow-y: auto">
+          <table class="custom_table_roles table">
+            <tr class="table_header" style="display: flex">
+              <td style="width: 200px;display: inline-block" *ngIf="checkPermission('ROLE_ADD_PERMISSION')">
               <span style="font-weight: bold;font-size: 14px;color: #878787;">
                 Permissions
               </span>
-            </td>
-            <td style="width: 200px;display: inline-block" *ngFor="let role of permissionTable.roles">
-              <div class="role_name_wrapper">
-                <div class="role_name">{{role.name}}</div>
-                <div *ngIf="role.name!=='ADMIN'" class="role_name_actions">
+              </td>
+              <td style="width: 200px;display: inline-block" *ngFor="let role of permissionTable.roles">
+                <div class="role_name_wrapper">
+                  <div class="role_name">{{role.name}}</div>
+                  <div *ngIf="role.name!=='ADMIN'" class="role_name_actions">
               <span *ngIf="checkPermission('ROLE_UPDATE')" style="margin-right: 3px" (click)="onEditRole(role)"
                     tooltipPosition="top" pTooltip="Edit"
                     showDelay="100" hideDelay="100">
               <fa-icon class="edit_icon" [icon]="editIcon"></fa-icon>
             </span>
-                  <span *ngIf="checkPermission('ROLE_REMOVE')" (click)="confirmDeleteRole(deleteRoleTemplate,role)"
-                        tooltipPosition="top" pTooltip="Delete"
-                        showDelay="100" hideDelay="100">
+                    <span *ngIf="checkPermission('ROLE_REMOVE')" (click)="confirmDeleteRole(deleteRoleTemplate,role)"
+                          tooltipPosition="top" pTooltip="Delete"
+                          showDelay="100" hideDelay="100">
               <fa-icon class="delete_icon" [icon]="deleteIcon"></fa-icon>
             </span>
+                  </div>
                 </div>
-              </div>
-            </td>
-          </tr>
-          <tr *ngFor="let perm of per.permissions">
-            <td style="width: 200px;display: inline-block" class="permission_name">
-              <span>{{perm.name}}</span>
-            </td>
-            <td style="width: 200px;display: inline-block" *ngFor="let option of perm.options"
-                class="{{option.roleId}} permission_td">
-              <label class="custom_checkbox">
-                <input [disabled]="option.roleId===admin.roleId" [checked]="option.hasAccess"
-                       [ngModel]="option.hasAccess"
-                       (change)="onPermissionChange(perm, option, per)" type="checkbox"
-                       attr.data-permissions="{{perm.id}}" attr.data-role="{{option.roleId}}">
-                <span></span>
-              </label>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </p-accordionTab>
-  </p-accordion>
+              </td>
+            </tr>
+            <div *ngIf="checkPermission('ROLE_ADD_PERMISSION')">
+              <tr *ngFor="let perm of per.permissions">
+                <td style="width: 200px;display: inline-block" class="permission_name">
+                  <span>{{perm.name}}</span>
+                </td>
+                <td style="width: 200px;display: inline-block" *ngFor="let option of perm.options"
+                    class="{{option.roleId}} permission_td">
+                  <label class="custom_checkbox">
+                    <input [disabled]="option.roleId===admin.roleId" [checked]="option.hasAccess"
+                           [ngModel]="option.hasAccess"
+                           (change)="onPermissionChange(perm, option, per)" type="checkbox"
+                           attr.data-permissions="{{perm.id}}" attr.data-role="{{option.roleId}}">
+                    <span></span>
+                  </label>
+                </td>
+              </tr>
+            </div>
+          </table>
+        </div>
+      </p-accordionTab>
+    </p-accordion>
+
+  </div>
 
   <!--Before Delete Role Template-->
   <ng-template #deleteRoleTemplate>

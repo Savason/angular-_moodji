@@ -20,6 +20,7 @@ import {forkJoin} from 'rxjs';
 })
 export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
   public isLoaded = false;
+  public isProcessing = false;
   public form: FormGroup;
   public addIcon = systemIcon.addIcon;
   public deleteIcon = systemIcon.cancelIcon;
@@ -40,6 +41,10 @@ export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
   sub6 = new Subscription();
   sub7 = new Subscription();
   sub8 = new Subscription();
+  sub9 = new Subscription();
+  sub10 = new Subscription();
+  sub11 = new Subscription();
+  sub12 = new Subscription();
   idx: number;
   perm;
 
@@ -106,6 +111,18 @@ export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.sub8) {
       this.sub8.unsubscribe();
     }
+    if (this.sub9) {
+      this.sub9.unsubscribe();
+    }
+    if (this.sub10) {
+      this.sub10.unsubscribe();
+    }
+    if (this.sub11) {
+      this.sub11.unsubscribe();
+    }
+    if (this.sub12) {
+      this.sub12.unsubscribe();
+    }
   }
 
   createRoleModal() {
@@ -137,6 +154,7 @@ export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onPermissionChange(perm, option, per) {
+    this.isProcessing = true;
     console.log(per);
     const parentGroupName = per.name;
     // console.log(option.roleId);
@@ -160,13 +178,18 @@ export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
         blockPermissions.forEach((element) => {
           observableRequest.push(this.permissionsService.deletePermissionToRole(element));
         });
-        forkJoin(...observableRequest).subscribe((data) => {
-          const roleTableAfter = this.permissionTable.parents.find(p => p.name === parentGroupName).permissions;
-          roleTableAfter.forEach((element) => {
-            const idx = element.options.findIndex(p => p.roleId === option.roleId);
-            element.options[idx] = {roleId: option.roleId, hasAccess: false};
-          });
-          // console.log(roleTableAfter);
+        this.sub9 = forkJoin(...observableRequest).subscribe((data) => {
+          console.log(data);
+          if (data[0].success) {
+            const roleTableAfter = this.permissionTable.parents.find(p => p.name === parentGroupName).permissions;
+            roleTableAfter.forEach((element) => {
+              const idx = element.options.findIndex(p => p.roleId === option.roleId);
+              element.options[idx] = {roleId: option.roleId, hasAccess: false};
+            });
+            console.log(data);
+            this.isProcessing = false;
+            this.notificationService.notify('warn', '', `Permissions ${perm.name} has been removed successfully!`);
+          }
         });
       } else if (isMainPermission === false) {
         this.sub4 = this.permissionsService.deletePermissionToRole(permissionData)
@@ -174,6 +197,7 @@ export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
             if (data.success) {
               console.log(data);
               option.hasAccess = false;
+              this.isProcessing = false;
               this.notificationService.notify('warn', '', `Permissions ${perm.name} has been removed successfully!`);
             } else if (data.error) {
               this.notificationService.notify('error', '', `${data.error}`);
@@ -188,16 +212,26 @@ export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
         blockPermissions.forEach((element) => {
           observableRequest.push(this.permissionsService.addPermissionToRole(element));
         });
-        forkJoin(...observableRequest).subscribe((data) => {
-          const roleTableAfter = this.permissionTable.parents.find(p => p.name === parentGroupName).permissions;
-          roleTableAfter.forEach((element) => {
-            const idx = element.options.findIndex(p => p.roleId === option.roleId);
-            element.options[idx] = {roleId: option.roleId, hasAccess: true};
-          });
+        this.sub10 = forkJoin(...observableRequest).subscribe((data) => {
+          console.log(data);
+          if (data[0].success) {
+            const roleTableAfter = this.permissionTable.parents.find(p => p.name === parentGroupName).permissions;
+            roleTableAfter.forEach((element) => {
+              const idx = element.options.findIndex(p => p.roleId === option.roleId);
+              element.options[idx] = {roleId: option.roleId, hasAccess: true};
+            });
+            this.isProcessing = false;
+            this.notificationService.notify('success', '', `Permissions ${perm.name} has been added successfully!`);
+          }
           // console.log(roleTableAfter);
         });
       } else if (isMainPermission === false) {
-        console.log(parentGroupName);
+        const isMainHasAccess = this.permissionTable.parents
+          .find(p => p.name === parentGroupName).permissions
+          .find(p => p.main === true).options
+          .find(p => p.roleId === option.roleId).hasAccess;
+        console.log(isMainHasAccess);
+        // console.log(parentGroupName);
         const parentCheck = {
           permission_id: per.permissions.find(p => p.main === true).id,
           role_id: per.permissions.find(p => p.main === true).options.find(p => p.roleId === option.roleId).roleId
@@ -209,15 +243,20 @@ export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
             if (data.success) {
               console.log(data);
               option.hasAccess = true;
-              this.permissionsService.addPermissionToRole(parentCheck)
-                .subscribe((dataChild) => {
-                  console.log(dataChild);
-                  this.permissionTable.parents
-                    .find(p => p.name === parentGroupName).permissions
-                    .find(p => p.main === true).options
-                    .find(p => p.roleId === option.roleId).hasAccess = true;
-                  // per.permissions.find(p => p.main === true).options.find(p => p.roleId === option.roleId).hasAccess = true;
-                });
+              this.isProcessing = false;
+              if (isMainHasAccess === false) {
+                this.isProcessing = true;
+                this.sub11 = this.permissionsService.addPermissionToRole(parentCheck)
+                  .subscribe((dataChild) => {
+                    console.log(dataChild);
+                    this.permissionTable.parents
+                      .find(p => p.name === parentGroupName).permissions
+                      .find(p => p.main === true).options
+                      .find(p => p.roleId === option.roleId).hasAccess = true;
+                    this.isProcessing = false;
+                    // per.permissions.find(p => p.main === true).options.find(p => p.roleId === option.roleId).hasAccess = true;
+                  });
+              }
               this.notificationService.notify('success', '', `Permissions ${perm.name} has been added successfully!`);
             } else if (data.error) {
               this.notificationService.notify('error', '', `${data.error}`);
@@ -280,7 +319,7 @@ export class RolesTableComponent implements OnInit, OnDestroy, AfterViewInit {
     } else if (this.form.valid) {
       const {role_id} = this.form.value;
       console.log(role_id);
-      this.permissionsService.deleteUserRole(this.deletedRole.roleId, role_id)
+      this.sub12 = this.permissionsService.deleteUserRole(this.deletedRole.roleId, role_id)
         .subscribe((data) => {
           if (data.success) {
             console.log(data);

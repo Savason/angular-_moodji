@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {ActivitiesComponent} from './activities.component';
 import {ActivitiesRoutingModule} from './activities.routing.module';
 import {SharedModule} from '../shared/shared.module';
-import {AccordionModule, BsDropdownModule, ModalModule, PaginationModule} from 'ngx-bootstrap';
+import {AccordionModule, BsDatepickerModule, BsDropdownModule, ModalModule, PaginationModule} from 'ngx-bootstrap';
 import {ActivitiesListComponent} from './components/activities-list/activities-list.component';
 
 @NgModule({
@@ -15,6 +15,7 @@ import {ActivitiesListComponent} from './components/activities-list/activities-l
     AccordionModule.forRoot(),
     BsDropdownModule.forRoot(),
     PaginationModule.forRoot(),
+    BsDatepickerModule.forRoot(),
   ],
   declarations: [
     ActivitiesComponent,

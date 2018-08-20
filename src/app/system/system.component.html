@@ -26,11 +26,13 @@
       </li>
       <li>
         <a class="app_navigation_link" [routerLink]="['/inbounds']" routerLinkActive="active">
+          <fa-icon [icon]="movingIcon"></fa-icon>
           <span>Inbounds</span>
         </a>
       </li>
       <li *ngIf="checkPermission('ACTIVITY_LIST')">
         <a class="app_navigation_link" [routerLink]="['/activities']" routerLinkActive="active">
+          <fa-icon [icon]="clockIcon"></fa-icon>
           <span>Activity</span>
         </a>
       </li>
@@ -43,6 +45,6 @@
     </ul>
   </div>
 </header>
-<div class="container">
+<div class="container" style="position: relative">
   <router-outlet></router-outlet>
 </div>

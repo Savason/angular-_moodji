@@ -13,6 +13,7 @@ import {ModalSmLoaderComponent} from './components/loader/modal-sm-loader.compon
 import {ToastModule} from 'primeng/toast';
 import {PaginationComponent} from './components/pagination/pagination.component';
 import { MessagesComponent } from './components/messages/messages.component';
+import {OpacityLoaderComponent} from './components/loader/opacity-loader.component';
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import { MessagesComponent } from './components/messages/messages.component';
     MessagesComponent,
     SystemLoaderComponent,
     ModalSmLoaderComponent,
+    OpacityLoaderComponent,
     AccordionModule,
     TooltipModule,
     SplitButtonModule
@@ -46,6 +48,7 @@ import { MessagesComponent } from './components/messages/messages.component';
     NotificationComponent,
     SystemLoaderComponent,
     ModalSmLoaderComponent,
+    OpacityLoaderComponent,
     PaginationComponent,
     MessagesComponent
   ]

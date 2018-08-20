@@ -12,10 +12,12 @@ import {Subscription} from 'rxjs';
 export class SystemComponent implements OnInit, OnDestroy {
   public isAuthorized = false;
   public setVisibility = false;
-  public itemIcon = systemIcon.itemIcon;
+  // public itemIcon = systemIcon.itemIcon;
   public lofOutIcon = systemIcon.logOutIcon;
   public userIcon = systemIcon.userIcon;
   public rmsIcon = systemIcon.rmsIcon;
+  public clockIcon = systemIcon.clockIcon;
+  public movingIcon = systemIcon.movingIcon;
   perm;
   sub1 = new Subscription();
 

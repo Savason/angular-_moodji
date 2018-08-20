@@ -295,9 +295,18 @@ label.custom_checkbox > input[type='checkbox']:checked + span:before {
 //    }
 //  }
 //}
-.system_table {
+.table_processing_loader {
+  position: relative;
+  height: 50px;
+}
+
+.system_table_wrapper {
   box-shadow: $brightBoxShadow;
   margin-bottom: 25px;
+}
+
+.system_table {
+  margin-bottom: 0px !important;
   tbody {
     background: #fff;
     tr {
@@ -320,6 +329,14 @@ label.custom_checkbox > input[type='checkbox']:checked + span:before {
     border-bottom: 1px solid #dee2e6;
     border-top: none;
   }
+}
+
+.table_footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 50px;
+  padding: 0 10px;
   .total_count {
     font-weight: bold;
     font-size: 14px;
@@ -328,8 +345,8 @@ label.custom_checkbox > input[type='checkbox']:checked + span:before {
 }
 
 .filter_list {
-  a{
-    padding: 0!important;
+  a {
+    padding: 0 !important;
   }
   label.custom_radio, .clear_filter {
     height: 40px;
@@ -337,8 +354,8 @@ label.custom_checkbox > input[type='checkbox']:checked + span:before {
     display: flex;
     align-items: center;
   }
-  .clear_filter{
-    fa-icon{
+  .clear_filter {
+    fa-icon {
       margin-right: 1rem;
     }
   }
@@ -380,6 +397,16 @@ label.custom_checkbox > input[type='checkbox']:checked + span:before {
   font-weight: bold;
   fa-icon {
     margin-left: 10px;
+  }
+}
+.isFiltered{
+  color: orangered;
+}
+.tooltip_flex{
+  max-width: 500px!important;
+  display: flex;
+  .ui-tooltip-text{
+    text-transform: lowercase!important;
   }
 }
 

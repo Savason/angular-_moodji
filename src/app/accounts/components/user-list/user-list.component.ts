@@ -18,6 +18,7 @@ import {UserFilterService} from '../../services/user.filter.service';
 })
 export class UserListComponent implements OnInit, OnDestroy {
   public isLoaded = false;
+  public isProcessing = false;
   public rows;
   public usersRoles = [];
   public faEdit = systemIcon.editIcon;
@@ -116,7 +117,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.accountService.setDataUser(pagedData.users);
         this.rows = this.accountService.Users$;
         this.accountService.totalUserCount = pagedData.users_count;
-        this.page.pageNumber = pagedData.page;
+        this.page.pageNumber = +pagedData.page;
         this.showPagination = Math.ceil(this.accountService.totalUserCount / 10);
         console.log(this.showPagination);
         // this.page.totalPages = this.accountService.totalUserCount;
@@ -132,18 +133,21 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   updateTablePagination() {
+    this.isProcessing = true;
     this.sub6 = this.filterService.addSearchParams('page', this.page.pageNumber + 1)
       .subscribe((data) => {
         console.log(data);
-        this.page.pageNumber = data.page;
+        this.page.pageNumber = +data.page;
         console.log(this.page.pageNumber);
         console.log(this.showPagination);
         this.onShowMoreDisplay(data.users_count);
         this.accountService.addToUserList(data.users);
+        this.isProcessing = false;
       });
   }
 
   contextDataTableSearch(event) {
+    this.isProcessing = true;
     this.filterService.clearSearchParams('page');
     this.page.pageNumber = 0;
     const val = event.target.value;
@@ -153,10 +157,12 @@ export class UserListComponent implements OnInit, OnDestroy {
         console.log(data);
         this.accountService.setDataUser(data.users);
         this.onShowMoreDisplay(data.users_count);
+        this.isProcessing = false;
       });
   }
 
   filterByKey(key: string, term: string, description?: string) {
+    this.isProcessing = true;
     this.page.pageNumber = 0;
     this.filterService.clearSearchParams('page');
     this.sub8 = this.filterService.addSearchParams(key, term)
@@ -170,6 +176,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         }
         this.accountService.setDataUser(data.users);
         this.onShowMoreDisplay(data.users_count);
+        this.isProcessing = false;
       });
   }
 

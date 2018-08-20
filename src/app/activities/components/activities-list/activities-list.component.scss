@@ -1,14 +1,15 @@
-.show_more_btn{
+.show_more_btn {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   cursor: pointer;
   font-size: 15px;
-  fa-icon{
+  fa-icon {
     margin-left: 10px;
   }
 }
-.filter_chips{
+
+.filter_chips {
   background: #000;
   color: #fff;
   margin: 0 2.5px 10px 2.5px;
@@ -16,6 +17,11 @@
   border-radius: 10px;
   display: table;
 }
-.isFiltered{
-  color: orangered;
+.dp_custom_visibility{
+  height: 0;
+  width: 0;
+  display: block;
+  margin: 0 auto;
+  visibility: hidden;
 }
+
