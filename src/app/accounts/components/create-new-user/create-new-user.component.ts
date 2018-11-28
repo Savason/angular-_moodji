@@ -89,21 +89,22 @@ export class CreateNewUserComponent implements OnInit, OnDestroy {
       console.log(this.accountService.totalUserCount);
       const {roleId, password, name} = this.form.value;
       const user = new User(roleId, password, name);
-      this.sub2 = this.accountService.createNewUser(user)
-        .subscribe((data) => {
-            this.modalRef.hide();
-            if (data.success) {
-              this.accountService.addToUserList(data.value);
-              this.accountService.totalUserCount++;
-              this.notificationsService.notify('success', '', `User ${name} has been created successfully!`);
-              this.form.reset();
-            } else if (data.error) {
-              this.notificationsService.notify('warn', '', `${data.error}`);
-            }
-          },
-          error2 => {
-            this.notificationsService.notify('error', '', `Something went wrong please try repeat letter!`);
-          });
+      console.log(user);
+      // this.sub2 = this.accountService.createNewUser(user)
+      //   .subscribe((data) => {
+      //       this.modalRef.hide();
+      //       if (data.success) {
+      //         this.accountService.addToUserList(data.value);
+      //         this.accountService.totalUserCount++;
+      //         this.notificationsService.notify('success', '', `User ${name} has been created successfully!`);
+      //         this.form.reset();
+      //       } else if (data.error) {
+      //         this.notificationsService.notify('warn', '', `${data.error}`);
+      //       }
+      //     },
+      //     error2 => {
+      //       this.notificationsService.notify('error', '', `Something went wrong please try repeat letter!`);
+      //     });
     }
   }
 
